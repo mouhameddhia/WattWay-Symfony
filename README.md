@@ -1,1 +1,1 @@
-# WaatWay-Symfony
+# WattWay-Symfony
