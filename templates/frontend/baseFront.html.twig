@@ -1,0 +1,287 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+    <head>
+        <!-- meta data -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <!-- font-family -->
+		<link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Rufina:400,700" rel="stylesheet">
+        
+        <!-- title of site -->
+        <title>WattWay</title>
+
+        <!-- For favicon png -->
+		<link rel="shortcut icon" type="image/icon" href="{{ asset('front/assets/logo/imgB.png') }}"/>
+       
+        <!-- CSS files -->
+        <link rel="stylesheet" href="{{ asset('front/assets/css/font-awesome.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('front/assets/css/linearicons.css') }}">
+		<link rel="stylesheet" href="{{ asset('front/assets/css/flaticon.css') }}">
+		<link rel="stylesheet" href="{{ asset('front/assets/css/animate.css') }}">
+        <link rel="stylesheet" href="{{ asset('front/assets/css/owl.carousel.min.css') }}">
+		<link rel="stylesheet" href="{{ asset('front/assets/css/owl.theme.default.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('front/assets/css/bootstrap.min.css') }}">
+		<link rel="stylesheet" href="{{ asset('front/assets/css/bootsnav.css') }}">	
+        <link rel="stylesheet" href="{{ asset('front/assets/css/style.css') }}">
+        <link rel="stylesheet" href="{{ asset('front/assets/css/responsive.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles/submission.css') }}">
+        
+        <!-- HTML5 shim and Respond.js -->
+        <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+	
+	<body>
+		<!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+	{% block header %}
+		<!-- welcome-hero start -->
+		<section id="home" class="welcome-hero">
+			<!-- top-area Start -->
+			<div class="top-area">
+				<div class="header-area">
+					<!-- Start Navigation -->
+				    <nav class="navbar navbar-default bootsnav  navbar-sticky navbar-scrollspy"  data-minus-value-desktop="70" data-minus-value-mobile="55" data-speed="1000">
+
+				        <div class="container">
+
+				            <!-- Start Header Navigation -->
+				            <div class="navbar-header">
+				                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+				                    <i class="fa fa-bars"></i>
+				                </button>
+                                    <img src="{{asset('back/img/img.png')}}" alt="Wattway" width="200" height="150">
+				            </div><!--/.navbar-header-->
+				            <!-- End Header Navigation -->
+
+				            <!-- Collect the nav links, forms, and other content for toggling -->
+				            <!-- In the navbar section, update the submission link -->
+				            <div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
+				                <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
+				                    <li class=" scroll active"><a href="#home">Home</a></li>
+				                    <li class="scroll"><a href="#service">Browse catalogue</a></li>
+								    <li class="scroll"><a href="#Rent">Rent a Car</a></li>
+				                    <li class="scroll"><a href="#order">Buy auto parts</a></li>
+				                    <li class="scroll"><a href="#mechanic">Meet our team</a></li>
+				                    <li class="scroll"><a href="#new-cars">Submission</a></li>
+                                    <li class="scroll"><a href="#clients-say">Feedbacks</a></li>
+				                </ul><!--/.nav -->
+				            </div><!-- /.navbar-collapse -->
+				        </div><!--/.container-->
+				    </nav><!--/nav-->
+				    <!-- End Navigation -->
+				</div><!--/.header-area-->
+			    <div class="clearfix"></div>
+
+			</div><!-- /.top-area-->
+			<!-- top-area End -->
+
+			<div class="container">
+				<div class="welcome-hero-txt">
+					<h2>Get Your Dream Electric Car at the Best Price!</h2>
+					<p>
+						Looking for an electric vehicle? Whether you need to buy, rent, or repair an EV, we've got you covered with reliable service and great deals.
+
+                        Drive the future—sustainable, efficient, and affordable! ⚡🚗
+					</p>
+					<button class="welcome-btn" onclick="window.location.href='#'">contact us</button>
+				</div>
+			</div>
+
+			
+		</section>
+	{% endblock %}
+
+
+<!-- ************************************************************************************************************* -->
+
+        <!-- Warehouse Management -->
+
+		<!-- Browse catalogue -->
+		{% block catalogueBrowsing %}
+		<section id="service" class="service">
+			<div class="container">
+				<div class="service-content">
+					<h2>Browse cars</h2>
+
+
+					</div>
+				</div>
+			</div><!--/.container-->
+
+		</section><!--/.service-->
+		{% endblock %}
+
+
+		<!-- Rent a Car -->
+		{% block carRenting %}
+		<section id="Rent" class="service">
+			<div class="container">
+				<div class="service-content">
+					<h2>rent car</h2>
+
+
+					</div>
+				</div>
+			</div><!--/.container-->
+
+		</section><!--/.service-->
+		{% endblock %}
+
+<!-- ************************************************************************************************************* -->
+
+            <!-- Order Management  -->
+		{% block order %}
+		<section id="order" class="order">
+			<div class="container">
+				<div class="new-cars-content">	
+					<h2>Order</h2>
+			
+				</div>
+			</div>
+		</section>
+		{% endblock %}
+
+
+<!-- ************************************************************************************************************* -->
+
+		<!-- Mechanics -->
+		{% block mechanics %}
+		<section id="mechanic" class="mechanic">
+			<div class="container">
+				<div class="new-cars-content">
+				    <h2>Mechanics</h2>
+				</div>
+			</div>
+		</section>
+		{% endblock %}	
+
+
+
+<!-- ************************************************************************************************************* -->
+ 
+		<!-- Submission -->
+		{% block submission %}
+		<section id="new-cars" class="new-cars">
+			<div class="container">
+			 	
+            		<h2>Submit Your Request</h2>
+			</div><!--/.container-->
+
+		</section>
+		{% endblock %}
+<!-- ************************************************************************************************************* -->
+
+
+		<!-- FeedBack -->
+		{% block feedback %}
+		<section id="clients-say"  class="clients-say">
+			<div class="container">
+				<div class="section-header">
+					<h2>what our clients say</h2>
+				</div><!--/.section-header-->
+				<div class="row">
+					<div class="owl-carousel testimonial-carousel">
+						<div class="col-sm-3 col-xs-12">
+							<div class="single-testimonial-box">
+								<div class="testimonial-description">
+									<div class="testimonial-info">
+										<div class="testimonial-img">
+									<img src="{{ asset('front/assets/images/clients/c1.png') }}" alt="client">
+								</div><!--/.testimonial-img-->
+									</div><!--/.testimonial-info-->
+									<div class="testimonial-comment">
+										<p>
+                                            WattWay is the best way !
+                                            
+										</p>
+									</div><!--/.testimonial-comment-->
+									<div class="testimonial-person">
+										<h2><a href="#">Raef Zriba</a></h2>
+										<h4>Angola</h4>
+									</div><!--/.testimonial-person-->
+								</div><!--/.testimonial-description-->
+							</div><!--/.single-testimonial-box-->
+						</div><!--/.col-->
+					</div><!--/.testimonial-carousel-->
+				</div><!--/.row-->
+			</div><!--/.container-->
+		{% endblock %}	
+		
+
+
+<!-- ************************************************************************************************************* -->
+
+		<!-- footer start -->
+		{% block footer %}
+		<footer id="contact" class="contact">
+			<div class="container">
+				<div class="footer-content">
+					<!-- Left Column -->
+					<div class="row">
+						<div class="col-md-6">
+							<div class="footer-brand">
+								<h2>WATTWAY</h2>
+								<p class="company-description">
+									Your trusted partner in electric vehicle solutions. We provide top-quality electric cars, maintenance 
+									services, and expert guidance for sustainable transportation.
+								</p>
+								<p class="contact-email">contact@wattway.com</p>
+							</div>
+						</div>
+
+						<!-- Right Column -->
+						<div class="col-md-6">
+							<div class="business-hours-section">
+								<h3>Business Hours</h3>
+								<ul class="business-hours-list">
+									<li>Monday - Friday: 8:00 AM - 6:00 PM</li>
+									<li>Saturday: 9:00 AM - 4:00 PM</li>
+									<li>Sunday: Closed</li>
+									<li class="emergency-support">24/7 Emergency Support Available</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Footer Bottom -->
+				<div class="footer-bottom">
+					<div class="row">
+						<div class="col-md-6">
+							<p class="copyright">© Copyright. Designed and Developed by WattWay.</p>
+						</div>
+						<div class="col-md-6">
+							<div class="social-links">
+								<a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+								<a href="#" aria-label="Instagram"><i class="fa fa-instagram"></i></a>
+								<a href="#" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</footer>
+		{% endblock %}
+
+		<!-- JavaScript files -->
+		{% block javascript %}
+		<script src="{{ asset('front/assets/js/jquery.js') }}"></script>
+        <script src="{{ asset('front/assets/js/bootstrap.min.js') }}"></script>
+		<script src="{{ asset('front/assets/js/bootsnav.js') }}"></script>
+		<script src="{{ asset('front/assets/js/owl.carousel.min.js') }}"></script>
+		<script src="{{ asset('front/assets/js/custom.js') }}"></script>
+
+		<!-- External scripts remain unchanged -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+		{% endblock %}
+	</body>
+</html>

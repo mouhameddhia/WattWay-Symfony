@@ -1,0 +1,42 @@
+{% extends 'backend/baseBack.html.twig' %}
+
+{% block title %}Response{% endblock %}
+
+{% block content %}
+    <h1>Response</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>IdResponse</th>
+                <td>{{ response.idResponse }}</td>
+            </tr>
+            <tr>
+                <th>Message</th>
+                <td>{{ response.message }}</td>
+            </tr>
+            <tr>
+                <th>DateResponse</th>
+                <td>{{ response.dateResponse ? response.dateResponse|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>TypeResponse</th>
+                <td>{{ response.typeResponse }}</td>
+            </tr>
+            <tr>
+                <th>IdUser</th>
+                <td>{{ response.idUser }}</td>
+            </tr>
+            <tr>
+                <th>IdSubmission</th>
+                <td>{{ response.idSubmission }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_response_index') }}">back to list</a>
+
+    <a href="{{ path('app_response_edit', {'idResponse': response.idResponse}) }}">edit</a>
+
+    {{ include('backend/response/_delete_form.html.twig') }}
+{% endblock %}

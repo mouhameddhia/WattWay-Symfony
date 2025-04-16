@@ -1,0 +1,199 @@
+{% extends 'frontend/baseFront.html.twig' %}
+
+{% block title %}Submissions{% endblock %}
+
+{% block css %}
+    {{ parent() }}
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ asset('styles/submission.css') }}" rel="stylesheet">
+   
+{% endblock %}
+
+{% block submission %}
+    <div class="clients-say">
+        <div class="container">
+            <div class="section-header">
+                <h2>New Submission</h2>
+            </div>
+            <div class="card mb-4 shadow-sm submission-form-card">
+                <div class="card-body">
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>{{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>{{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+
+                    {{ form_start(form, {'action': path('app_Fsubmission_index'), 'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}} ) }}
+                        <div class="mb-3">
+                            {{ form_label(form.description, 'Service Description', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.description) }}
+                            {{ form_errors(form.description) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.vinCode, 'VIN Code', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.vinCode) }}
+                            {{ form_errors(form.vinCode) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.idUser, 'User ID', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.idUser) }}
+                            {{ form_errors(form.idUser) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.preferredContactMethod, 'Preferred Contact Method', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.preferredContactMethod) }}
+                            {{ form_errors(form.preferredContactMethod) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.preferredAppointmentDate, 'Preferred Appointment Date', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.preferredAppointmentDate) }}
+                            {{ form_errors(form.preferredAppointmentDate) }}
+                        </div>
+
+                        {{ form_widget(form.status) }}
+                        {{ form_widget(form.urgencyLevel) }}
+                        {{ form_widget(form.dateSubmission) }}
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+            <div class="section-header mt-5">
+                <h2>Submissions</h2>
+            </div>
+            <div class="row">
+                <div class="owl-carousel testimonial-carousel">
+                    {% for submission in submissions %}
+                        <div class="col-sm-3 col-xs-12 submission-item" data-user-id="{{ submission.idUser }}">
+                            <div class="single-testimonial-box shadow-sm p-3 mb-5 bg-white rounded">
+                                <div class="testimonial-description">
+                                    <div class="submission-actions">
+                                    <button onclick="window.location.href='{{ path('app_Fsubmission_edit', {idSubmission: submission.idSubmission}) }}'" class="btn btn-warning edit-btn" title="Edit Submission">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </button>
+                                        <form method="post" action="{{ path('app_Fsubmission_delete', {idSubmission: submission.idSubmission}) }}" style="display:inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ submission.idSubmission) }}">
+                                            <button type="submit" class="btn btn-danger delete-btn" title="Delete Submission" onclick="return confirm('Are you sure you want to delete this submission?');">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="testimonial-img">
+                                        <img src="{{ submission.carDetails.img }}" alt="Car Image" class="img-fluid rounded">
+                                    </div>
+                                    <div class="car-details">
+                                        <p><i class="fas fa-calendar-alt"></i> <strong>{{ submission.carDetails.year }}</strong></p>
+                                        <p><i class="fas fa-car"></i> <strong>{{ submission.carDetails.brand }}</strong></p>
+                                    </div>
+                                    <div class="service-details">
+                                        <p>{{ submission.description }}</p>
+                                        <p><i class="fas fa-calendar-check"></i> <strong>Appointment:</strong> {{ submission.preferredAppointmentDate ? submission.preferredAppointmentDate|date('Y-m-d') : 'N/A' }}</p>
+                                        <p><i class="fas fa-phone-alt"></i> <strong>Contact:</strong> {{ submission.preferredContactMethod }}</p>
+                                    </div>
+                                    <div class="responses-container" id="responses-{{ submission.idSubmission }}" style="display: none;">
+                                        <h4 class="responses-title"><i class="fas fa-comments"></i> Responses</h4>
+                                        <div class="responses-wrapper">
+                                            {% for response in submission.responses %}
+                                            <div class="response-card response-item response-type-{{ response.typeResponse|lower }} shadow-sm p-3 mb-3 bg-light rounded">
+                                                <div class="response-header">
+                                                    <span class="response-type">{{ response.typeResponse }}</span>
+                                                    <span class="response-date">{{ response.dateResponse ? response.dateResponse|date('Y-m-d') : 'N/A' }}</span>
+                                                </div>
+                                                <div class="response-content">
+                                                    <p>{{ response.message }}</p>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <div class="response-card response-item empty-response">
+                                                <p class="text-muted"><i class="fas fa-info-circle"></i> No responses found for this submission.</p>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="toggle-responses" style="cursor: pointer;">
+                                        <svg class="icon-closed" xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 512 512">
+                                            <path fill="#f98f15" d="M256 464a208 208 0 1 1 0-416 208 208 0 1 1 0 416zM256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM376.9 294.6c4.5-4.2 7.1-10.1 7.1-16.3c0-12.3-10-22.3-22.3-22.3L304 256l0-96c0-17.7-14.3-32-32-32l-32 0c-17.7 0-32 14.3-32 32l0 96-57.7 0C138 256 128 266 128 278.3c0 6.2 2.6 12.1 7.1 16.3l107.1 99.9c3.8 3.5 8.7 5.5 13.8 5.5s10.1-2 13.8-5.5l107.1-99.9z"/>
+                                        </svg>
+                                        <svg class="icon-opened" xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 512 512" style="display: none;">
+                                            <path fill="#f98f15" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm11.3-395.3l112 112c4.6 4.6 5.9 11.5 3.5 17.4s-8.3 9.9-14.8 9.9l-64 0 0 96c0 17.7-14.3 32-32 32l-32 0c-17.7 0-32-14.3-32-32l0-96-64 0c-6.5 0-12.3-3.9-14.8-9.9s-1.1-12.9 3.5-17.4l112-112c6.2-6.2 16.4-6.2 22.6 0z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col-sm-12">
+                            <p class="text-center text-muted py-3">No submissions found</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+            <!-- Modal for editing submission -->
+            <div class="modal fade" id="editSubmissionModal" tabindex="-1" aria-labelledby="editSubmissionModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editSubmissionModalLabel">Edit Submission</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="editSubmissionForm">
+                            <!-- Form will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                // Function to load and show edit form in modal
+                function showEditModal(submissionId) {
+                    const modal = new bootstrap.Modal(document.getElementById('editSubmissionModal'));
+                    fetch(`/submission/${submissionId}/edit`)
+                        .then(response => response.text())
+                        .then(html => {
+                            document.getElementById('editSubmissionForm').innerHTML = html;
+                            modal.show();
+                        });
+                }
+
+                document.querySelectorAll('.toggle-responses').forEach(icon => {
+                    icon.addEventListener('click', () => {
+                        const container = icon.previousElementSibling;
+                        const closedIcon = icon.querySelector('.icon-closed');
+                        const openedIcon = icon.querySelector('.icon-opened');
+
+                        if (container.style.display === 'none') {
+                            container.style.display = 'block';
+                            closedIcon.style.display = 'none';
+                            openedIcon.style.display = 'inline';
+                        } else {
+                            container.style.display = 'none';
+                            closedIcon.style.display = 'inline';
+                            openedIcon.style.display = 'none';
+                        }
+                    });
+                });
+     
+     
+            </script>
+
+        </div>
+    </div>
+{% endblock %}

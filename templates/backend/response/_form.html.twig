@@ -1,0 +1,89 @@
+<link rel="stylesheet" href="/back/css/response.css">
+<style>
+    .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2.5rem;
+        background: #f8f9fa;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 2rem;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: #2d3748;
+        font-weight: 600;
+    }
+
+    .form-widget input,
+    .form-widget textarea,
+    .form-widget select {
+        width: 100%;
+        padding: 1.2rem;
+        font-size: 1.1rem;
+        border: 2px solid #cbd5e0;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .form-widget input:focus,
+    .form-widget textarea:focus,
+    .form-widget select:focus {
+        border-color: #4299e1;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+        outline: none;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 1.25rem;
+        font-size: 1.2rem;
+        background: #4299e1;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+        background: #3182ce;
+    }
+
+    .form-errors {
+        padding: 1.5rem;
+        background: #fed7d7;
+        color: #c53030;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+    }
+</style>
+
+<div class="container">
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}    
+    <div class="form-group">
+        {{ form_errors(form) }}
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">
+            {{ form_label(form, 'Form Label', {'label_attr': {'class': 'form-label'}}) }}
+        </div>
+        <div class="form-widget">
+            {{ form_widget(form, {'attr': {'class': 'large-input'}}) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button class="btn">{{ button_label|default('Save') }}</button>
+    </div>
+
+    {{ form_end(form) }}
+</div>

@@ -1,0 +1,13 @@
+{% extends 'backend/baseBack.html.twig' %}
+
+{% block title %}Edit Response{% endblock %}
+
+{% block content %}
+    <h1>Edit Response</h1>
+
+    {{ include('backend/response/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_response_index') }}">back to list</a>
+
+    {{ include('backend/response/_delete_form.html.twig') }}
+{% endblock %}

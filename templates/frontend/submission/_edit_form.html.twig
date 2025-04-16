@@ -1,0 +1,51 @@
+{% block css %}
+   
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ asset('styles/submission.css') }}" rel="stylesheet">
+
+{% endblock %}
+<div class="modal-body">
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>{{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+    
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        <div class="mb-3">
+            {{ form_label(form.description, 'Service Description', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.description) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.vinCode, 'VIN Code', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.vinCode, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.vinCode) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.preferredContactMethod, 'Preferred Contact Method', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.preferredContactMethod, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.preferredContactMethod) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.preferredAppointmentDate, 'Preferred Appointment Date', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.preferredAppointmentDate, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.preferredAppointmentDate) }}
+        </div>
+
+        {{ form_widget(form.status) }}
+        {{ form_widget(form.urgencyLevel) }}
+        {{ form_widget(form.dateSubmission) }}
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+    {{ form_end(form) }}
+</div>

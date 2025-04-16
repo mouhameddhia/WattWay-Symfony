@@ -1,0 +1,840 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #f5f7fa;
+    color: #2d3436;
+    line-height: 1.6;
+}
+
+/* Form Layout */
+.hidden-fields {
+    display: none;
+}
+
+.form-wrapper {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Form Container */
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Rows */
+.form-row {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    align-items: flex-start;
+}
+
+/* Form Fields */
+.form-field {
+    flex: 1;
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-field.full-width {
+    flex: 2;
+}
+
+/* Labels */
+.form-field label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #333;
+    font-size: 1rem;
+}
+
+.field-label {
+    display: block;
+    margin-bottom: 0.7rem;
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.description-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #333;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+/* Input Fields */
+.field-input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1.05rem;
+    transition: border-color 0.3s ease;
+}
+
+.field-input:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+}
+
+.field-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: white;
+    cursor: pointer;
+}
+
+/* Description Field */
+.description-row {
+    margin: 2rem 0;
+}
+
+.description-input {
+    width: 100%;
+    padding: 1.2rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    resize: vertical;
+    min-height: 150px;
+    transition: border-color 0.3s ease;
+}
+
+.description-input:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+}
+
+/* Error Messages */
+.error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+/* Submit Button */
+.submit-section {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.submit-button {
+    background-color: #4a90e2;
+    color: white;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #357abd;
+}
+
+/* Flash Messages */
+.message {
+    max-width: 800px;
+    margin: 1rem auto;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.message-success {
+    background-color: #55efc4;
+    color: #00b894;
+}
+
+.message-error {
+    background-color: #fab1a0;
+    color: #d63031;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form-field {
+        width: 100%;
+    }
+
+    .description-input {
+        min-height: 120px;
+    }
+}
+
+/* Custom Date Input Styling */
+input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 0.8rem;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    padding: 0.2rem;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* Custom Select Styling */
+.field-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232d3436' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+}
+
+/* Animation Effects */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.form-wrapper {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Focus Styles for Accessibility */
+*:focus {
+    outline: 2px solid #0984e3;
+    outline-offset: 2px;
+}
+
+/* Page Layout */
+.page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.content-section {
+    width: 100%;
+}
+
+.page-header {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.page-header h2 {
+    font-size: 2rem;
+    color: #2d3436;
+    font-weight: 600;
+}
+
+/* Messages */
+.messages-container {
+    max-width: 800px;
+    margin: 0 auto 2rem;
+}
+
+.message {
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    animation: slideIn 0.3s ease-out;
+}
+
+.message-icon {
+    font-size: 1.2rem;
+    margin-right: 1rem;
+}
+
+.message-success {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.message-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Submissions Grid */
+.submissions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2.5rem;
+    margin-top: 3rem;
+}
+
+/* Submission Card */
+.submission-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+.submission-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.submission-header {
+    position: relative;
+}
+
+.car-image {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+}
+
+.car-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.car-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    color: white;
+}
+
+.car-year {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-right: 1.5rem;
+}
+
+.car-brand {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.submission-content {
+    padding: 1.5rem;
+}
+
+.submission-description {
+    font-size: 0.95rem;
+    color: #4a5568;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.submission-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #718096;
+}
+
+.detail-icon {
+    margin-right: 0.5rem;
+}
+
+/* Action Buttons */
+.submission-actions {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.action-button {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.edit-button {
+    background-color: #3498db;
+    color: white;
+}
+
+.edit-button:hover {
+    background-color: #2980b9;
+}
+
+.delete-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: #c0392b;
+}
+
+/* Responses Section */
+.responses-section {
+    border-top: 1px solid #e2e8f0;
+}
+
+.responses-header {
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background-color: #f8fafc;
+}
+
+.responses-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2d3436;
+}
+
+.toggle-icon {
+    font-size: 0.8rem;
+    color: #64748b;
+    transition: transform 0.2s ease;
+}
+
+.responses-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.response-item {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.response-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.response-type {
+    color: #2d3436;
+    font-weight: 500;
+}
+
+.response-date {
+    color: #64748b;
+}
+
+.response-message {
+    font-size: 0.9rem;
+    color: #4a5568;
+    line-height: 1.5;
+}
+
+.empty-response {
+    padding: 2rem;
+    text-align: center;
+    color: #64748b;
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: #64748b;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .page-container {
+        padding: 1rem;
+    }
+
+    .submissions-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .submission-card {
+        max-width: 100%;
+    }
+
+    .car-image {
+        height: 180px;
+    }
+
+    .submission-actions {
+        flex-direction: column;
+    }
+
+    .action-button {
+        width: 100%;
+    }
+}
+
+/* Client Says Section */
+.clients-say {
+    padding: 3rem 0;
+    background-color: #f8fafc;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.section-header h2 {
+    font-size: 2.2rem;
+    color: #2d3436;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.section-header h2:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background: #3498db;
+    border-radius: 2px;
+}
+
+/* Testimonial Carousel */
+.testimonial-carousel {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 3rem;
+    align-items: start;
+    margin-top: 2rem;
+}
+
+.testimonial-item {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.testimonial-box {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 1.5rem;
+    margin: 1rem;
+}
+
+.testimonial-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-content {
+    position: relative;
+}
+
+/* Action Buttons */
+.action-buttons {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 1;
+}
+
+.icon-button {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.edit-button {
+    background-color: #3498db;
+    color: white;
+}
+
+.edit-button:hover {
+    background-color: #2980b9;
+    transform: scale(1.1);
+}
+
+.delete-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: #c0392b;
+    transform: scale(1.1);
+}
+
+/* Car Image */
+.car-image {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+}
+
+.car-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Car Details */
+.car-details {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-around;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.detail {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #2d3436;
+}
+
+.detail svg {
+    color: #3498db;
+}
+
+/* Submission Content */
+.submission-text {
+    padding: 1.5rem;
+    color: #4a5568;
+    line-height: 1.6;
+}
+
+.submission-info {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-around;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #718096;
+}
+
+.info-item svg {
+    color: #3498db;
+}
+
+/* Responses Section */
+.responses-toggle {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    border-top: 1px solid #e2e8f0;
+    color: #3498db;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.responses-toggle:hover {
+    background-color: #f8fafc;
+}
+
+.toggle-icon {
+    transition: transform 0.2s ease;
+}
+
+.responses-section {
+    border-top: 1px solid #e2e8f0;
+}
+
+.response-item {
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.response-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.response-type {
+    color: #2d3436;
+    font-weight: 500;
+}
+
+.response-date {
+    color: #718096;
+}
+
+.response-message {
+    color: #4a5568;
+    line-height: 1.5;
+}
+
+.empty-response {
+    padding: 2rem;
+    text-align: center;
+    color: #718096;
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: #718096;
+    background: rgb(33, 3, 3);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Messages */
+.messages-container {
+    max-width: 800px;
+    margin: 0 auto 2rem;
+}
+
+.message {
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    animation: slideIn 0.3s ease-out;
+}
+
+.message-icon {
+    font-size: 1.2rem;
+    margin-right: 1rem;
+}
+
+.message-success {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.message-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .testimonial-carousel {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .car-image {
+        height: 180px;
+    }
+
+    .car-details, 
+    .submission-info {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .action-buttons {
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+
+    .icon-button {
+        width: 32px;
+        height: 32px;
+    }
+}

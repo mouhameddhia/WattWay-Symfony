@@ -1,0 +1,8 @@
+services:
+  Dompdf\Dompdf:
+    arguments:
+      $options:
+        defaultFont: 'dejavu sans'
+        isRemoteEnabled: true
+    autowire: true
+    autoconfigure: true

@@ -1,0 +1,233 @@
+<style>
+    /* Base Container Styling */
+    .service-form {
+        max-width: 840px;
+        margin: 3rem auto;
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    /* Form Header */
+    .form-header {
+        padding: 1.5rem 2.5rem;
+        background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+        color: white;
+    }
+
+    .form-title {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+    }
+
+    /* Form Content Area */
+    .form-body {
+        padding: 2.5rem;
+    }
+
+    /* Grid Layout System */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2.5rem;
+    }
+
+    /* Form Group Styling */
+    .form-group {
+        margin-bottom: 1.8rem;
+        position: relative;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.8rem;
+        font-weight: 500;
+        color: #1e3a8a;
+        font-size: 0.95rem;
+    }
+
+    /* Input Fields */
+    .form-control {
+        width: 100%;
+        padding: 1.1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        background: #f8fafc;
+    }
+
+    .form-control:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        background: white;
+        outline: none;
+    }
+
+    /* Specialized Fields */
+    .form-textarea {
+        min-height: 160px;
+        resize: vertical;
+        line-height: 1.6;
+        padding: 1.5rem;
+    }
+
+    .form-select {
+        background-image: url("data:image/svg+xml,%3csvg...");
+        background-position: right 1.2rem center;
+    }
+
+    /* Submit Section */
+    .submit-section {
+        margin-top: 2.5rem;
+        border-top: 2px solid #f1f5f9;
+        padding-top: 2.5rem;
+    }
+
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        padding: 1.2rem 2.5rem;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-primary:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Error Handling */
+    .form-error {
+        color: #dc2626;
+        font-size: 0.875rem;
+        margin-top: 0.6rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .service-form {
+            margin: 1rem;
+            border-radius: 12px;
+        }
+
+        .form-body {
+            padding: 1.5rem;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+    }
+</style>
+
+<div class="service-form">
+    <header class="form-header">
+        <h1 class="form-title">Service Request Form</h1>
+    </header>
+
+    <div class="form-body">
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+        <!-- System Fields -->
+        <div class="hidden-fields">
+            {{ form_widget(form.status, {'attr': {'value': 'pending'}}) }}
+            {{ form_widget(form.urgencyLevel, {'attr': {'value': 'low'}}) }}
+            {{ form_widget(form.dateSubmission, {'attr': {'value': 'now'|date('Y-m-d H:i:s')}}) }}
+        </div>
+
+        <!-- Main Form Sections -->
+        <div class="form-grid">
+            <!-- User/Vehicle Group -->
+            <div class="form-group">
+                <label class="form-label" for="{{ form.idUser.vars.id }}">User Identification</label>
+                {{ form_widget(form.idUser, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Enter user ID',
+                        'required': 'required'
+                    }
+                }) }}
+                <div class="form-error">{{ form_errors(form.idUser) }}</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="{{ form.vinCode.vars.id }}">Vehicle VIN</label>
+                {{ form_widget(form.vinCode, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Enter 17-character VIN',
+                        'pattern': '^[A-HJ-NPR-Z0-9]{17}$'
+                    }
+                }) }}
+                <div class="form-error">{{ form_errors(form.vinCode) }}</div>
+            </div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="form-group">
+            <label class="form-label" for="{{ form.description.vars.id }}">Service Details</label>
+            {{ form_widget(form.description, {
+                'attr': {
+                    'class': 'form-control form-textarea',
+                    'placeholder': 'Describe your service needs, symptoms, and any relevant details...'
+                }
+            }) }}
+            <div class="form-error">{{ form_errors(form.description) }}</div>
+        </div>
+
+        <!-- Contact Preferences -->
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label" for="{{ form.preferredContactMethod.vars.id }}">Contact Method</label>
+                {{ form_widget(form.preferredContactMethod, {
+                    'attr': {
+                        'class': 'form-control form-select',
+                        'required': 'required'
+                    }
+                }) }}
+                <div class="form-error">{{ form_errors(form.preferredContactMethod) }}</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="{{ form.preferredAppointmentDate.vars.id }}">Preferred Date</label>
+                {{ form_widget(form.preferredAppointmentDate, {
+                    'attr': {
+                        'class': 'form-control',
+                        'min': 'now'|date('Y-m-d')
+                    }
+                }) }}
+                <div class="form-error">{{ form_errors(form.preferredAppointmentDate) }}</div>
+            </div>
+        </div>
+
+        <!-- Submit Section -->
+        <div class="submit-section">
+            <button type="submit" class="btn-primary">
+                {{ button_label|default('Submit Service Request') }}
+                <svg class="btn-icon" viewBox="0 0 24 24" width="20" height="20">
+                    <path fill="currentColor" d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"/>
+                </svg>
+            </button>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+</div>

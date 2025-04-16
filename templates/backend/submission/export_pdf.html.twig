@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Submission Report #{{ submission.idSubmission }}</title>
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif; padding: 20px; }
+        .header { border-bottom: 2px solid #333; margin-bottom: 20px; }
+        .section { margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f5f5f5; }
+        .urgent { color: #dc3545; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Submission Report #{{ submission.idSubmission }}</h1>
+        <p>Date: {{ submission.dateSubmission|date('d/m/Y H:i') }}</p>
+    </div>
+
+    <div class="section">
+        <h2>Details</h2>
+        <p><strong>Status:</strong> {{ submission.status }}</p>
+        <p><strong>Urgency:</strong> <span class="urgent">{{ submission.urgencyLevel }}</span></p>
+        <p><strong>Description:</strong></p>
+        <p>{{ submission.description }}</p>
+    </div>
+
+    {% if submission.responses|length > 0 %}
+    <div class="section">
+        <h2>Responses</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Response</th>
+                    <th>User</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for response in submission.responses %}
+                <tr>
+                    <td>{{ response.dateResponse|date('d/m/Y H:i') }}</td>
+                    <td>{{ response.responseText }}</td>
+                    <td>{{ response.user.username }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</body>
+</html>
