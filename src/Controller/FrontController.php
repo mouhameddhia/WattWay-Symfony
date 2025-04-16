@@ -41,6 +41,19 @@ class FrontController extends AbstractController
             'mechanics' => $mechanics,
         ]);
     }
+
+    #[Route('/car-status', name: 'app_car_status')]
+    public function carStatus(EntityManagerInterface $entityManager): Response
+    {
+        // For now, we'll just pass an empty array
+        // Later, we'll implement the logic to fetch user's cars and their assignments
+        $userCars = [];
+        
+        return $this->render('frontend/car_status/index.html.twig', [
+            'userCars' => $userCars,
+        ]);
+    }
+
     //Every link of page is placed here
     //#[Route('/entity_name', name: 'your_entity_name')]
 }

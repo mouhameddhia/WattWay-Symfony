@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use App\Entity\Car;
 use App\Entity\Mechanic;
 use App\Entity\AssignmentMechanics;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 class Assignment
@@ -17,17 +18,32 @@ class Assignment
     #[ORM\Column(name: "idAssignment", type: "integer")]
     private ?int $idAssignment = null;
 
-    #[ORM\Column(name: "descriptionAssignment", type: "string", length: 500)]
+    #[ORM\Column(name: "descriptionAssignment", type: "text")]
+    #[Assert\NotBlank(message: "Description is required")]
+    #[Assert\Length(
+        min: 10,
+        max: 1000,
+        minMessage: "Description must be at least {{ limit }} characters long",
+        maxMessage: "Description cannot be longer than {{ limit }} characters"
+    )]
     private string $descriptionAssignment;
 
-    #[ORM\Column(name: "statusAssignment", type: "string", length: 30)]
+    #[ORM\Column(name: "statusAssignment", type: "string", length: 20)]
+    #[Assert\NotBlank(message: "Status is required")]
+    #[Assert\Choice(
+        choices: ["pending", "in-progress", "completed"],
+        message: "Status must be either pending, in-progress, or completed"
+    )]
     private string $statusAssignment;
 
-    #[ORM\ManyToOne(targetEntity: Car::class, inversedBy: "assignments")]
-    #[ORM\JoinColumn(name: "idCar", referencedColumnName: "idCar", onDelete: "CASCADE", nullable: false)]
-    private Car $car;
+    #[ORM\ManyToOne(targetEntity: Car::class)]
+    #[ORM\JoinColumn(name: "car_id", referencedColumnName: "idCar")]
+    #[Assert\NotBlank(message: "Car is required")]
+    private ?Car $car = null;
 
     #[ORM\Column(name: "dateAssignment", type: "datetime")]
+    #[Assert\NotBlank(message: "Date is required")]
+    #[Assert\Type("\DateTimeInterface")]
     private \DateTimeInterface $dateAssignment;
 
     #[ORM\OneToMany(mappedBy: "idAssignment", targetEntity: AssignmentMechanics::class, cascade: ["persist", "remove"], orphanRemoval: true)]
@@ -65,12 +81,12 @@ class Assignment
         return $this;
     }
 
-    public function getCar(): Car
+    public function getCar(): ?Car
     {
         return $this->car;
     }
 
-    public function setCar(Car $car): self
+    public function setCar(?Car $car): self
     {
         $this->car = $car;
         return $this;

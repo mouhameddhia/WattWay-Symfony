@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Entity\Assignment_mechanics;
 use phpDocumentor\Reflection\Types\Null_;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 class Mechanic
@@ -17,19 +18,42 @@ class Mechanic
     private ?int $idMechanic=null;
 
     #[ORM\Column(name: "nameMechanic", type: "string", length: 255)]
+    #[Assert\NotBlank(message: "Mechanic name is required")]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: "Mechanic name must be at least {{ limit }} characters long",
+        maxMessage: "Mechanic name cannot be longer than {{ limit }} characters"
+    )]
     private string $nameMechanic;
 
     #[ORM\Column(name: "specialityMechanic", type: "string", length: 255)]
+    #[Assert\NotBlank(message: "Specialty is required")]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: "Specialty must be at least {{ limit }} characters long",
+        maxMessage: "Specialty cannot be longer than {{ limit }} characters"
+    )]
     private string $specialityMechanic;
 
     #[ORM\Column(name: "imgMechanic", type: "string", length: 255, nullable : true )]
+    #[Assert\File(
+        maxSize: "2M",
+        mimeTypes: ["image/jpeg", "image/png", "image/gif"],
+        mimeTypesMessage: "Please upload a valid image (JPEG, PNG, GIF)"
+    )]
     private ?string $imgMechanic = null;
 
     #[ORM\Column(name: "emailMechanic", type: "string", length: 255)]
+    #[Assert\NotBlank(message: "Email is required")]
+    #[Assert\Email(message: "The email '{{ value }}' is not a valid email")]
     private string $emailMechanic;
 
     #[ORM\Column(name: "carsRepaired", type: "integer")]
-    private int $carsRepaired;
+    #[Assert\Type(type: "integer", message: "Cars repaired must be a number")]
+    #[Assert\PositiveOrZero(message: "Cars repaired cannot be negative")]
+    private int $carsRepaired = 0;
 
     #[ORM\OneToMany(mappedBy: "idMechanic", targetEntity: Assignment::class)]
     private Collection $assignments;

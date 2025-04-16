@@ -1,0 +1,57 @@
+{% extends 'frontend/baseFront.html.twig' %}
+
+{% block title %}Car Status{% endblock %}
+
+{% block carStatus %}
+<section id="car-status" class="car-status">
+    <div class="container">
+        <div class="section-header">
+            <h2>Car Status</h2>
+            <p>Track the status of your cars and their current assignments</p>
+        </div>
+
+        <div class="row">
+            {% if userCars is empty %}
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        <p>No cars found in the system. Please add your cars to track their status.</p>
+                    </div>
+                </div>
+            {% else %}
+                {% for car in userCars %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card car-status-card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ car.model }} - {{ car.plateNumber }}</h5>
+                                <div class="car-details">
+                                    <p><strong>Status:</strong> 
+                                        {% if car.currentAssignment %}
+                                            <span class="badge badge-{{ car.currentAssignment.statusAssignment == 'completed' ? 'success' : 
+                                                                        (car.currentAssignment.statusAssignment == 'in-progress' ? 'warning' : 'info') }}">
+                                                {{ car.currentAssignment.statusAssignment }}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge badge-secondary">No active assignment</span>
+                                        {% endif %}
+                                    </p>
+                                    
+                                    {% if car.currentAssignment %}
+                                        <p><strong>Assigned Mechanics:</strong></p>
+                                        <ul class="list-unstyled">
+                                            {% for mechanic in car.currentAssignment.mechanics %}
+                                                <li>{{ mechanic.nameMechanic }} - {{ mechanic.specialityMechanic }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        <p><strong>Description:</strong> {{ car.currentAssignment.descriptionAssignment }}</p>
+                                        <p><strong>Date:</strong> {{ car.currentAssignment.dateAssignment|date('Y-m-d') }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %} 

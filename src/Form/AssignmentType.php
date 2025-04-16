@@ -16,6 +16,10 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Type;
+use Symfony\Component\Validator\Constraints\Choice;
 
 class AssignmentType extends AbstractType
 {
@@ -30,43 +34,74 @@ class AssignmentType extends AbstractType
     {
         $builder
             ->add('descriptionAssignment', TextareaType::class, [
-                'attr' => ['rows' => 5],
                 'label' => 'Description',
-                'required' => true
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Enter assignment description',
+                    'rows' => 4
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'Description is required']),
+                    new Length([
+                        'min' => 10,
+                        'max' => 1000,
+                        'minMessage' => 'Description must be at least {{ limit }} characters long',
+                        'maxMessage' => 'Description cannot be longer than {{ limit }} characters'
+                    ])
+                ]
             ])
             ->add('statusAssignment', ChoiceType::class, [
-                'choices' => [
-                    'Pending' => 'Pending',
-                    'In Progress' => 'In Progress',
-                    'Completed' => 'Completed'
-                ],
                 'label' => 'Status',
-                'required' => true
+                'choices' => [
+                    'Pending' => 'pending',
+                    'In Progress' => 'in_progress',
+                    'Completed' => 'completed'
+                ],
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'Status is required']),
+                    new Choice([
+                        'choices' => ['pending', 'in_progress', 'completed'],
+                        'message' => 'Please select a valid status'
+                    ])
+                ]
             ])
             ->add('dateAssignment', DateTimeType::class, [
                 'widget' => 'single_text',
                 'html5' => true,
                 'label' => 'Date',
-                'required' => true
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'Date is required']),
+                    new Type(['type' => '\DateTime', 'message' => 'Please enter a valid date'])
+                ]
             ])
             ->add('car', EntityType::class, [
+                'label' => 'Car',
                 'class' => Car::class,
                 'choice_label' => function(Car $car) {
                     return $car->getBrandCar() . ' ' . $car->getModelCar();
                 },
-                'placeholder' => 'Select a car',
-                'label' => 'Car',
-                'required' => true
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'Please select a car'])
+                ]
             ])
             ->add('mechanics', EntityType::class, [
+                'label' => 'Mechanics',
                 'class' => Mechanic::class,
                 'choice_label' => 'nameMechanic',
                 'multiple' => true,
-                'expanded' => false,
-                'placeholder' => 'Select mechanics',
-                'label' => 'Mechanics',
-                'mapped' => false,
-                'required' => true
+                'expanded' => true,
+                'attr' => [
+                    'class' => 'form-control'
+                ]
             ]);
 
         $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {

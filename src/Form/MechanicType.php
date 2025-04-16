@@ -6,26 +6,91 @@ use App\Entity\Mechanic;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType; // Add this
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Type;
+use Symfony\Component\Validator\Constraints\PositiveOrZero;
+use Symfony\Component\Form\Extension\Core\Type\File;
 
 class MechanicType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nameMechanic')
-            ->add('specialityMechanic')
-            /*->add('imgMechanic', FileType::class, [  // Changed to FileType
-                'label' => 'Profile Image',
-                'mapped' => false,  // Prevents Symfony from trying to map to the entity property directly
-                'required' => false, // Make optional if needed
+            ->add('nameMechanic', TextType::class, [
+                'label' => 'Name',
                 'attr' => [
-                    'accept' => 'image/*'  // Restrict to image files
+                    'class' => 'form-control',
+                    'placeholder' => 'Enter mechanic name'
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'Mechanic name is required']),
+                    new Length([
+                        'min' => 2,
+                        'max' => 255,
+                        'minMessage' => 'Mechanic name must be at least {{ limit }} characters long',
+                        'maxMessage' => 'Mechanic name cannot be longer than {{ limit }} characters'
+                    ])
                 ]
             ])
-                */
-            ->add('emailMechanic')
-            ->add('carsRepaired')
+            ->add('specialityMechanic', TextType::class, [
+                'label' => 'Specialty',
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Enter mechanic specialty'
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'Specialty is required']),
+                    new Length([
+                        'min' => 2,
+                        'max' => 255,
+                        'minMessage' => 'Specialty must be at least {{ limit }} characters long',
+                        'maxMessage' => 'Specialty cannot be longer than {{ limit }} characters'
+                    ])
+                ]
+            ])
+            ->add('emailMechanic', EmailType::class, [
+                'label' => 'Email',
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Enter mechanic email'
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'Email is required']),
+                    new Email(['message' => 'The email "{{ value }}" is not a valid email'])
+                ]
+            ])
+            ->add('imgMechanic', FileType::class, [
+                'label' => 'Profile Image',
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif'],
+                        'mimeTypesMessage' => 'Please upload a valid image (JPEG, PNG, GIF)'
+                    ])
+                ]
+            ])
+            ->add('carsRepaired', IntegerType::class, [
+                'label' => 'Cars Repaired',
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Enter number of cars repaired'
+                ],
+                'constraints' => [
+                    new Type(['type' => 'integer', 'message' => 'Cars repaired must be a number']),
+                    new PositiveOrZero(['message' => 'Cars repaired cannot be negative'])
+                ]
+            ])
         ;
     }
 
