@@ -1,0 +1,684 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css?v={{ date().timestamp }}">
+    <link href="https://fonts.googleapis.com/css2?family=Electrolize&family=Montserrat:wght@300;400;500;600;700&display=swap&v={{ date().timestamp }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        :root {
+            --primary-blue: #132EC2;
+            --dark-blue: #0A1F44;
+            --light-blue: #3A4FE4;
+            --white: #FFFFFF;
+            --light-gray: #F5F7FA;
+            --accent-orange: #FF6B35;
+            --electric-blue: #00C8FF;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark-blue) 0%, #001a33 100%);
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--white);
+            background-image: url('https://images.unsplash.com/photo-1593941707882-a5bbbfd8b57a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: multiply;
+        }
+        
+        .ev-edit-container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(10, 31, 68, 0.9);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            display: flex;
+            min-height: 650px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .ev-form-side {
+            flex: 1;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .ev-image-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: rgba(10, 31, 68, 0.8);
+            position: relative;
+        }
+        
+        .ev-profile-pic-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 30px;
+        }
+        
+        .ev-profile-pic {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--electric-blue);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .ev-profile-upload {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: var(--primary-blue);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .ev-profile-upload:hover {
+            background: var(--light-blue);
+            transform: scale(1.1);
+        }
+        
+        .ev-profile-upload i {
+            color: var(--white);
+            font-size: 18px;
+        }
+        
+        #profile_picture_upload {
+            display: none;
+        }
+        
+        .ev-form-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .ev-form-header h2 {
+            font-family: 'Electrolize', sans-serif;
+            font-size: 32px;
+            color: var(--white);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .ev-form-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--electric-blue);
+            border-radius: 3px;
+        }
+        
+        .ev-form-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 15px;
+            margin-top: 10px;
+        }
+        
+        .ev-form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .ev-form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+        
+        .ev-form-control {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: var(--white);
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+            font-size: 15px;
+        }
+        
+        .ev-form-control::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .ev-form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 3px rgba(19, 46, 194, 0.2);
+        }
+        
+        .ev-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 100%);
+            border: none;
+            border-radius: 8px;
+            color: var(--white);
+            font-family: 'Electrolize', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 25px;
+            box-shadow: 0 4px 15px rgba(19, 46, 194, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ev-btn:hover {
+            background: linear-gradient(135deg, var(--light-blue) 0%, var(--primary-blue) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(19, 46, 194, 0.4);
+        }
+        
+        .ev-btn:active {
+            transform: translateY(0);
+        }
+        
+        .ev-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                      rgba(255,255,255,0) 0%, 
+                      rgba(255,255,255,0.2) 50%, 
+                      rgba(255,255,255,0) 100%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        
+        .ev-btn:hover::after {
+            transform: translateX(100%);
+        }
+        
+        .ev-form-footer {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .ev-form-footer a {
+            color: var(--electric-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .ev-form-footer a:hover {
+            color: var(--white);
+            text-decoration: underline;
+        }
+        
+        .ev-feature-text {
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .ev-feature-text:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .ev-feature-text i {
+            margin-right: 15px;
+            color: var(--electric-blue);
+            font-size: 20px;
+            min-width: 25px;
+            text-align: center;
+        }
+        
+        .ev-logo {
+            max-width: 220px;
+            height: auto;
+            margin: 0 auto 25px;
+            display: block;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+        }
+        
+        .default-profile-pic {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 50px;
+            border: 3px solid var(--electric-blue);
+        }
+        
+        #deleteAccountBtn {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid var(--accent-orange);
+            border-radius: 8px;
+            color: var(--accent-orange);
+            font-family: 'Electrolize', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #deleteAccountBtn i {
+            margin-right: 10px;
+        }
+        
+        #deleteAccountBtn:hover {
+            background: rgba(255, 107, 53, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.2);
+        }
+        
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        
+        .col-md-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+            padding: 0 10px;
+        }
+        
+        .form-errors:not(:has(li)) {
+            display: none;
+        }
+        
+        .form-errors {
+            color: var(--accent-orange);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            padding: 10px 15px;
+            background: rgba(255, 107, 53, 0.1);
+            border-left: 3px solid var(--accent-orange);
+            border-radius: 0 6px 6px 0;
+            animation: fadeIn 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-errors ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .form-errors ul:before {
+            content: "⚠";
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Floating label effect */
+        .ev-form-group.focused label {
+            color: var(--electric-blue);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .ev-edit-container {
+                flex-direction: column;
+                max-width: 95%;
+                min-height: auto;
+            }
+            
+            .ev-form-side {
+                padding: 40px 30px;
+            }
+            
+            .ev-image-side {
+                order: -1;
+                padding: 30px;
+            }
+            
+            .col-md-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+
+
+          /* Custom dropdown options styling */
+select.ev-form-control option {
+    background-color: var(--dark-blue);
+    color: var(--white);
+    padding: 10px 15px;
+}
+
+/* For modern browsers */
+select.ev-form-control:focus option:checked {
+    background: var(--primary-blue);
+    color: white;
+}
+
+/* For Firefox */
+select.ev-form-control option:checked {
+    background: var(--primary-blue) linear-gradient(0deg, var(--primary-blue) 0%, var(--primary-blue) 100%);
+    color: white;
+}
+
+/* Dropdown list styling for different browsers */
+select.ev-form-control option:hover {
+    background-color: var(--light-blue);
+}
+
+/* Fix for Edge/IE */
+select.ev-form-control::-ms-value {
+    background: transparent;
+    color: var(--white);
+}
+
+select.ev-form-control::-ms-expand {
+    display: none;
+}
+
+/* For Chrome/Safari - style the dropdown list */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    select.ev-form-control {
+        color: var(--white);
+    }
+    select.ev-form-control option {
+        background-color: var(--dark-blue);
+    }
+}
+    </style>
+{% endblock %}
+
+{% form_theme form _self %}
+
+{% block form_errors %}
+    {% if errors|length > 0 %}
+        <div class="form-errors">
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error.message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+<div class="ev-edit-container">
+    <div class="ev-form-side">
+        <div class="ev-form-header">
+            <img src="{{ asset('back/img/img.png') }}" alt="Wattway" class="ev-logo">
+            <h2>Edit Your Profile</h2>
+            <p>Update your personal information</p>
+        </div>
+
+        {{ form_start(form, {
+            'attr': {
+                'enctype': 'multipart/form-data',
+                'data-turbo': 'false',
+                'class': 'ev-registration-form',
+                'novalidate': 'novalidate'
+            }
+        }) }}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="ev-form-group {% if form.firstNameUser.vars.errors|length %}is-invalid{% endif %}">
+                        {{ form_label(form.firstNameUser) }}
+                        {{ form_widget(form.firstNameUser, {'attr': {'class': 'ev-form-control'}}) }}
+                        {{ form_errors(form.firstNameUser) }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="ev-form-group {% if form.lastNameUser.vars.errors|length %}is-invalid{% endif %}">
+                        {{ form_label(form.lastNameUser) }}
+                        {{ form_widget(form.lastNameUser, {'attr': {'class': 'ev-form-control'}}) }}
+                        {{ form_errors(form.lastNameUser) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="ev-form-group {% if form.emailUser.vars.errors|length %}is-invalid{% endif %}">
+                {{ form_label(form.emailUser) }}
+                {{ form_widget(form.emailUser, {'attr': {'class': 'ev-form-control'}}) }}
+                {{ form_errors(form.emailUser) }}
+            </div>
+
+            <div class="ev-form-group {% if form.phoneNumber.vars.errors|length %}is-invalid{% endif %}">
+                {{ form_label(form.phoneNumber) }}
+                {{ form_widget(form.phoneNumber, {'attr': {'class': 'ev-form-control'}}) }}
+                {{ form_errors(form.phoneNumber) }}
+            </div>
+
+            <div class="ev-form-group {% if form.address.vars.errors|length %}is-invalid{% endif %}">
+                {{ form_label(form.address) }}
+                {{ form_widget(form.address, {'attr': {'class': 'ev-form-control', 'rows': 4}}) }}
+                {{ form_errors(form.address) }}
+            </div>
+
+            <div class="ev-form-group {% if form.paymentDetails.vars.errors|length %}is-invalid{% endif %}">
+                {{ form_label(form.paymentDetails) }}
+                {{ form_widget(form.paymentDetails, {'attr': {'class': 'ev-form-control'}}) }}
+                {{ form_errors(form.paymentDetails) }}
+            </div>
+
+            <div class="ev-form-group {% if form.profilePicture.vars.errors|length %}is-invalid{% endif %}">
+                {{ form_label(form.profilePicture) }}
+                {{ form_widget(form.profilePicture, {'attr': {'id': 'profile_picture_upload'}}) }}
+                {{ form_errors(form.profilePicture) }}
+            </div>
+
+            <button type="submit" class="ev-btn">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+            
+            <div class="ev-form-footer">
+                <a href="{{ path('Front') }}" class="text-link">
+                    <i class="fas fa-arrow-left"></i> Back to Home 
+                </a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+
+    <div class="ev-image-side">
+        <div class="ev-profile-pic-container">
+            {% if app.user.profilePicture %}
+                <img src="{{ asset(app.user.profilePicture) }}" class="ev-profile-pic" id="profile_pic_preview" alt="Profile Picture">
+            {% else %}
+                <div class="default-profile-pic">
+                    <i class="fas fa-user"></i>
+                </div>
+            {% endif %}
+            <label for="profile_picture_upload" class="ev-profile-upload">
+                <i class="fas fa-camera"></i>
+            </label>
+        </div>
+
+        <div class="ev-feature-text"><i class="fas fa-user-shield"></i> Your information is secure</div>
+        <div class="ev-feature-text"><i class="fas fa-credit-card"></i> Update payment methods</div>
+        <div class="ev-feature-text"><i class="fas fa-map-marker-alt"></i> Manage your locations</div>
+        <div class="ev-feature-text"><i class="fas fa-bell"></i> Set notification preferences</div>
+        
+        <button id="deleteAccountBtn" class="btn btn-danger">
+            <i class="fas fa-trash-alt"></i> Delete Account
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enhanced form interactions
+            const formGroups = document.querySelectorAll('.ev-form-group');
+            
+            formGroups.forEach(group => {
+                const input = group.querySelector('.ev-form-control');
+                const label = group.querySelector('label');
+                
+                if (input && label) {
+                    // Add focus class to parent group
+                    input.addEventListener('focus', function() {
+                        group.classList.add('focused');
+                    });
+                    
+                    input.addEventListener('blur', function() {
+                        if (!this.value) {
+                            group.classList.remove('focused');
+                        }
+                    });
+                    
+                    // Initialize focused state if input has value
+                    if (input.value) {
+                        group.classList.add('focused');
+                    }
+                }
+            });
+            
+            // Profile picture preview
+            const profilePicUpload = document.getElementById('profile_picture_upload');
+            if (profilePicUpload) {
+                profilePicUpload.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            let preview = document.getElementById('profile_pic_preview');
+                            if (!preview) {
+                                const container = document.querySelector('.ev-profile-pic-container');
+                                container.innerHTML = '';
+                                preview = document.createElement('img');
+                                preview.id = 'profile_pic_preview';
+                                preview.className = 'ev-profile-pic';
+                                preview.alt = 'Profile Picture';
+                                container.insertBefore(preview, document.querySelector('.ev-profile-upload'));
+                            }
+                            preview.src = e.target.result;
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+            
+            // Delete account button
+            const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+            if (deleteAccountBtn) {
+                deleteAccountBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#132EC2',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!',
+                        background: '#0A1F44',
+                        color: '#FFFFFF'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch('{{ path('app_delete_account') }}', {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                },
+                                credentials: 'include'
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    Swal.fire({
+                                        title: 'Deleted!',
+                                        text: 'Your account has been deleted.',
+                                        icon: 'success',
+                                        background: '#0A1F44',
+                                        color: '#FFFFFF'
+                                    }).then(() => {
+                                        window.location.href = '{{ path('Front') }}';
+                                    });
+                                } else {
+                                    throw new Error('Deletion failed');
+                                }
+                            })
+                            .catch(error => {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'There was an error deleting your account.',
+                                    icon: 'error',
+                                    background: '#0A1F44',
+                                    color: '#FFFFFF'
+                                });
+                            });
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,839 @@
+
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <!-- meta data -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- font-family -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Rufina:400,700" rel="stylesheet">
+    
+    <!-- title of site -->
+    <title>WattWay</title>
+
+    <!-- For favicon png -->
+    <link rel="shortcut icon" type="image/icon" href="{{ asset('front/assets/logo/imgB.png') }}"/>
+   
+    <!-- CSS files -->
+    <link rel="stylesheet" href="{{ asset('front/assets/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/assets/css/linearicons.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/assets/css/flaticon.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/assets/css/animate.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/assets/css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/assets/css/owl.theme.default.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/assets/css/bootsnav.css') }}">    
+    <link rel="stylesheet" href="{{ asset('front/assets/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/assets/css/responsive.css') }}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- HTML5 shim and Respond.js -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+    
+<body>
+    <!--[if lte IE 9]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+    <![endif]-->
+ {% block header %}
+<!-- welcome-hero start -->
+<section id="home" class="welcome-hero">
+    <!-- top-area Start -->
+    <div class="top-area">
+        <div class="header-area">
+            <!-- Start Navigation -->
+            <nav class="navbar navbar-default bootsnav navbar-sticky navbar-scrollspy" data-minus-value-desktop="70" data-minus-value-mobile="55" data-speed="1000">
+                <div class="container">
+                    <!-- Start Header Navigation -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <img src="{{asset('back/img/img.png')}}" alt="Wattway" width="200" height="150">
+                    </div><!--/.navbar-header-->
+                    <!-- End Header Navigation -->
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
+                        <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
+                            <li class="scroll active"><a href="#home">Home</a></li>
+                            <li class="scroll"><a href="#service">Browse catalogue</a></li>
+                            <li class="scroll"><a href="#Rent">Rent a Car</a></li>
+                            <li class="scroll"><a href="#order">Buy auto parts</a></li>
+                            <li class="scroll"><a href="#mechanic">Meet our team</a></li>
+                            <li class="scroll"><a href="#new-cars">Submission</a></li>
+                            <li class="scroll"><a href="#clients-say">Feedbacks</a></li>
+                            
+                            {% if app.user %}
+                                <li class="dropdown">
+    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" style="padding-top: 0; padding-bottom: 0;">
+        <span class="nav-username">{{ app.user.firstNameUser }} {{ app.user.lastNameUser }}</span>
+        <div class="header-profile-container">
+            {% if app.user.profilePicture %}
+                <img src="{{ asset(app.user.profilePicture) }}" class="header-profile-pic" alt="Profile Picture">
+            {% else %}
+                <div class="header-default-profile">
+                    <i class="fa fa-user"></i>
+                </div>
+            {% endif %}
+        </div>
+    </a>
+    <ul class="dropdown-menu">
+        <li><a href="{{ path('app_profile_edit') }}"><i class="fa fa-edit"></i> Edit Profile</a></li>
+        <li><a href="{{ path('app_logout') }}"><i class="fa fa-sign-out"></i> Logout</a></li>
+    </ul>
+</li>
+                            {% else %}
+                                <li><a href="{{ path('app_login') }}"><i class="fa fa-sign-in"></i> Login</a></li>
+                                <li><a href="{{ path('app_register') }}"><i class="fa fa-user-plus"></i> Register</a></li>
+                            {% endif %}
+                        </ul><!--/.nav -->
+                    </div><!-- /.navbar-collapse -->
+                </div><!--/.container-->
+            </nav><!--/nav-->
+            <!-- End Navigation -->
+        </div><!--/.header-area-->
+        <div class="clearfix"></div>
+    </div><!-- /.top-area-->
+    <!-- top-area End -->
+
+    <div class="container">
+        <div class="welcome-hero-txt">
+            <h2>Get Your Dream Electric Car at the Best Price!</h2>
+            <p>
+                Looking for an electric vehicle? Whether you need to buy, rent, or repair an EV, we've got you covered with reliable service and great deals.
+                Drive the future—sustainable, efficient, and affordable! ⚡🚗
+            </p>
+            <button class="welcome-btn" onclick="window.location.href='#'">Contact us</button>
+        </div>
+    </div>
+</section><!--/.welcome-hero-->
+
+<style>
+    /* Exact match for nav items */
+    .navbar-nav > li > a {
+        padding: 22px 15px !important; /* Standard height for all nav items */
+        line-height: 26px !important;
+    }
+
+    /* Profile section adjustments */
+    .dropdown-toggle.nav-link {
+        display: flex !important;
+        align-items: center !important;
+        height: 70px !important; /* Match navbar height exactly */
+    }
+
+    .nav-username {
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        color: white !important;
+        padding: 0 5px 0 0 !important;
+        line-height: 1 !important;
+    }
+
+    .header-profile-container {
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .header-profile-pic {
+        width: 26px !important; /* Slightly smaller for better proportion */
+        height: 26px !important;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .header-default-profile {
+        width: 26px !important;
+        height: 26px !important;
+        border-radius: 50%;
+        background-color: rgba(255,255,255,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 768px) {
+        .navbar-nav > li > a {
+            padding: 15px !important;
+            line-height: 20px !important;
+        }
+        
+        .dropdown-toggle.nav-link {
+            height: auto !important;
+        }
+        
+        .header-profile-pic,
+        .header-default-profile {
+            width: 22px !important;
+            height: 22px !important;
+        }
+    }
+</style>
+{% endblock %}
+<!-- ************************************************************************************************************* -->
+
+        <!-- Warehouse Management -->
+
+		<!-- Browse catalogue -->
+		{% block catalogueBrowsing %}
+		<section id="service" class="service">
+			<div class="container">
+				<div class="service-content">
+					<h2>Browse cars</h2>
+
+
+					</div>
+				</div>
+			</div><!--/.container-->
+
+		</section><!--/.service-->
+		{% endblock %}
+
+
+		<!-- Rent a Car -->
+		{% block carRenting %}
+		<section id="Rent" class="service">
+			<div class="container">
+				<div class="service-content">
+					<h2>rent car</h2>
+
+
+					</div>
+				</div>
+			</div><!--/.container-->
+
+		</section><!--/.service-->
+		{% endblock %}
+
+<!-- ************************************************************************************************************* -->
+
+            <!-- Order Management  -->
+		{% block order %}
+		<section id="order" class="order">
+			<div class="container">
+				<div class="new-cars-content">	
+					<h2>Order</h2>
+			
+				</div>
+			</div>
+		</section>
+		{% endblock %}
+
+
+<!-- ************************************************************************************************************* -->
+
+		<!-- Mechanics -->
+		{% block mechanics %}
+		<section id="mechanic" class="mechanic">
+			<div class="container">
+				<div class="new-cars-content">
+				    <h2>Mechanics</h2>
+				</div>
+			</div>
+		</section>
+		{% endblock %}	
+
+
+<!-- ************************************************************************************************************* -->
+
+
+		<!-- Submission -->
+		{% block submission %}
+		<section id="new-cars" class="new-cars">
+			<div class="container">
+			 	
+            		<h2>Submit Your Request</h2>
+			</div><!--/.container-->
+
+		</section>
+		{% endblock %}
+<!-- ************************************************************************************************************* -->
+
+
+
+	
+		<!-- FeedBack -->
+{% block feedback %}
+<section id="clients-say" class="clients-say">
+    <div class="container">
+        <div class="section-header" style="text-align: center;">
+            <h2>What Our Clients Say</h2>
+            <div style="margin-top: 20px;">
+                <button id="rateUsBtn" class="rate-us-button">
+                    <i class="fas fa-star"></i> Rate Us
+                </button>
+            </div>
+        </div>
+
+        {# Feedback Dialog #}
+        <div id="feedbackDialog" class="feedback-dialog">
+            <div class="dialog-content">
+                {% if app.user %}
+                    <div class="dialog-header">
+                        <h3>Share Your Experience</h3>
+                        <button class="close-dialog">&times;</button>
+                    </div>
+                    <form id="feedbackForm" action="{{ path('submit_feedback') }}" method="post">
+                        <div class="form-group">
+                            <label>How would you rate us?</label>
+                            <div class="star-rating">
+                                {% for i in 1..5 %}
+                                    <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}"/>
+                                    <label for="star{{ i }}" title="{{ i }} stars">
+                                        <i class="fas fa-star"></i>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Your Feedback</label>
+                            <textarea name="content" class="form-control" rows="4" 
+                                      placeholder="Tell us about your experience..." required></textarea>
+                        </div>
+                        <input type="hidden" name="_token" value="{{ csrf_token('feedback') }}">
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paper-plane"></i> Submit Feedback
+                        </button>
+                    </form>
+                {% else %}
+                    <div class="login-prompt">
+                        <i class="fas fa-lock" style="font-size: 2rem; color: #132EC2;"></i>
+                        <h3>Please login to leave feedback</h3>
+                        <a href="{{ path('app_login') }}" class="login-btn">
+                            <i class="fas fa-sign-in-alt"></i> Login Now
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="owl-carousel testimonial-carousel">
+                {% for feedback in feedbacks %}
+                <div class="col-sm-3 col-xs-12">
+                    <div class="single-testimonial-box" style="position: relative;">
+                        {# Delete button - only shows for feedback owner #}
+                        {% if app.user and feedback.user and app.user.getUserIdentifier() == feedback.user.getUserIdentifier() %}
+                <form method="post" action="{{ path('feedback_delete', {'id': feedback.idFeedback}) }}" 
+                      class="delete-feedback-form"
+                      style="position: absolute; top: 10px; right: 10px; z-index: 10;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete-feedback-' ~ feedback.idFeedback) }}">
+                    <button type="button" class="btn btn-link p-0 delete-feedback-btn"
+                            style="color: #dc3545; opacity: 0.7; transition: opacity 0.3s;"
+                            onmouseover="this.style.opacity='1'" 
+                            onmouseout="this.style.opacity='0.7'">
+                        <i class="fas fa-trash-alt" style="font-size: 14px;"></i>
+                    </button>
+                </form>
+                {% endif %}
+
+                        <div class="testimonial-description">
+                            <div class="testimonial-info">
+                                <div class="testimonial-img">
+                                    {% if feedback.user.profilePicture %}
+                                        <img src="{{ asset(feedback.user.profilePicture) }}" 
+                                             alt="{{ feedback.user.firstNameUser }}"
+                                             onerror="this.onerror=null;this.src='{{ asset('default.jpg') }}'">
+                                    {% else %}
+                                        <img src="{{ asset('default.jpg') }}" 
+                                             alt="Default profile">
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="testimonial-comment">
+                                <p>{{ feedback.content }}</p>
+                                <div class="rating">
+                                    {% for i in 1..5 %}
+                                        <span class="star {{ i <= feedback.rating ? 'filled' }}">★</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="testimonial-person">
+                                <h2>{{ feedback.user.firstNameUser }} {{ feedback.user.lastNameUser }}</h2>
+                                <h4>{{ feedback.date|date('M d, Y') }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<div id="deleteConfirmationModal" class="modal-overlay" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete your feedback? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-btn cancel-btn">Cancel</button>
+                <button type="button" class="modal-btn confirm-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    /* Rate Us Button */
+    .rate-us-button {
+        background-color: #132EC2;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 30px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 8px rgba(19, 46, 194, 0.2);
+    }
+    .rate-us-button:hover {
+        background-color: #0F2499;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(19, 46, 194, 0.3);
+    }
+    .rate-us-button i {
+        font-size: 1.1rem;
+    }
+
+    /* Feedback Dialog */
+    .feedback-dialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+    .feedback-dialog.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    .dialog-content {
+        background: white;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        padding: 25px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        transform: translateY(20px);
+        transition: transform 0.3s ease;
+    }
+    .feedback-dialog.active .dialog-content {
+        transform: translateY(0);
+    }
+    .dialog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .dialog-header h3 {
+        color: #132EC2;
+        margin: 0;
+    }
+    .close-dialog {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #666;
+        transition: color 0.2s;
+    }
+    .close-dialog:hover {
+        color: #132EC2;
+    }
+
+    /* Star Rating - Updated for yellow/black only */
+    .star-rating {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+        gap: 5px;
+    }
+    .star-rating input {
+        display: none;
+    }
+    .star-rating label {
+        color: #000; /* Black unfilled stars */
+        font-size: 2rem;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    /* Fill all stars up to the selected one */
+    .star-rating input:checked ~ label,
+    .star-rating:not(:hover) input:checked ~ label,
+    .star-rating:hover label:hover,
+    .star-rating:hover label:hover ~ label {
+        color: #FFD700; /* Gold color for selected/hovered stars */
+    }
+    /* Keep stars black when not selected/hovered */
+    .star-rating label {
+        color: #000;
+    }
+
+    /* Form Elements */
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #333;
+    }
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        transition: border 0.3s;
+    }
+    .form-control:focus {
+        border-color: #132EC2;
+        outline: none;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+        background-color: #132EC2;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    .submit-btn:hover {
+        background-color: #0F2499;
+        transform: translateY(-2px);
+    }
+
+    /* Login Prompt */
+    .login-prompt {
+        text-align: center;
+        padding: 20px;
+    }
+    .login-prompt h3 {
+        color: #132EC2;
+        margin: 15px 0;
+    }
+    .login-btn {
+        background-color: #132EC2;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 30px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+    .login-btn:hover {
+        background-color: #0F2499;
+        transform: translateY(-2px);
+    }
+
+
+  
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const rateBtn = document.getElementById('rateUsBtn');
+    const dialog = document.getElementById('feedbackDialog');
+    const closeBtn = document.querySelector('.close-dialog');
+    
+    // Toggle dialog
+    rateBtn.addEventListener('click', () => {
+        dialog.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+    
+    // Close dialog
+    closeBtn.addEventListener('click', () => {
+        dialog.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+    
+    // Close when clicking outside
+    dialog.addEventListener('click', (e) => {
+        if (e.target === dialog) {
+            dialog.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Star rating interaction
+    const stars = document.querySelectorAll('.star-rating input');
+    stars.forEach(star => {
+        star.addEventListener('change', function() {
+            // This ensures all stars up to the selected one stay yellow
+            const rating = this.value;
+            stars.forEach((s, index) => {
+                const label = s.nextElementSibling;
+                label.style.color = index < rating ? '#FFD700' : '#000';
+            });
+        });
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Modal functionality
+    const modal = document.getElementById('deleteConfirmationModal');
+    const deleteButtons = document.querySelectorAll('.delete-feedback-btn');
+    let currentForm = null;
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            currentForm = this.closest('form');
+            modal.style.display = 'flex';
+        });
+    });
+
+    document.querySelector('.close-modal').addEventListener('click', closeModal);
+    document.querySelector('.cancel-btn').addEventListener('click', closeModal);
+    document.querySelector('.confirm-btn').addEventListener('click', function() {
+        if (currentForm) {
+            currentForm.submit();
+        }
+        closeModal();
+    });
+
+    function closeModal() {
+        modal.style.display = 'none';
+        currentForm = null;
+    }
+
+    // Close modal when clicking outside
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+});
+</script>
+{% endblock %}
+
+
+
+{% block styles %}
+<style>
+.rating {
+    unicode-bidi: bidi-override;
+    direction: ltr;
+    text-align: center;
+    margin-top: 10px;
+}
+.star {
+    font-size: 20px;
+    color: #ddd;
+    display: inline-block;
+}
+.star.filled {
+    color: #ffcc00;
+}
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-dialog {
+    width: 100%;
+    max-width: 400px;
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.25rem;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.modal-body {
+    padding: 20px;
+    color: #495057;
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.cancel-btn {
+    background: #f8f9fa;
+    border: 1px solid #6c757d;
+    color: #6c757d;
+}
+
+.cancel-btn:hover {
+    background: #e2e6ea;
+}
+
+.confirm-btn {
+    background: #dc3545;
+    border: 1px solid #dc3545;
+    color: white;
+}
+
+.confirm-btn:hover {
+    background: #c82333;
+    border-color: #bd2130;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+</style>
+{% endblock %}
+
+<!-- ************************************************************************************************************* -->
+
+		<!-- footer start -->
+		{% block footer %}
+		<footer id="contact" class="contact">
+			<div class="container">
+				<div class="footer-content">
+					<!-- Left Column -->
+					<div class="row">
+						<div class="col-md-6">
+							<div class="footer-brand">
+								<h2>WATTWAY</h2>
+								<p class="company-description">
+									Your trusted partner in electric vehicle solutions. We provide top-quality electric cars, maintenance 
+									services, and expert guidance for sustainable transportation.
+								</p>
+								<p class="contact-email">contact@wattway.com</p>
+							</div>
+						</div>
+
+						<!-- Right Column -->
+						<div class="col-md-6">
+							<div class="business-hours-section">
+								<h3>Business Hours</h3>
+								<ul class="business-hours-list">
+									<li>Monday - Friday: 8:00 AM - 6:00 PM</li>
+									<li>Saturday: 9:00 AM - 4:00 PM</li>
+									<li>Sunday: Closed</li>
+									<li class="emergency-support">24/7 Emergency Support Available</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Footer Bottom -->
+				<div class="footer-bottom">
+					<div class="row">
+						<div class="col-md-6">
+							<p class="copyright">© Copyright. Designed and Developed by WattWay.</p>
+						</div>
+						<div class="col-md-6">
+							<div class="social-links">
+								<a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+								<a href="#" aria-label="Instagram"><i class="fa fa-instagram"></i></a>
+								<a href="#" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</footer>
+		{% endblock %}
+
+		<!-- JavaScript files -->
+		{% block javascript %}
+		<script src="{{ asset('front/assets/js/jquery.js') }}"></script>
+        <script src="{{ asset('front/assets/js/bootstrap.min.js') }}"></script>
+		<script src="{{ asset('front/assets/js/bootsnav.js') }}"></script>
+		<script src="{{ asset('front/assets/js/owl.carousel.min.js') }}"></script>
+		<script src="{{ asset('front/assets/js/custom.js') }}"></script>
+
+		<!-- External scripts remain unchanged -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+		{% endblock %}
+	</body>
+</html>
