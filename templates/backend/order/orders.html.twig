@@ -193,52 +193,67 @@
                 <i class="fas fa-chevron-right fa-2x"></i>
             </div>
             <div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editOrderModalLabel">Edit Order #<span id="editOrderId"></span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editOrderForm">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="editSupplier" class="form-label">Supplier</label>
-                            <input type="text" class="form-control" id="editSupplier" required>
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editOrderModalLabel">Edit Order #<span id="editOrderId"></span></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="col-md-6">
-                            <label for="editDate" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="editDate" required>
+                        <div class="modal-body">
+                            <form id="editOrderForm">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="editSupplier" class="form-label">Supplier</label>
+                                        <input type="text" class="form-control" id="editSupplier" required
+                                               maxlength="50"
+                                               pattern="^[a-zA-Z0-9\s\-_,\.;:()]+$"
+                                               title="Only letters, numbers, and basic punctuation allowed.">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="editDate" class="form-label">Date</label>
+                                        <input type="date" class="form-control" id="editDate" required
+                                               max="{{ "now"|date("Y-m-d") }}"
+                                               title="Date cannot be in the future.">
+                                    </div>
+                                </div>
+                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="editStatus" class="form-label">Status</label>
+                                        <select class="form-select" id="editStatus" required>
+                                            <option value="" disabled selected>Select status</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Processing">Processing</option>
+                                            <option value="Shipped">Shipped</option>
+                                            <option value="Delivered">Delivered</option>
+                                            <option value="Cancelled">Cancelled</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="editTotal" class="form-label">Total Amount ($)</label>
+                                        <input type="number" step="0.01" class="form-control" id="editTotal" required
+                                               min="0" max="100000"
+                                               title="Enter a valid total between $0 and $100,000.">
+                                    </div>
+                                </div>
+                
+                                <div class="mb-3">
+                                    <label for="editAddress" class="form-label">Supplier Address</label>
+                                    <textarea class="form-control" id="editAddress" rows="3" required
+                                              maxlength="200"
+                                              placeholder="Enter supplier address..."></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" id="saveOrderChanges">Save changes</button>
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="editStatus" class="form-label">Status</label>
-                            <select class="form-select" id="editStatus" required>
-                                <option value="Pending">Pending</option>
-                                <option value="Processing">Processing</option>
-                                <option value="Shipped">Shipped</option>
-                                <option value="Delivered">Delivered</option>
-                                <option value="Cancelled">Cancelled</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="editTotal" class="form-label">Total Amount</label>
-                            <input type="number" step="0.01" class="form-control" id="editTotal" required>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editAddress" class="form-label">Supplier Address</label>
-                        <textarea class="form-control" id="editAddress" rows="3" required></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="saveOrderChanges">Save changes</button>
-            </div>
-        </div>
-    </div>
+                </div>
+                
 </div>
         </div>
     </div>
