@@ -1,0 +1,316 @@
+/* Floating Container (Initially Hidden) */
+#floatingContainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: rgba(255, 255, 255, 0.95);
+    width: 400px;
+    padding: 20px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    max-width: 600px; 
+    max-height: 80%;   
+    overflow-y: auto;  
+}
+
+/* Show Modal */
+#floatingContainer.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Background Overlay */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+}
+
+/* Show Overlay */
+#overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Prevent Scrolling When Modal is Open */
+body.modal-open {
+    overflow: hidden;
+}
+/* Form Container */
+.modal-content {
+    position: relative;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Form Styles */
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Input Fields */
+.modal-content input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+/* Focus Effect on Input */
+.modal-content input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Submit Button (Blue) */
+.modal-content button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+/* Button Hover Effect */
+.modal-content button:hover {
+    background-color: #0056b3;
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 22px;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.3s;
+}
+
+.close-btn:hover {
+    color: #000;
+}
+thead{
+    background-color: #4A79D9;
+    color: white;
+    font-weight: bold;
+}
+#dataTable td {
+    vertical-align: middle;
+}
+#dataTable {
+    width: 80%; /* Adjust the width to make it smaller */
+    margin: 0 auto; /* Center the table */
+    font-size: 14px;
+    border: 1px solid #ddd; /* Add a border around the table */
+    border-collapse: collapse; 
+    margin-bottom: 20px;
+}
+
+#dataTable th, #dataTable td {
+    padding: 8px 12px; /* Adjust padding for smaller cells */
+    text-align: center; /* Center-align text */
+}
+
+.table-responsive {
+    overflow-x: auto; /* Ensure responsiveness for smaller screens */
+}
+.card {
+    width: 90%; /* Adjust the width to make it smaller */
+    margin: 20px auto; /* Center the card and add spacing */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+}
+#imageZoomOverlay{
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1050;
+    justify-content: center;
+    align-items: center;
+}
+#zoomedImage{
+    max-width: 90%;
+    max-height: 90%;
+    height: auto;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.refresh{
+    background-color: #f9f9f9;
+    border: none;
+    border-style: solid;
+    border-color: #50C878;
+    border-width: 3%;
+    cursor: pointer;
+    width: 50px;
+    padding: 4px;
+    height: 35px;
+    width: 35px;
+    border-radius: 5px;
+    transition: 0.3s;
+    margin-top: auto;
+}
+.refresh:hover{
+    background-color: #50C878;
+}
+
+.refresh svg {
+    margin-bottom: 25%;
+    margin-right: 10%;
+    fill: #50C878;
+    transition: fill 0.3s;
+}
+
+.refresh:hover svg {
+    fill: #f9f9f9;
+}
+.dropdown {
+  margin-top: 20px;
+  position: relative;
+  display: inline-block;
+  align-self: center;
+  align-items: center;
+}
+.dropdown-button {
+  background-color: #f9f9f9;
+  color: #4A79D9;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-style: solid;
+  border-color: #4A79D9;
+  border-width: 3%;
+  cursor: pointer;
+  width: 160px;
+  padding: 4px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.dropdown-button:hover{
+    color: white;
+    background-color: #4A79D9;
+}
+
+.dropdown-content {
+
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    border: none;
+    border-style: solid;
+    border-color: #ddd;
+    width: 160px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 500;
+    border-radius: 5px;
+  }
+  
+  .dropdown-content.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+.dropdown-content a {
+    
+  color: #555555;
+  text-align: center;
+  font-size: 12px;
+  padding: 10px 15px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+#searchInput {
+    width: 90%;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    outline: none;
+  }
+.alignSearchSVG{
+    transform: translateY(40%);
+    vertical-align: middle;
+}
+.alignSearchSVG:hover{
+    cursor: pointer;
+}
+.pagination {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 0;
+    margin-left: 10px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.pagination a {
+    padding: 6px 12px;
+    text-decoration: none;
+    border: 1px solid #4A79D9;
+    border-radius: 6px;
+    background-color: white;
+    color: #4A79D9;
+    font-size: 14px;
+    transition: 0.2s ease-in-out;
+}
+
+.pagination a:hover {
+    background-color: #4A79D9;
+    color: white;
+}
+
+.pagination a.active {
+    background-color: #4A79D9;
+    color: white;
+    pointer-events: none;
+    font-weight: bold;
+}
