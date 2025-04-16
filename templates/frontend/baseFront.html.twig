@@ -1,0 +1,513 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+    <head>
+        <!-- meta data -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <!-- font-family -->
+		<link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Rufina:400,700" rel="stylesheet">
+        
+        <!-- title of site -->
+        <title>WattWay</title>
+
+        <!-- For favicon png -->
+		<link rel="shortcut icon" type="image/icon" href="{{ asset('front/assets/logo/imgB.png') }}"/>
+       
+        <!-- CSS files -->
+        <link rel="stylesheet" href="{{ asset('front/assets/css/font-awesome.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('front/assets/css/linearicons.css') }}">
+		<link rel="stylesheet" href="{{ asset('front/assets/css/flaticon.css') }}">
+		<link rel="stylesheet" href="{{ asset('front/assets/css/animate.css') }}">
+        <link rel="stylesheet" href="{{ asset('front/assets/css/owl.carousel.min.css') }}">
+		<link rel="stylesheet" href="{{ asset('front/assets/css/owl.theme.default.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('front/assets/css/bootstrap.min.css') }}">
+		<link rel="stylesheet" href="{{ asset('front/assets/css/bootsnav.css') }}">	
+        <link rel="stylesheet" href="{{ asset('front/assets/css/style.css') }}">
+        <link rel="stylesheet" href="{{ asset('front/assets/css/responsive.css') }}">
+		<link rel="stylesheet" href="{{ asset('front/assets/css/responsive.css') }}">
+        <link rel="stylesheet" href="{{ asset('front/assets/css/order.css') }}">
+
+
+        <!-- HTML5 shim and Respond.js -->
+        <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+	
+	<body>
+		<!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+	{% block header %}
+		<!-- welcome-hero start -->
+		<section id="home" class="welcome-hero">
+			<!-- top-area Start -->
+			<div class="top-area">
+				<div class="header-area">
+					<!-- Start Navigation -->
+				    <nav class="navbar navbar-default bootsnav  navbar-sticky navbar-scrollspy"  data-minus-value-desktop="70" data-minus-value-mobile="55" data-speed="1000">
+
+				        <div class="container">
+
+				            <!-- Start Header Navigation -->
+				            <div class="navbar-header">
+				                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+				                    <i class="fa fa-bars"></i>
+				                </button>
+				            </div><!--/.navbar-header-->
+				            <!-- End Header Navigation -->
+
+				            <!-- Collect the nav links, forms, and other content for toggling -->
+				            <div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
+				                <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
+				                    <li class=" scroll active"><a href="#home">Home</a></li>
+				                    <li class="scroll"><a href="#service">Browse catalogue</a></li>
+								    <li class="scroll"><a href="#Rent">Rent a Car</a></li>
+									<li class="scroll"><a href="#order">WattShop</a></li>
+				                    <li class="scroll"><a href="#mechanic">Meet our team</a></li>
+				                    <li class="scroll"><a href="#new-cars">Submission</a></li>
+                                    <li class="scroll"><a href="#clients-say">Feedbacks</a></li>
+				                </ul><!--/.nav -->
+				            </div><!-- /.navbar-collapse -->
+				        </div><!--/.container-->
+				    </nav><!--/nav-->
+				    <!-- End Navigation -->
+				</div><!--/.header-area-->
+			    <div class="clearfix"></div>
+
+			</div><!-- /.top-area-->
+			<!-- top-area End -->
+
+			<div class="container">
+				<div class="welcome-hero-txt">
+					<h2>Get Your Dream Electric Car at the Best Price!</h2>
+					<p>
+						Looking for an electric vehicle? Whether you need to buy, rent, or repair an EV, we've got you covered with reliable service and great deals.
+
+                        Drive the future—sustainable, efficient, and affordable! ⚡🚗
+					</p>
+					<button class="welcome-btn" onclick="window.location.href='#'">contact us</button>
+				</div>
+			</div>
+
+			
+		</section>
+	{% endblock %}
+
+
+<!-- ************************************************************************************************************* -->
+
+        <!-- Warehouse Management -->
+
+		<!-- Browse catalogue -->
+		{% block catalogueBrowsing %}
+		<section id="service" class="service">
+			<div class="container">
+				<div class="service-content">
+					<h2>Browse cars</h2>
+
+
+					</div>
+				</div>
+			</div><!--/.container-->
+
+		</section><!--/.service-->
+		{% endblock %}
+
+
+		<!-- Rent a Car -->
+		{% block carRenting %}
+		<section id="Rent" class="service">
+			<div class="container">
+				<div class="service-content">
+					<h2>rent car</h2>
+
+
+					</div>
+				</div>
+			</div><!--/.container-->
+
+		</section><!--/.service-->
+		{% endblock %}
+
+<!-- ************************************************************************************************************* -->
+
+{% block order %}
+
+<script src="{{ asset('front/assets/js/orderFront.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('front/assets/css/WattAi.css') }}">
+
+
+<section id="order" class="order-section">
+    <div class="shop-container">
+        <!-- Header -->
+        <header class="shop-header">
+			
+			<!-- AI Suggestion -->
+			<div class="ai-suggestion-container">
+				<button class="ai-suggestion-button" id="suggestedItemsBtn">
+					<svg class="ai-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+						<path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+						<path d="M10 13a1 1 0 0 0 1-1V9a1 1 0 0 1 1-1h1"></path>
+						<path d="M16 13a1 1 0 0 1-1-1V9a1 1 0 0 0-1-1h-1"></path>
+					</svg>
+					<img src="{{ asset('images/ai-icon.png') }}"  alt="WattAI Icon" >
+				</button>
+			</div>
+            
+        </header>
+
+        <!-- Search -->
+        <div class="search-container">
+			<!-- Action Buttons -->
+			<div class="action-buttons">
+				<button class="secondary-button" id="viewPreviousOrdersBtn">Order History</button>
+			</div>
+			
+            <div class="search-wrapper" >
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8" ></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" ></line>
+                </svg>
+                <input type="text" id="searchBar" class="search-input" placeholder="Search items..." aria-label="Search items">
+                <select class="category-filter" aria-label="Filter by category">
+                    <option value="">All Categories</option>
+                    <option value="Electricity">Electricity</option>
+                    <option value="Lubricants & Fluids">Lubricants & Fluids</option>
+                    <option value="Accessories">Accessories</option>
+					<option value="Body Parts">Body Parts</option>
+					<option value="Exterior">Exterior</option>
+                    <option value="Cooling & Heating">Cooling & Heating</option>
+                    <option value="Performance Parts">Performance Parts</option>
+                    <option value="Mechanics">Mechanics</option>
+				</select>
+            </div>
+
+			<button class="cart-button" id="viewCartBtn" aria-label="View cart">
+                <svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span class="cart-count">0</span>
+            </button>
+        </div>
+		
+        <!-- Product Grid -->
+        <div class="product-grid">
+            {% set displayedItems = [] %}
+            {% for item in items %}
+                {% set quantityData = itemQuantities[item.nameItem] ?? null %}
+                {% set adminQty = quantityData ? quantityData.adminQuantity : 0 %}
+                {% set clientQty = quantityData ? quantityData.clientQuantity : 0 %}
+                {% set difference = adminQty - clientQty %}
+                
+                {% if item.nameItem not in displayedItems and difference > 0 %}
+                    {% set displayedItems = displayedItems|merge([item.nameItem]) %}
+                    <article class="product-card" data-category="{{ item.categoryItem|lower }}" data-available-quantity="{{ difference }}">
+                        <div class="product-image-container">
+                            <img src="{{ asset('images/' ~ item.nameItem|lower ~ '.png') }}" 
+                                class="product-image" 
+                                alt="{{ item.nameItem }}"
+                                loading="lazy">
+                            <button class="quick-view-button" aria-label="Quick view">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="product-details">
+							<div class="product-info">
+								<h2 class="product-title">{{ item.nameItem }}</h2>
+								<span class="product-category">{{ item.categoryItem }}</span>
+							</div>
+							<div class="price-cart-wrapper">
+								<div class="product-price">${{ item.pricePerUnitItem + 5|number_format(2) }}</div>
+								<button class="add-to-cart-button" data-item-id="{{ item.idItem }}">
+									<svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+										<circle cx="9" cy="21" r="1"></circle>
+										<circle cx="20" cy="21" r="1"></circle>
+										<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+									</svg>
+									Add to Cart
+								</button>
+							</div>
+						</div>
+                    </article>
+                {% endif %}
+            {% endfor %}
+            
+            {% if displayedItems|length == 0 %}
+                <div class="no-items-message">
+                    <p>No items currently available in stock.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Load More -->
+        {% if displayedItems|length > 10 %}
+        <div class="load-more-container">
+            <button class="load-more-button" id="loadMoreBtn">
+                Show More Products
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Quantity Selection Dialog -->
+    <div id="quantityDialog" class="dialog-overlay" style="display: none;">
+        <div class="dialog-content">
+            <h3>Select Quantity</h3>
+            <div class="quantity-controls">
+                <button class="quantity-btn minus">-</button>
+                <input type="number" id="quantityInput" class="quantity-input" value="1" min="1">
+                <button class="quantity-btn plus">+</button>
+            </div>
+            <div class="dialog-buttons">
+                <button id="cancelQuantityBtn" class="secondary-button">Cancel</button>
+                <button id="confirmQuantityBtn" class="primary-button">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Display Dialog -->
+    <div id="cartDialog" class="dialog-overlay" style="display: none;">
+        <div class="dialog-content cart-content">
+            <h3>Your Cart</h3>
+            <div id="cartItemsContainer" class="cart-items">
+                <!-- Cart items will be displayed here -->
+                <p class="empty-cart-message">Your cart is empty</p>
+            </div>
+            <div class="cart-summary">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cartTotal">$0.00</span>
+                </div>
+                <div class="dialog-buttons">
+                    <button id="closeCartBtn" class="secondary-button">Continue Shopping</button>
+                    <button id="checkoutBtn" class="primary-button">Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<!-- AI Chat Dialog - Redesigned -->
+	<div id="aiChatDialog" class="dialog-overlay" style="display: none;">
+		<div class="dialog-content ai-chat-content">
+			
+			<!-- Chat Header -->
+			<div class="ai-chat-header">
+				<div class="ai-header-content">
+					<img src="{{ asset('images/ai-icon.png') }}"  alt="WattAI Icon" class="ai-custom-icon">
+					<div class="ai-title-text">
+						<h3 class="gradient-text">WattAI Assistant</h3>
+					</div>
+				</div>
+				<button id="closeChatBtn" class="close-chat-btn" aria-label="Close chat">
+					<svg viewBox="0 0 24 24" width="20" height="20">
+						<path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+					</svg>
+				</button>
+			</div>
+			
+			<!-- Main chat container with fixed height and scrollable messages -->
+			<div class="ai-chat-main-container">
+				<div id="aiChatMessages" class="ai-chat-messages">
+					<div class="ai-welcome-message">
+						<p>Hello! I'm WattAI, your smart energy assistant. How can I help you today?</p>
+						<div class="quick-suggestions">
+							<button class="suggestion-chip" data-prompt="Show me solar panels">Solar panels</button>
+							<button class="suggestion-chip" data-prompt="Recommend batteries">Batteries</button>
+							<button class="suggestion-chip" data-prompt="Help with installation">Installation help</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Fixed footer with input and buttons -->
+			<div class="ai-chat-footer-container">
+				<div class="ai-chat-input-container">
+					<div class="input-wrapper">
+						<input type="text" id="aiChatInput" class="ai-chat-input" placeholder="Ask WattAI about energy solutions..." autocomplete="off">
+						<button id="aiChatSend" class="ai-chat-send-button" aria-label="Send message">
+							<svg viewBox="0 0 24 24" width="24" height="24">
+								<path fill="currentColor" d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
+							</svg>
+						</button>
+					</div>
+					<div class="ai-typing-indicator" id="typingIndicator" style="display: none;">
+						<span></span><span></span><span></span>
+					</div>
+				</div>
+				
+				<div class="ai-chat-footer">
+					<button id="quickAccessButton" class="quick-access-button">
+						<svg viewBox="0 0 24 24" width="16" height="16">
+							<path fill="currentColor" d="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M11,15V12H9V15H6V17H9V20H11V17H14V15H11Z" />
+						</svg>
+						<span>Quick Action</span>
+					</button>
+					<small class="ai-disclaimer">WattAI may produce inaccurate information</small>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+</section>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+<!-- ************************************************************************************************************* -->
+
+		<!-- Mechanics -->
+		{% block mechanics %}
+		<section id="mechanic" class="mechanic">
+			<div class="container">
+				<div class="new-cars-content">
+				    <h2>Mechanics</h2>
+				</div>
+			</div>
+		</section>
+		{% endblock %}	
+
+
+<!-- ************************************************************************************************************* -->
+
+
+		<!-- Submission -->
+		{% block submission %}
+		<section id="new-cars" class="new-cars">
+			<div class="container">
+			 	
+            		<h2>Submit Your Request</h2>
+			</div><!--/.container-->
+
+		</section>
+		{% endblock %}
+<!-- ************************************************************************************************************* -->
+
+
+		<!-- FeedBack -->
+		{% block feedback %}
+		<section id="clients-say"  class="clients-say">
+			<div class="container">
+				<div class="section-header">
+					<h2>what our clients say</h2>
+				</div><!--/.section-header-->
+				<div class="row">
+					<div class="owl-carousel testimonial-carousel">
+						<div class="col-sm-3 col-xs-12">
+							<div class="single-testimonial-box">
+								<div class="testimonial-description">
+									<div class="testimonial-info">
+										<div class="testimonial-img">
+									<img src="{{ asset('front/assets/images/clients/c1.png') }}" alt="client">
+								</div><!--/.testimonial-img-->
+									</div><!--/.testimonial-info-->
+									<div class="testimonial-comment">
+										<p>
+                                            WattWay is the best way !
+                                            
+										</p>
+									</div><!--/.testimonial-comment-->
+									<div class="testimonial-person">
+										<h2><a href="#">Raef Zriba</a></h2>
+										<h4>Angola</h4>
+									</div><!--/.testimonial-person-->
+								</div><!--/.testimonial-description-->
+							</div><!--/.single-testimonial-box-->
+						</div><!--/.col-->
+					</div><!--/.testimonial-carousel-->
+				</div><!--/.row-->
+			</div><!--/.container-->
+		{% endblock %}	
+		
+
+
+<!-- ************************************************************************************************************* -->
+
+		<!-- footer start -->
+		{% block footer %}
+		<footer id="contact" class="contact">
+			<div class="container">
+				<div class="footer-content">
+					<!-- Left Column -->
+					<div class="row">
+						<div class="col-md-6">
+							<div class="footer-brand">
+								<h2>WATTWAY</h2>
+								<p class="company-description">
+									Your trusted partner in electric vehicle solutions. We provide top-quality electric cars, maintenance 
+									services, and expert guidance for sustainable transportation.
+								</p>
+								<p class="contact-email">contact@wattway.com</p>
+							</div>
+						</div>
+
+						<!-- Right Column -->
+						<div class="col-md-6">
+							<div class="business-hours-section">
+								<h3>Business Hours</h3>
+								<ul class="business-hours-list">
+									<li>Monday - Friday: 8:00 AM - 6:00 PM</li>
+									<li>Saturday: 9:00 AM - 4:00 PM</li>
+									<li>Sunday: Closed</li>
+									<li class="emergency-support">24/7 Emergency Support Available</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Footer Bottom -->
+				<div class="footer-bottom">
+					<div class="row">
+						<div class="col-md-6">
+							<p class="copyright">© Copyright. Designed and Developed by WattWay.</p>
+						</div>
+						<div class="col-md-6">
+							<div class="social-links">
+								<a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+								<a href="#" aria-label="Instagram"><i class="fa fa-instagram"></i></a>
+								<a href="#" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</footer>
+		{% endblock %}
+
+		<!-- JavaScript files -->
+		{% block javascript %}
+		<script src="{{ asset('front/assets/js/jquery.js') }}"></script>
+        <script src="{{ asset('front/assets/js/bootstrap.min.js') }}"></script>
+		<script src="{{ asset('front/assets/js/bootsnav.js') }}"></script>
+		<script src="{{ asset('front/assets/js/owl.carousel.min.js') }}"></script>
+		<script src="{{ asset('front/assets/js/custom.js') }}"></script>
+
+		<!-- External scripts remain unchanged -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+		{% endblock %}
+	</body>
+</html>

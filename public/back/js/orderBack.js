@@ -1,0 +1,240 @@
+// Wait for the DOM to fully load before executing any scripts
+document.addEventListener('DOMContentLoaded', function () {
+
+    
+
+    // Scroll smoothly to the highlighted row (e.g., a recently updated or selected order)
+    const highlighted = document.querySelector('.highlighted-row');
+    if (highlighted) {
+        setTimeout(() => {
+            highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 400);
+    }
+
+    // Initialize the Bootstrap modal used for editing orders
+    const editOrderModal = new bootstrap.Modal(document.getElementById('editOrderModal'));
+
+    // Attach click listeners to all "edit" buttons on the page
+    document.querySelectorAll('.edit-order-btn').forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent default link behavior
+
+            // Retrieve order data from the button's data attributes
+            const orderId = this.getAttribute('data-order-id');
+            const supplier = this.getAttribute('data-supplier');
+            const date = this.getAttribute('data-date');
+            const status = this.getAttribute('data-status');
+            const total = this.getAttribute('data-total');
+            const address = this.getAttribute('data-address');
+
+            // Populate the modal fields with the retrieved data
+            document.getElementById('editOrderId').textContent = orderId;
+            document.getElementById('editSupplier').value = supplier;
+            document.getElementById('editDate').value = date;
+            document.getElementById('editStatus').value = status;
+            document.getElementById('editTotal').value = total;
+            document.getElementById('editAddress').value = address;
+
+            // Show the modal for editing
+            editOrderModal.show();
+        });
+    });
+
+    // Handle save button click inside the modal (submits the updated order data)
+    document.getElementById('saveOrderChanges').addEventListener('click', function () {
+        const orderId = document.getElementById('editOrderId').textContent;
+
+        // Collect updated data from the modal input fields
+        const formData = {
+            supplier: document.getElementById('editSupplier').value,
+            date: document.getElementById('editDate').value,
+            status: document.getElementById('editStatus').value,
+            total: document.getElementById('editTotal').value,
+            address: document.getElementById('editAddress').value
+        };
+
+        // Send an AJAX request to update the order
+        fetch(`/order/update/${orderId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Order updated successfully!');
+                    editOrderModal.hide(); // Hide modal
+                    location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert('Error updating order: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the order.');
+            });
+    });
+
+    // Set up the orders chart using Chart.js
+    const ctx = document.getElementById('ordersChart').getContext('2d');
+    let ordersChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [
+                {
+                    label: 'Admin Orders',
+                    data: window.adminOrdersData,
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    tension: 0.3,
+                    fill: true,
+                    borderWidth: 2,
+                    pointBackgroundColor: '#007bff',
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                },
+                {
+                    label: 'Client Orders',
+                    data: window.clientOrdersData,
+                    borderColor: '#17a2b8',
+                    backgroundColor: 'rgba(23, 162, 184, 0.1)',
+                    tension: 0.3,
+                    fill: true,
+                    borderWidth: 2,
+                    pointBackgroundColor: '#17a2b8',
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: '#fff',
+                    titleColor: '#333',
+                    bodyColor: '#666',
+                    borderColor: 'rgba(0,0,0,0.1)',
+                    borderWidth: 1,
+                    padding: 12,
+                    boxPadding: 6
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        drawBorder: false,
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        precision: 0
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false,
+                        drawBorder: false
+                    }
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'nearest'
+            }
+        }
+    });
+
+    // Store the original data and alternate finance data
+    const expensesData = window.expensesData;
+    const revenuesData = window.revenuesData;
+    const originalData = {
+        admin: window.adminOrdersData,
+        client: window.clientOrdersData
+    };
+
+    let currentView = 'orders'; // Track which chart view is currently active
+
+    // Add event listeners to the left/right arrow buttons for toggling between chart views
+    document.getElementById('arrowLeft').addEventListener('click', toggleChartView);
+    document.getElementById('arrowRight').addEventListener('click', toggleChartView);
+
+    // Function to toggle between 'orders' and 'finance' data in the chart
+    function toggleChartView() {
+        if (currentView === 'orders') {
+            // Switch to finance view (Expenses & Revenues)
+            ordersChart.data.datasets[0].data = expensesData;
+            ordersChart.data.datasets[0].label = 'Expenses';
+            ordersChart.data.datasets[0].borderColor = '#dc3545';
+            ordersChart.data.datasets[0].backgroundColor = 'rgba(220, 53, 69, 0.1)';
+            ordersChart.data.datasets[0].pointBackgroundColor = '#dc3545';
+
+            ordersChart.data.datasets[1].data = revenuesData;
+            ordersChart.data.datasets[1].label = 'Revenues';
+            ordersChart.data.datasets[1].borderColor = '#28a745';
+            ordersChart.data.datasets[1].backgroundColor = 'rgba(40, 167, 69, 0.1)';
+            ordersChart.data.datasets[1].pointBackgroundColor = '#28a745';
+
+            document.getElementById('chartTitle').textContent = 'Expenses & Revenues';
+        } else {
+            // Switch back to order statistics view
+            ordersChart.data.datasets[0].data = originalData.admin;
+            ordersChart.data.datasets[0].label = 'Admin Orders';
+            ordersChart.data.datasets[0].borderColor = '#007bff';
+            ordersChart.data.datasets[0].backgroundColor = 'rgba(0, 123, 255, 0.1)';
+            ordersChart.data.datasets[0].pointBackgroundColor = '#007bff';
+
+            ordersChart.data.datasets[1].data = originalData.client;
+            ordersChart.data.datasets[1].label = 'Client Orders';
+            ordersChart.data.datasets[1].borderColor = '#17a2b8';
+            ordersChart.data.datasets[1].backgroundColor = 'rgba(23, 162, 184, 0.1)';
+            ordersChart.data.datasets[1].pointBackgroundColor = '#17a2b8';
+
+            document.getElementById('chartTitle').textContent = 'Order Statistics';
+        }
+
+        // Toggle the view type and update the chart
+        currentView = currentView === 'orders' ? 'finance' : 'orders';
+        ordersChart.update();
+    }
+
+    // Time range and year selectors for filtering chart data
+    const timeRangeSelect = document.getElementById('statsTimeRange');
+    const yearSelect = document.getElementById('statsYear');
+
+    // Attach change listeners to reload the page with selected filters
+    if (timeRangeSelect && yearSelect) {
+        timeRangeSelect.addEventListener('change', () => {
+            updateChartData(timeRangeSelect.value, yearSelect.value);
+        });
+
+        yearSelect.addEventListener('change', () => {
+            updateChartData(timeRangeSelect.value, yearSelect.value);
+        });
+    }
+
+    // Redirects the page with updated query parameters for filtering
+    function updateChartData(timeRange, year) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('timeRange', timeRange);
+        url.searchParams.set('year', year);
+        window.location.href = url.toString(); // Triggers page reload with filters
+    }
+});
+
+

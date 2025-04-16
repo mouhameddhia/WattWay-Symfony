@@ -1,0 +1,564 @@
+{% extends 'backend/baseBack.html.twig' %}
+
+{% block content %}
+    <div class="container-fluid order-container">
+        <div class="order-header mb-4">
+            <h2><i class="fas fa-file-invoice me-2"></i>Create New Order</h2>
+            <p class="text-muted mb-0">Complete the form below to register a new purchase order</p>
+        </div>
+
+        <form method="POST" action="{{ path('order_create') }}" class="order-form needs-validation" novalidate>
+            <!-- Supplier Information Section -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-primary text-white d-flex align-items-center">
+                    <i class="fas fa-truck me-2"></i>
+                    <span>Supplier Details</span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="supplierOrder" name="supplierOrder" 
+                                       placeholder="Supplier Name" required>
+                                <label for="supplierOrder">Supplier Name</label>
+                                <div class="invalid-feedback">Please provide a supplier name</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group has-validation">
+                                <div class="form-floating flex-grow-1">
+                                    <input type="text" class="form-control" id="addressSupplierOrder" 
+                                           name="addressSupplierOrder" placeholder="Supplier Address" required>
+                                    <label for="addressSupplierOrder">Supplier Address</label>
+                                </div>
+                                <button type="button" class="btn btn-primary" id="quickAccessSupplierBtn"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" 
+                                        title="Locate supplier on map">
+                                    <i class="fas fa-map-marked-alt"></i>
+                                </button>
+                                <div class="invalid-feedback">Please provide a supplier address</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Items Section -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-primary text-white d-flex align-items-center">
+                    <i class="fas fa-box-open me-2"></i>
+                    <span>Order Items</span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 align-items-end mb-4">
+                        <div class="col-lg-3 col-md-6">
+                            <label for="item" class="form-label">Product</label>
+                            <select class="form-select" id="item" name="item" required>
+                                <option value="" disabled selected>Select an item</option>
+                                {% for item in itemsList %}
+                                    <option value="{{ item.idItem }}">{{ item.nameItem }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-lg-2 col-md-6">
+                            <label for="pricePerUnit" class="form-label">Unit Price</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control" id="pricePerUnit" 
+                                       name="pricePerUnit" min="0.01" required>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
+                        </div>
+                        <div class="col-lg-3 col-md-12">
+                            <button type="button" class="btn btn-success w-100 py-2" id="addItemButton">
+                                <i class="fas fa-plus-circle me-2"></i>Add Item
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Items Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="30%">Item</th>
+                                    <th width="20%">Category</th>
+                                    <th width="15%">Unit Price</th>
+                                    <th width="15%">Qty</th>
+                                    <th width="15%">Total</th>
+                                    <th width="5%"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="itemsListTable"></tbody>
+                            <tfoot class="table-group-divider">
+                                <tr>
+                                    <td colspan="4" class="text-end fw-bold fs-6">ORDER TOTAL</td>
+                                    <td class="fw-bold text-primary fs-6" id="totalOrderAmount">$0.00</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hidden Fields -->
+            <input type="hidden" name="orderItems" id="orderItems">
+            <input type="hidden" name="totalAmountOrder" id="hiddenTotalAmount">
+            <input type="hidden" name="admin" value="1">
+
+            <!-- Form Actions -->
+            <div class="d-flex justify-content-end gap-3 mt-4">
+                <button type="reset" class="btn btn-outline-secondary px-4">
+                    <i class="fas fa-undo me-2"></i>Reset
+                </button>
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="fas fa-paper-plane me-2"></i>Submit Order
+                </button>
+            </div>
+        </form>
+    </div>
+
+    
+    <!-- JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script>
+        // Initialize Bootstrap modal
+        document.getElementById('quickAccessSupplierBtn').addEventListener('click', function() {
+            var supplierModal = new bootstrap.Modal(document.getElementById('supplierModal'));
+            supplierModal.show();
+        });
+
+        // Existing JavaScript code for item management
+        const itemsList = {{ itemsList | json_encode() }};
+        let orderItems = [];
+        let totalAmount = 0;
+        let editingIndex = -1;
+
+        const addItemButton = document.getElementById('addItemButton');
+        const toastContainer = document.createElement('div');
+        toastContainer.classList.add('toast-container', 'position-fixed', 'bottom-0', 'end-0', 'p-3');
+        document.body.appendChild(toastContainer);
+        
+        document.querySelector('.order-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate supplier name
+            const supplierName = document.getElementById('supplierOrder').value.trim();
+            const supplierAddress = document.getElementById('addressSupplierOrder').value.trim();
+            
+            // Check if supplier name is valid (contains letters)
+            if (!/.*[a-zA-Z].*/.test(supplierName)) {
+                showToast('Supplier name must contain letters', 'danger');
+                document.getElementById('supplierOrder').focus();
+                return;
+            }
+            
+            // Check if supplier address is valid (contains letters)
+            if (!/.*[a-zA-Z].*/.test(supplierAddress)) {
+                showToast('Supplier address must contain letters', 'danger');
+                document.getElementById('addressSupplierOrder').focus();
+                return;
+            }
+            
+            // Check if at least one item exists
+            if (orderItems.length === 0) {
+                showToast('Please add at least one item to the order', 'danger');
+                return;
+            }
+            
+            // If all validations pass, submit the form
+            this.submit();
+        });
+        
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type} border-0 show mb-2`;
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        document.getElementById('item').addEventListener('change', function () {
+            const selectedItem = itemsList.find(item => item.idItem == this.value);
+            if (selectedItem) {
+                // Set the category based on item name using custom logic
+                const category = getCategoryForItem(selectedItem.nameItem);
+            }
+        });
+        
+        function getCategoryForItem(item) {
+            // Mechanics
+            if (["Brake Pads", "Spark Plugs", "Timing Belt"].includes(item)) return "Mechanics";
+        
+            // Electronics
+            if (["Car Battery", "Headlights", "Bluetooth Car Kit"].includes(item)) return "Electronics";
+        
+            // Electricity
+            if (["Alternator", "Starter Motor", "Fuse Box"].includes(item)) return "Electricity";
+        
+            // Interior
+            if (["Phone Holder for Car", "Car Seat Covers", "Steering Wheel Cover"].includes(item)) return "Interior";
+        
+            // Exterior
+            if (["Windshield Wipers", "Car Wax", "License Plate Frame"].includes(item)) return "Exterior";
+        
+            // Cooling & Heating
+            if (["Air Conditioning Recharge Kit", "Radiator", "Heater Core"].includes(item)) return "Cooling & Heating";
+        
+            // Lubricants & Fluids
+            if (["Motor Oil", "Transmission Fluid", "Brake Fluid"].includes(item)) return "Lubricants & Fluids";
+        
+            // Accessories
+            if (["Car Wash Kit", "Car Air Freshener", "Car Trash Can"].includes(item)) return "Accessories";
+        
+            // Body Parts
+            if (["Car Exhaust System", "Bumper", "Side Mirror"].includes(item)) return "Body Parts";
+        
+            // Performance Parts
+            if (["Turbocharger", "Performance Air Filter", "Sport Exhaust System"].includes(item)) return "Performance Parts";
+        
+            return "Uncategorized";
+        }
+        
+
+        function updateTable() {
+            const tableBody = document.getElementById('itemsListTable');
+            tableBody.innerHTML = '';
+            totalAmount = 0;
+
+            orderItems.forEach((item, index) => {
+                totalAmount += parseFloat(item.total);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>${item.category}</td>
+                    <td>${parseFloat(item.pricePerUnit).toFixed(2)}</td>
+                    <td>${item.quantity}</td>
+                    <td>${parseFloat(item.total).toFixed(2)}</td>
+                `;
+                row.addEventListener('click', () => showActionsRow(index));
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById('totalOrderAmount').innerText = totalAmount.toFixed(2);
+            document.getElementById('hiddenTotalAmount').value = totalAmount.toFixed(2);
+            document.getElementById('orderItems').value = JSON.stringify(orderItems);
+        }
+
+        function showActionsRow(index) {
+            const tableBody = document.getElementById('itemsListTable');
+            const row = tableBody.rows[index];
+            const existingActionRow = tableBody.querySelector('.action-row');
+            if (existingActionRow) existingActionRow.remove();
+
+            const newRow = document.createElement('tr');
+            newRow.classList.add('action-row');
+            newRow.innerHTML = `
+                <td colspan="5">
+                    <div class="d-flex justify-content-center gap-2">
+                        <button type="button" class="btn btn-sm btn-warning" onclick="editItem(${index})">Edit</button>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="deleteItem(${index})">Delete</button>
+                    </div>
+                </td>
+            `;
+            row.after(newRow);
+        }
+
+        function clearItemFields() {
+            document.getElementById('item').selectedIndex = 0;
+            document.getElementById('item').disabled = false;
+            document.getElementById('pricePerUnit').value = '';
+            document.getElementById('quantity').value = '';
+            editingIndex = -1;
+            addItemButton.innerText = 'Add Item';
+            delete document.getElementById('item').dataset.originalName;
+            delete document.getElementById('item').dataset.originalCategory;
+        }
+
+        function editItem(index) {
+            const item = orderItems[index];
+            editingIndex = index;
+        
+            // Disable the item select dropdown during edit
+            document.getElementById('item').disabled = true;
+            
+            // Store the original name and category in data attributes
+            document.getElementById('item').dataset.originalName = item.name;
+            document.getElementById('item').dataset.originalCategory = item.category;
+            
+            // Only allow editing price and quantity
+            document.getElementById('pricePerUnit').value = item.pricePerUnit;
+            document.getElementById('quantity').value = item.quantity;
+            addItemButton.innerText = 'Update';
+        }
+
+        function deleteItem(index) {
+            orderItems.splice(index, 1);
+            updateTable();
+            showToast('Item removed successfully!', 'danger');
+        }
+
+        addItemButton.addEventListener('click', function () {
+            let itemName, category;
+            
+            if (editingIndex > -1) {
+                // When updating, use the original name and category from data attributes
+                itemName = document.getElementById('item').dataset.originalName;
+                category = document.getElementById('item').dataset.originalCategory;
+            } else {
+                // When adding new, get from the selected item
+                itemName = document.getElementById('item').selectedOptions[0].text;
+                category = getCategoryForItem(itemName);
+            }
+            
+            const pricePerUnit = parseFloat(document.getElementById('pricePerUnit').value);
+            const quantity = parseInt(document.getElementById('quantity').value);
+        
+            if (!category || !pricePerUnit || !quantity || isNaN(pricePerUnit) || isNaN(quantity)) {
+                showToast('Please fill in all fields correctly.', 'danger');
+                return;
+            }
+        
+            const total = pricePerUnit * quantity;
+        
+            if (editingIndex > -1) {
+                // Preserve all existing properties and only update price/quantity/total
+                orderItems[editingIndex] = { 
+                    ...orderItems[editingIndex], // Keep existing properties
+                    pricePerUnit, 
+                    quantity, 
+                    total 
+                };
+                showToast('Item updated successfully!', 'info');
+            } else {
+                orderItems.push({ name: itemName, category, pricePerUnit, quantity, total });
+                showToast('Item added successfully!', 'success');
+            }
+        
+            updateTable();
+            clearItemFields();
+        });
+
+        // Quick Access Supplier Button - Open map.html in new window
+        document.getElementById('quickAccessSupplierBtn').addEventListener('click', function() {
+            // Open map.html in a new window with specific dimensions
+            const mapWindow = window.open('{{ path('supplier_map') }}', 'SupplierMap', 
+                'width=1000,height=700,top=100,left=100,toolbar=no,location=no,status=no');
+            
+            // Focus the window if it exists
+            if (mapWindow) {
+                mapWindow.focus();
+            }
+        });
+        // Quick Access Supplier Button
+        document.getElementById('quickAccessSupplierBtn').addEventListener('click', function() {
+            const width = 1000;
+            const height = 700;
+            const left = (screen.width - width) / 2;
+            const top = (screen.height - height) / 2;
+            
+            window.open('{{ path('supplier_map') }}', 'SupplierMap', 
+                `width=${width},height=${height},top=${top},left=${left},toolbar=no,location=no,status=no`);
+        });
+
+        // Handle supplier selection from map window
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'supplierSelected') {
+                const supplier = event.data.supplier;
+                document.getElementById('supplierOrder').value = supplier.name;
+                document.getElementById('addressSupplierOrder').value = supplier.address;
+                
+                // Show success notification
+                const toast = document.createElement('div');
+                toast.className = 'toast show position-fixed bottom-0 end-0 m-3';
+                toast.style.zIndex = '1100';
+                toast.innerHTML = `
+                    <div class="toast-header bg-success text-white">
+                        <strong class="me-auto">Success</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        Supplier "${supplier.name}" selected successfully!
+                    </div>
+                `;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary-color: #3f37c9;
+            --light-gray: #f8f9fa;
+            --border-radius: 0.5rem;
+            --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+        }
+
+        .order-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .order-header {
+            padding-bottom: 1.25rem;
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .order-header h2 {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+
+        .order-header p {
+            font-size: 0.95rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            padding: 1rem 1.5rem;
+        }
+
+        .form-floating > label {
+            padding: 1rem 0.75rem;
+            color: #6c757d;
+        }
+
+        .form-control, .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+        }
+
+        .table {
+            --bs-table-bg: transparent;
+            --bs-table-striped-bg: rgba(0, 0, 0, 0.02);
+        }
+
+        .table th {
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6c757d;
+            padding: 1rem 0.75rem;
+            border-bottom-width: 2px;
+        }
+
+        .table td {
+            padding: 1rem 0.75rem;
+            vertical-align: middle;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(67, 97, 238, 0.03) !important;
+        }
+
+        #itemsListTable tr {
+            cursor: pointer;
+        }
+
+        .btn {
+            font-weight: 500;
+            padding: 0.6rem 1.25rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fa;
+        }
+
+        .btn-success {
+            background-color: #2ecc71;
+            border-color: #2ecc71;
+        }
+
+        .toast-container {
+            z-index: 1100;
+        }
+
+        @media (max-width: 992px) {
+            .order-container {
+                padding: 1.5rem;
+            }
+            
+            .card-body {
+                padding: 1.25rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .order-container {
+                padding: 1rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .row.g-3 > div {
+                margin-bottom: 1rem;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+{% endblock %}
