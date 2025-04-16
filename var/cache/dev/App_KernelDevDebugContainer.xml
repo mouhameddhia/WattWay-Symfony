@@ -78,6 +78,7 @@
     </parameter>
     <parameter key="kernel.charset">UTF-8</parameter>
     <parameter key="kernel.container_class">App_KernelDevDebugContainer</parameter>
+    <parameter key="warehouse_images_directory">C:\Users\harou\WarehouseManagement/public/images/Warehouse</parameter>
     <parameter key="event_dispatcher.event_aliases" type="collection">
       <parameter key="Symfony\Component\Console\Event\ConsoleCommandEvent">console.command</parameter>
       <parameter key="Symfony\Component\Console\Event\ConsoleErrorEvent">console.error</parameter>
@@ -348,6 +349,105 @@
       <tag name="controller.service_arguments"/>
       <tag name="routing.route_loader"/>
     </service>
+    <service id="App\Entity" class="App\Entity" abstract="true">
+      <tag name="container.excluded" source="in &quot;config/services.yaml&quot;"/>
+    </service>
+    <service id="App\Controller\DashboardController" class="App\Controller\DashboardController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\DashboardController"/>
+      </call>
+    </service>
+    <service id="App\Controller\FrontController" class="App\Controller\FrontController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\FrontController"/>
+      </call>
+    </service>
+    <service id="App\Controller\Warehouse\BillController" class="App\Controller\Warehouse\BillController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\Warehouse\BillController"/>
+      </call>
+    </service>
+    <service id="App\Controller\Warehouse\CarController" class="App\Controller\Warehouse\CarController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\Warehouse\CarController"/>
+      </call>
+    </service>
+    <service id="App\Controller\Warehouse\WarehouseController" class="App\Controller\Warehouse\WarehouseController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\Warehouse\WarehouseController"/>
+      </call>
+    </service>
+    <service id="App\Form\FormAddCarType" class="App\Form\FormAddCarType" autowire="true" autoconfigure="true">
+      <tag name="form.type"/>
+    </service>
+    <service id="App\Form\FormAddWarehouseType" class="App\Form\FormAddWarehouseType" autowire="true" autoconfigure="true">
+      <tag name="form.type"/>
+    </service>
+    <service id="App\Form\FormUpdateBillType" class="App\Form\FormUpdateBillType" autowire="true" autoconfigure="true">
+      <tag name="form.type"/>
+    </service>
+    <service id="App\Repository\AdminRepository" class="App\Repository\AdminRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\AssignmentMechanicRepository" class="App\Repository\AssignmentMechanicRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\AssignmentRepository" class="App\Repository\AssignmentRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\BillRepository" class="App\Repository\BillRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\CarRepository" class="App\Repository\CarRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\FeedbackRepository" class="App\Repository\FeedbackRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\ItemRepository" class="App\Repository\ItemRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\MechanicRepository" class="App\Repository\MechanicRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\OrderRepository" class="App\Repository\OrderRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\ResponseRepository" class="App\Repository\ResponseRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\SubmissionRepository" class="App\Repository\SubmissionRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\UserRepository" class="App\Repository\UserRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\WarehouseRepository" class="App\Repository\WarehouseRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
     <service id="argument_metadata_factory" class="Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactory"/>
     <service id="argument_resolver.backed_enum_resolver" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\BackedEnumValueResolver">
       <tag priority="100" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\BackedEnumValueResolver">controller.argument_value_resolver</tag>
@@ -375,7 +475,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
       <tag priority="-50" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">controller.argument_value_resolver</tag>
-      <argument type="service" id=".service_locator.HBdvAhp"/>
+      <argument type="service" id=".service_locator.veIHCei"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver">
       <tag priority="-100" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver">controller.argument_value_resolver</tag>
@@ -1292,9 +1392,13 @@
       <argument type="service" id="form.registry"/>
       <argument type="collection">
         <argument>Symfony\Component\Form\Extension\Core\Type</argument>
+        <argument>App\Form</argument>
         <argument>Symfony\Bridge\Doctrine\Form\Type</argument>
       </argument>
       <argument type="collection">
+        <argument>App\Form\FormAddCarType</argument>
+        <argument>App\Form\FormAddWarehouseType</argument>
+        <argument>App\Form\FormUpdateBillType</argument>
         <argument>Symfony\Component\Form\Extension\Core\Type\FormType</argument>
         <argument>Symfony\Component\Form\Extension\Core\Type\ChoiceType</argument>
         <argument>Symfony\Component\Form\Extension\Core\Type\FileType</argument>
@@ -3263,7 +3367,7 @@
     </service>
     <service id="argument_resolver.not_tagged_controller" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
       <tag name="controller.argument_value_resolver" priority="-200"/>
-      <argument type="service" id=".service_locator.HBdvAhp"/>
+      <argument type="service" id=".service_locator.veIHCei"/>
     </service>
     <service id="debug.log_processor" class="Symfony\Bridge\Monolog\Processor\DebugProcessor">
       <tag name="kernel.reset" method="reset"/>
@@ -3752,7 +3856,7 @@
       <argument type="service" id="form.registry"/>
     </service>
     <service id="form.extension" class="Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension">
-      <argument type="service" id=".service_locator.y4dplYt"/>
+      <argument type="service" id=".service_locator.XKZto8r"/>
       <argument type="collection">
         <argument key="Symfony\Component\Form\Extension\Core\Type\FormType" type="iterator">
           <argument type="service" id="form.type_extension.form.transformation_failure_handling"/>
@@ -4932,7 +5036,9 @@
       </argument>
       <argument type="service" id="doctrine.dbal.default_connection.configuration"/>
       <argument type="service" id="doctrine.dbal.default_connection.event_manager"/>
-      <argument type="collection"/>
+      <argument type="collection">
+        <argument key="enum">string</argument>
+      </argument>
       <call method="setNestTransactionsWithSavepoints">
         <argument>true</argument>
       </call>
@@ -5013,7 +5119,7 @@
     <service id="doctrine.orm.configuration" class="Doctrine\ORM\Configuration" abstract="true"/>
     <service id="doctrine.orm.entity_manager.abstract" class="Doctrine\ORM\EntityManager" lazy="true" abstract="true"/>
     <service id="doctrine.orm.container_repository_factory" class="Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory">
-      <argument type="service" id=".service_locator.Xbsa8iG"/>
+      <argument type="service" id=".service_locator.6M6Pzh3"/>
     </service>
     <service id="doctrine.orm.manager_configurator.abstract" class="Doctrine\Bundle\DoctrineBundle\ManagerConfigurator" abstract="true">
       <argument type="collection"/>
@@ -7002,6 +7108,53 @@
       <argument type="service" id="maker.file_manager"/>
       <argument type="service" id="maker.generator"/>
     </service>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\DashboardController" class="App\Controller\DashboardController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\DashboardController" class="App\Controller\DashboardController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\DashboardController" class="App\Controller\DashboardController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\FrontController" class="App\Controller\FrontController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\FrontController" class="App\Controller\FrontController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\FrontController" class="App\Controller\FrontController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\Warehouse\BillController" class="App\Controller\Warehouse\BillController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\Warehouse\BillController" class="App\Controller\Warehouse\BillController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\Warehouse\BillController" class="App\Controller\Warehouse\BillController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\Warehouse\CarController" class="App\Controller\Warehouse\CarController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\Warehouse\CarController" class="App\Controller\Warehouse\CarController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\Warehouse\CarController" class="App\Controller\Warehouse\CarController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\Warehouse\WarehouseController" class="App\Controller\Warehouse\WarehouseController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\Warehouse\WarehouseController" class="App\Controller\Warehouse\WarehouseController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\Warehouse\WarehouseController" class="App\Controller\Warehouse\WarehouseController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\FormAddCarType" class="App\Form\FormAddCarType" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Form\FormAddCarType" class="App\Form\FormAddCarType" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\FormAddWarehouseType" class="App\Form\FormAddWarehouseType" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Form\FormAddWarehouseType" class="App\Form\FormAddWarehouseType" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\FormUpdateBillType" class="App\Form\FormUpdateBillType" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Form\FormUpdateBillType" class="App\Form\FormUpdateBillType" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\AdminRepository" class="App\Repository\AdminRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\AdminRepository" class="App\Repository\AdminRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\AssignmentMechanicRepository" class="App\Repository\AssignmentMechanicRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\AssignmentMechanicRepository" class="App\Repository\AssignmentMechanicRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\AssignmentRepository" class="App\Repository\AssignmentRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\AssignmentRepository" class="App\Repository\AssignmentRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\BillRepository" class="App\Repository\BillRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\BillRepository" class="App\Repository\BillRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\CarRepository" class="App\Repository\CarRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\CarRepository" class="App\Repository\CarRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\FeedbackRepository" class="App\Repository\FeedbackRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\FeedbackRepository" class="App\Repository\FeedbackRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\ItemRepository" class="App\Repository\ItemRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\ItemRepository" class="App\Repository\ItemRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\MechanicRepository" class="App\Repository\MechanicRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\MechanicRepository" class="App\Repository\MechanicRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\OrderRepository" class="App\Repository\OrderRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\OrderRepository" class="App\Repository\OrderRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\ResponseRepository" class="App\Repository\ResponseRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\ResponseRepository" class="App\Repository\ResponseRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\SubmissionRepository" class="App\Repository\SubmissionRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\SubmissionRepository" class="App\Repository\SubmissionRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\UserRepository" class="App\Repository\UserRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\UserRepository" class="App\Repository\UserRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\WarehouseRepository" class="App\Repository\WarehouseRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\WarehouseRepository" class="App\Repository\WarehouseRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".service_locator.w7.f4fT" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -7425,13 +7578,196 @@
         <argument key="loader" type="service_closure" id=".errored..service_locator.y4_Zrx..Symfony\Component\Config\Loader\LoaderInterface"/>
       </argument>
     </service>
-    <service id=".service_locator.HBdvAhp" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.ABB7C9Y" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
+        <argument key="billRepository" type="service_closure" id="App\Repository\BillRepository"/>
+        <argument key="carRepository" type="service_closure" id="App\Repository\CarRepository"/>
+        <argument key="doctrine" type="service_closure" id="doctrine"/>
+        <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
+        <argument key="warehouseRepository" type="service_closure" id="App\Repository\WarehouseRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.9kKwU2t" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+      </argument>
+    </service>
+    <service id=".service_locator.FjS4two" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="billRepository" type="service_closure" id="App\Repository\BillRepository"/>
+        <argument key="doctrine" type="service_closure" id="doctrine"/>
+      </argument>
+    </service>
+    <service id=".service_locator.J7LPsp2" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="billRepository" type="service_closure" id="App\Repository\BillRepository"/>
+        <argument key="carRepository" type="service_closure" id="App\Repository\CarRepository"/>
+        <argument key="doctrine" type="service_closure" id="doctrine"/>
+      </argument>
+    </service>
+    <service id=".service_locator.hHfgzco" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="billRepository" type="service_closure" id="App\Repository\BillRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.fN2p8Nk" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="carRepository" type="service_closure" id="App\Repository\CarRepository"/>
+        <argument key="doctrine" type="service_closure" id="doctrine"/>
+        <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="slugger" type="service_closure" id="slugger"/>
+        <argument key="warehouseRepository" type="service_closure" id="App\Repository\WarehouseRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.NlFxjTt" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="carRepository" type="service_closure" id="App\Repository\CarRepository"/>
+        <argument key="doctrine" type="service_closure" id="doctrine"/>
+      </argument>
+    </service>
+    <service id=".service_locator.zEQ_qAS" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="carRepository" type="service_closure" id="App\Repository\CarRepository"/>
+        <argument key="doctrine" type="service_closure" id="doctrine"/>
+        <argument key="slugger" type="service_closure" id="slugger"/>
+        <argument key="warehouseRepository" type="service_closure" id="App\Repository\WarehouseRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.3LuXUDl" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="carRepository" type="service_closure" id="App\Repository\CarRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.C.Jh_8K" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="billRepository" type="service_closure" id="App\Repository\BillRepository"/>
+        <argument key="carRepository" type="service_closure" id="App\Repository\CarRepository"/>
+        <argument key="doctrine" type="service_closure" id="doctrine"/>
+        <argument key="slugger" type="service_closure" id="slugger"/>
+        <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
+        <argument key="warehouseRepository" type="service_closure" id="App\Repository\WarehouseRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.7Ogq5pd" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="doctrine" type="service_closure" id="doctrine"/>
+        <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="warehouseRepository" type="service_closure" id="App\Repository\WarehouseRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.N1ryE5S" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="doctrine" type="service_closure" id="doctrine"/>
+        <argument key="warehouseRepository" type="service_closure" id="App\Repository\WarehouseRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.tAgBFG3" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="warehouseRepository" type="service_closure" id="App\Repository\WarehouseRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.veIHCei" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="App\Controller\FrontController::index" type="service_closure" id=".service_locator.ABB7C9Y"/>
+        <argument key="App\Controller\Warehouse\BillController::deleteBill" type="service_closure" id=".service_locator.FjS4two"/>
+        <argument key="App\Controller\Warehouse\BillController::filterPaidBills" type="service_closure" id=".service_locator.hHfgzco"/>
+        <argument key="App\Controller\Warehouse\BillController::filterUnpaidBills" type="service_closure" id=".service_locator.hHfgzco"/>
+        <argument key="App\Controller\Warehouse\BillController::listBills" type="service_closure" id=".service_locator.9kKwU2t"/>
+        <argument key="App\Controller\Warehouse\BillController::searchBill" type="service_closure" id=".service_locator.hHfgzco"/>
+        <argument key="App\Controller\Warehouse\BillController::sortBillsByAmountASC" type="service_closure" id=".service_locator.hHfgzco"/>
+        <argument key="App\Controller\Warehouse\BillController::sortBillsByAmountDESC" type="service_closure" id=".service_locator.hHfgzco"/>
+        <argument key="App\Controller\Warehouse\BillController::sortBillsByDateASC" type="service_closure" id=".service_locator.hHfgzco"/>
+        <argument key="App\Controller\Warehouse\BillController::sortBillsByDateDESC" type="service_closure" id=".service_locator.hHfgzco"/>
+        <argument key="App\Controller\Warehouse\BillController::updateBill" type="service_closure" id=".service_locator.J7LPsp2"/>
+        <argument key="App\Controller\Warehouse\CarController::availableCars" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController::deleteCar" type="service_closure" id=".service_locator.NlFxjTt"/>
+        <argument key="App\Controller\Warehouse\CarController::index" type="service_closure" id=".service_locator.C.Jh_8K"/>
+        <argument key="App\Controller\Warehouse\CarController::listCars" type="service_closure" id=".service_locator.fN2p8Nk"/>
+        <argument key="App\Controller\Warehouse\CarController::newCars" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController::notAvailableCars" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController::rentedCars" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController::searchCar" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController::soldCars" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController::sortCarsByBrandModelASC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController::sortCarsByBrandModelDESC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController::sortCarsByKilometrageASC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController::sortCarsByKilometrageDESC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController::sortCarsByPriceASC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController::sortCarsByPriceDESC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController::sortCarsByYearASC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController::sortCarsByYearDESC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController::underRepairCars" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController::updateCar" type="service_closure" id=".service_locator.zEQ_qAS"/>
+        <argument key="App\Controller\Warehouse\CarController::usedCars" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\WarehouseController::deleteWarehouse" type="service_closure" id=".service_locator.N1ryE5S"/>
+        <argument key="App\Controller\Warehouse\WarehouseController::listWarehouses" type="service_closure" id=".service_locator.7Ogq5pd"/>
+        <argument key="App\Controller\Warehouse\WarehouseController::repairWarehouse" type="service_closure" id=".service_locator.tAgBFG3"/>
+        <argument key="App\Controller\Warehouse\WarehouseController::searchWarehouse" type="service_closure" id=".service_locator.tAgBFG3"/>
+        <argument key="App\Controller\Warehouse\WarehouseController::sortByCapacityASC" type="service_closure" id=".service_locator.tAgBFG3"/>
+        <argument key="App\Controller\Warehouse\WarehouseController::sortByCapacityDESC" type="service_closure" id=".service_locator.tAgBFG3"/>
+        <argument key="App\Controller\Warehouse\WarehouseController::sortByCityASC" type="service_closure" id=".service_locator.tAgBFG3"/>
+        <argument key="App\Controller\Warehouse\WarehouseController::sortByCityDESC" type="service_closure" id=".service_locator.tAgBFG3"/>
+        <argument key="App\Controller\Warehouse\WarehouseController::storageWarehouse" type="service_closure" id=".service_locator.tAgBFG3"/>
+        <argument key="App\Controller\Warehouse\WarehouseController::updateWarehouse" type="service_closure" id=".service_locator.N1ryE5S"/>
         <argument key="App\Kernel::loadRoutes" type="service_closure" id=".service_locator.y4_Zrx."/>
         <argument key="App\Kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.y4_Zrx."/>
         <argument key="kernel::loadRoutes" type="service_closure" id=".service_locator.y4_Zrx."/>
         <argument key="kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.y4_Zrx."/>
+        <argument key="App\Controller\FrontController:index" type="service_closure" id=".service_locator.ABB7C9Y"/>
+        <argument key="App\Controller\Warehouse\BillController:deleteBill" type="service_closure" id=".service_locator.FjS4two"/>
+        <argument key="App\Controller\Warehouse\BillController:filterPaidBills" type="service_closure" id=".service_locator.hHfgzco"/>
+        <argument key="App\Controller\Warehouse\BillController:filterUnpaidBills" type="service_closure" id=".service_locator.hHfgzco"/>
+        <argument key="App\Controller\Warehouse\BillController:listBills" type="service_closure" id=".service_locator.9kKwU2t"/>
+        <argument key="App\Controller\Warehouse\BillController:searchBill" type="service_closure" id=".service_locator.hHfgzco"/>
+        <argument key="App\Controller\Warehouse\BillController:sortBillsByAmountASC" type="service_closure" id=".service_locator.hHfgzco"/>
+        <argument key="App\Controller\Warehouse\BillController:sortBillsByAmountDESC" type="service_closure" id=".service_locator.hHfgzco"/>
+        <argument key="App\Controller\Warehouse\BillController:sortBillsByDateASC" type="service_closure" id=".service_locator.hHfgzco"/>
+        <argument key="App\Controller\Warehouse\BillController:sortBillsByDateDESC" type="service_closure" id=".service_locator.hHfgzco"/>
+        <argument key="App\Controller\Warehouse\BillController:updateBill" type="service_closure" id=".service_locator.J7LPsp2"/>
+        <argument key="App\Controller\Warehouse\CarController:availableCars" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController:deleteCar" type="service_closure" id=".service_locator.NlFxjTt"/>
+        <argument key="App\Controller\Warehouse\CarController:index" type="service_closure" id=".service_locator.C.Jh_8K"/>
+        <argument key="App\Controller\Warehouse\CarController:listCars" type="service_closure" id=".service_locator.fN2p8Nk"/>
+        <argument key="App\Controller\Warehouse\CarController:newCars" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController:notAvailableCars" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController:rentedCars" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController:searchCar" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController:soldCars" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController:sortCarsByBrandModelASC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController:sortCarsByBrandModelDESC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController:sortCarsByKilometrageASC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController:sortCarsByKilometrageDESC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController:sortCarsByPriceASC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController:sortCarsByPriceDESC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController:sortCarsByYearASC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController:sortCarsByYearDESC" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController:underRepairCars" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\CarController:updateCar" type="service_closure" id=".service_locator.zEQ_qAS"/>
+        <argument key="App\Controller\Warehouse\CarController:usedCars" type="service_closure" id=".service_locator.3LuXUDl"/>
+        <argument key="App\Controller\Warehouse\WarehouseController:deleteWarehouse" type="service_closure" id=".service_locator.N1ryE5S"/>
+        <argument key="App\Controller\Warehouse\WarehouseController:listWarehouses" type="service_closure" id=".service_locator.7Ogq5pd"/>
+        <argument key="App\Controller\Warehouse\WarehouseController:repairWarehouse" type="service_closure" id=".service_locator.tAgBFG3"/>
+        <argument key="App\Controller\Warehouse\WarehouseController:searchWarehouse" type="service_closure" id=".service_locator.tAgBFG3"/>
+        <argument key="App\Controller\Warehouse\WarehouseController:sortByCapacityASC" type="service_closure" id=".service_locator.tAgBFG3"/>
+        <argument key="App\Controller\Warehouse\WarehouseController:sortByCapacityDESC" type="service_closure" id=".service_locator.tAgBFG3"/>
+        <argument key="App\Controller\Warehouse\WarehouseController:sortByCityASC" type="service_closure" id=".service_locator.tAgBFG3"/>
+        <argument key="App\Controller\Warehouse\WarehouseController:sortByCityDESC" type="service_closure" id=".service_locator.tAgBFG3"/>
+        <argument key="App\Controller\Warehouse\WarehouseController:storageWarehouse" type="service_closure" id=".service_locator.tAgBFG3"/>
+        <argument key="App\Controller\Warehouse\WarehouseController:updateWarehouse" type="service_closure" id=".service_locator.N1ryE5S"/>
         <argument key="kernel:loadRoutes" type="service_closure" id=".service_locator.y4_Zrx."/>
         <argument key="kernel:registerContainerConfiguration" type="service_closure" id=".service_locator.y4_Zrx."/>
       </argument>
@@ -7593,9 +7929,12 @@
       <argument type="service" id="argument_resolver.query_parameter_value_resolver"/>
       <argument type="service" id="debug.stopwatch"/>
     </service>
-    <service id=".service_locator.y4dplYt" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.XKZto8r" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
+        <argument key="App\Form\FormAddCarType" type="service_closure" id="App\Form\FormAddCarType"/>
+        <argument key="App\Form\FormAddWarehouseType" type="service_closure" id="App\Form\FormAddWarehouseType"/>
+        <argument key="App\Form\FormUpdateBillType" type="service_closure" id="App\Form\FormUpdateBillType"/>
         <argument key="Symfony\Bridge\Doctrine\Form\Type\EntityType" type="service_closure" id="form.type.entity"/>
         <argument key="Symfony\Component\Form\Extension\Core\Type\ChoiceType" type="service_closure" id="form.type.choice"/>
         <argument key="Symfony\Component\Form\Extension\Core\Type\ColorType" type="service_closure" id="form.type.color"/>
@@ -7721,9 +8060,23 @@
         <argument key="turbo.doctrine.event_listener" type="service_closure" id="turbo.doctrine.event_listener"/>
       </argument>
     </service>
-    <service id=".service_locator.Xbsa8iG" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.6M6Pzh3" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
-      <argument type="collection"/>
+      <argument type="collection">
+        <argument key="App\Repository\AdminRepository" type="service_closure" id="App\Repository\AdminRepository"/>
+        <argument key="App\Repository\AssignmentMechanicRepository" type="service_closure" id="App\Repository\AssignmentMechanicRepository"/>
+        <argument key="App\Repository\AssignmentRepository" type="service_closure" id="App\Repository\AssignmentRepository"/>
+        <argument key="App\Repository\BillRepository" type="service_closure" id="App\Repository\BillRepository"/>
+        <argument key="App\Repository\CarRepository" type="service_closure" id="App\Repository\CarRepository"/>
+        <argument key="App\Repository\FeedbackRepository" type="service_closure" id="App\Repository\FeedbackRepository"/>
+        <argument key="App\Repository\ItemRepository" type="service_closure" id="App\Repository\ItemRepository"/>
+        <argument key="App\Repository\MechanicRepository" type="service_closure" id="App\Repository\MechanicRepository"/>
+        <argument key="App\Repository\OrderRepository" type="service_closure" id="App\Repository\OrderRepository"/>
+        <argument key="App\Repository\ResponseRepository" type="service_closure" id="App\Repository\ResponseRepository"/>
+        <argument key="App\Repository\SubmissionRepository" type="service_closure" id="App\Repository\SubmissionRepository"/>
+        <argument key="App\Repository\UserRepository" type="service_closure" id="App\Repository\UserRepository"/>
+        <argument key="App\Repository\WarehouseRepository" type="service_closure" id="App\Repository\WarehouseRepository"/>
+      </argument>
     </service>
     <service id=".service_locator.KLVvNIq" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
@@ -8024,6 +8377,52 @@
         <argument>0</argument>
       </call>
     </service>
+    <service id=".service_locator.O2p6Lk7" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="form.factory" type="service_closure" id="form.factory" on-invalid="ignore"/>
+        <argument key="http_kernel" type="service_closure" id="http_kernel" on-invalid="ignore"/>
+        <argument key="parameter_bag" type="service_closure" id="parameter_bag" on-invalid="ignore"/>
+        <argument key="request_stack" type="service_closure" id="request_stack" on-invalid="ignore"/>
+        <argument key="router" type="service_closure" id="router.default" on-invalid="ignore"/>
+        <argument key="security.authorization_checker" type="service_closure" id="security.authorization_checker" on-invalid="ignore"/>
+        <argument key="security.csrf.token_manager" type="service_closure" id="security.csrf.token_manager" on-invalid="ignore"/>
+        <argument key="security.token_storage" type="service_closure" id="security.token_storage" on-invalid="ignore"/>
+        <argument key="serializer" type="service_closure" id="debug.serializer" on-invalid="ignore"/>
+        <argument key="twig" type="service_closure" id="twig" on-invalid="ignore"/>
+        <argument key="web_link.http_header_serializer" type="service_closure" id="web_link.http_header_serializer" on-invalid="ignore"/>
+      </argument>
+    </service>
+    <service id=".service_locator.O2p6Lk7.App\Controller\DashboardController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\DashboardController"/>
+      <argument>App\Controller\DashboardController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.O2p6Lk7" method="withContext"/>
+    </service>
+    <service id=".service_locator.O2p6Lk7.App\Controller\FrontController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\FrontController"/>
+      <argument>App\Controller\FrontController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.O2p6Lk7" method="withContext"/>
+    </service>
+    <service id=".service_locator.O2p6Lk7.App\Controller\Warehouse\BillController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\Warehouse\BillController"/>
+      <argument>App\Controller\Warehouse\BillController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.O2p6Lk7" method="withContext"/>
+    </service>
+    <service id=".service_locator.O2p6Lk7.App\Controller\Warehouse\CarController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\Warehouse\CarController"/>
+      <argument>App\Controller\Warehouse\CarController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.O2p6Lk7" method="withContext"/>
+    </service>
+    <service id=".service_locator.O2p6Lk7.App\Controller\Warehouse\WarehouseController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\Warehouse\WarehouseController"/>
+      <argument>App\Controller\Warehouse\WarehouseController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.O2p6Lk7" method="withContext"/>
+    </service>
     <service id=".service_locator.fuYM_Z." class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -8096,6 +8495,10 @@
       <argument type="collection">
         <argument key="reverse_container" type="service_closure" id="reverse_container" on-invalid="ignore_uninitialized"/>
       </argument>
+    </service>
+    <service id=".service_locator.Xbsa8iG" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection"/>
     </service>
     <service id=".service_locator.NBUFN6A" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
@@ -8194,6 +8597,11 @@
       <call method="allowControllers">
         <argument type="collection">
           <argument>App\Kernel</argument>
+          <argument>App\Controller\DashboardController</argument>
+          <argument>App\Controller\FrontController</argument>
+          <argument>App\Controller\Warehouse\BillController</argument>
+          <argument>App\Controller\Warehouse\CarController</argument>
+          <argument>App\Controller\Warehouse\WarehouseController</argument>
           <argument>Doctrine\Bundle\DoctrineBundle\Controller\ProfilerController</argument>
         </argument>
       </call>
@@ -9580,7 +9988,7 @@
     <service id="Psr\Log\LoggerInterface" alias="monolog.logger"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.w7.f4fT" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.HBdvAhp"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.veIHCei"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="Psr\Log\LoggerInterface $requestLogger" alias="monolog.logger.request"/>
@@ -9604,11 +10012,19 @@
     <service id=".service_locator.80edgLI" alias="messenger.receiver_locator"/>
     <service id=".service_locator.h8Jkkd2" alias="messenger.retry_strategy_locator"/>
     <service id=".service_locator.bJ.4HC5" alias=".service_locator.w7.f4fT"/>
-    <service id=".service_locator.L.EDYUC" alias=".service_locator.HBdvAhp"/>
+    <service id=".service_locator.M4ScWxL" alias=".service_locator.ABB7C9Y"/>
+    <service id=".service_locator.y14Tdwj" alias=".service_locator.J7LPsp2"/>
+    <service id=".service_locator.ssRYnE6" alias=".service_locator.fN2p8Nk"/>
+    <service id=".service_locator.lihSWQN" alias=".service_locator.zEQ_qAS"/>
+    <service id=".service_locator.UKXCH1w" alias=".service_locator.C.Jh_8K"/>
+    <service id=".service_locator.wFpB3dp" alias=".service_locator.7Ogq5pd"/>
+    <service id=".service_locator.CCfXt6l" alias=".service_locator.N1ryE5S"/>
+    <service id=".service_locator.s6KCSbJ" alias=".service_locator.veIHCei"/>
     <service id=".service_locator.BFrsqsn" alias=".service_locator.F9PKc.7"/>
-    <service id=".service_locator.Za9MpXe" alias=".service_locator.y4dplYt"/>
+    <service id=".service_locator.WDH1t6p" alias=".service_locator.XKZto8r"/>
     <service id=".service_locator.XtmiKbi" alias=".service_locator.MfxSDRP"/>
     <service id=".service_locator.O24_MAy" alias=".service_locator.yY.p4P7"/>
+    <service id=".service_locator.jUv.zyj" alias=".service_locator.O2p6Lk7"/>
     <service id="validator" alias="debug.validator"/>
     <service id="http_client" alias=".debug.http_client"/>
     <service id=".debug.http_client.inner" alias="http_client.uri_template"/>
@@ -9629,6 +10045,20 @@
     <service id="doctrine.orm.default_metadata_driver" alias=".doctrine.orm.default_metadata_driver"/>
     <service id="security.event_dispatcher.main" alias="debug.security.event_dispatcher.main"/>
     <service id=".service_locator.gFlme_s" alias=".service_locator.y4_Zrx."/>
+    <service id=".service_locator.LpkQgcX" alias=".service_locator.ABB7C9Y"/>
+    <service id=".service_locator.gaTSUXr" alias=".service_locator.9kKwU2t"/>
+    <service id=".service_locator.kakEBMG" alias=".service_locator.FjS4two"/>
+    <service id=".service_locator.VnlNg27" alias=".service_locator.J7LPsp2"/>
+    <service id=".service_locator.fEuUGMQ" alias=".service_locator.hHfgzco"/>
+    <service id=".service_locator.jvJkm0g" alias=".service_locator.fN2p8Nk"/>
+    <service id=".service_locator.iowJAqT" alias=".service_locator.NlFxjTt"/>
+    <service id=".service_locator.bZbp0mw" alias=".service_locator.zEQ_qAS"/>
+    <service id=".service_locator.6_u.6L1" alias=".service_locator.3LuXUDl"/>
+    <service id=".service_locator.nYthxo_" alias=".service_locator.C.Jh_8K"/>
+    <service id=".service_locator._NCL0ix" alias=".service_locator.7Ogq5pd"/>
+    <service id=".service_locator.qd0GvOs" alias=".service_locator.N1ryE5S"/>
+    <service id=".service_locator.ZcRAvqz" alias=".service_locator.tAgBFG3"/>
+    <service id=".service_locator.Q1z.f9O" alias=".service_locator.O2p6Lk7"/>
     <service id=".service_locator.dGUCsbe" alias=".service_locator.oR77BOj"/>
     <service id=".service_locator._kIAbz1" alias=".service_locator.TpoC7U9"/>
     <service id=".service_locator.hnz5ZNh" alias=".service_locator.0TACwl3"/>
