@@ -61,15 +61,20 @@
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                {{ form_label(form.mechanics) }}
-                                {{ form_widget(form.mechanics, {'attr': {'class': 'form-control'}}) }}
-                                <div class="invalid-feedback">
-                                    {{ form_errors(form.mechanics) }}
-                                </div>
-                            </div>
+                    <!-- Mechanics Selection -->
+                    <div class="form-group">
+                        <label for="assignment_mechanics">Select Mechanics</label>
+                        <select name="assignment[mechanics][]" id="assignment_mechanics" class="form-control select2" multiple="multiple">
+                            {% for mechanic in mechanics %}
+                                <option value="{{ mechanic.idMechanic }}" 
+                                        {% if assignment.getMechanics() is defined and mechanic in assignment.getMechanics() %}selected{% endif %}>
+                                    {{ mechanic.nameMechanic }} ({{ mechanic.specialityMechanic }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                        {# Hidden field for mechanics collection #}
+                        <div id="mechanics_collection" style="display:none">
+                            {{ form_widget(form.assignmentMechanics) }}
                         </div>
                     </div>
 
@@ -105,5 +110,42 @@
                 });
             }, false);
         })();
+
+        // Initialize Select2 for mechanics selection
+        $(document).ready(function() {
+            // Initialize Select2
+            $('.select2').select2({
+                placeholder: "Select mechanics",
+                allowClear: true,
+                width: '100%'
+            });
+            
+            // Trigger change event on page load to initialize hidden inputs
+            $('#assignment_mechanics').trigger('change');
+            
+            // Handle form submission to ensure mechanics are selected
+            $('form').on('submit', function(e) {
+                // Make sure mechanics are synced before submit
+                $('#assignment_mechanics').trigger('change');
+            });
+            
+            // Sync selected mechanics with the hidden collection field
+            $('#assignment_mechanics').on('change', function() {
+                const selectedMechanics = $(this).val() || [];
+                console.log('Selected mechanics:', selectedMechanics);
+                
+                // Clear existing mechanics collection
+                $('#mechanics_collection').empty();
+                
+                // Add new hidden inputs for each selected mechanic
+                selectedMechanics.forEach(function(mechanicId) {
+                    const newInput = $('<input>')
+                        .attr('type', 'hidden')
+                        .attr('name', 'assignment[mechanics][]')
+                        .val(mechanicId);
+                    $('#mechanics_collection').append(newInput);
+                });
+            });
+        });
     </script>
 {% endblock %}

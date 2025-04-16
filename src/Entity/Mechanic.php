@@ -5,9 +5,11 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use App\Entity\Assignment_mechanics;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\AssignmentMechanics;
 use phpDocumentor\Reflection\Types\Null_;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
 
 #[ORM\Entity]
 class Mechanic
@@ -35,14 +37,13 @@ class Mechanic
         minMessage: "Specialty must be at least {{ limit }} characters long",
         maxMessage: "Specialty cannot be longer than {{ limit }} characters"
     )]
+    #[Assert\Choice(
+        choices: ['mechanic', 'software', 'electrician'],
+        message: 'Specialty must be one of: mechanic, software, or electrician'
+    )]
     private string $specialityMechanic;
 
-    #[ORM\Column(name: "imgMechanic", type: "string", length: 255, nullable : true )]
-    #[Assert\File(
-        maxSize: "2M",
-        mimeTypes: ["image/jpeg", "image/png", "image/gif"],
-        mimeTypesMessage: "Please upload a valid image (JPEG, PNG, GIF)"
-    )]
+    #[ORM\Column(name: "imgMechanic", type: "string", length: 255, nullable: true)]
     private ?string $imgMechanic = null;
 
     #[ORM\Column(name: "emailMechanic", type: "string", length: 255)]
@@ -172,4 +173,20 @@ class Mechanic
         $this->assignmentMechanics->removeElement($assignmentMechanic);
         return $this;
     }
+
+    
+    public function hasAssignments(EntityManagerInterface $em): bool
+    {
+        $assignmentRepo = $em->getRepository(AssignmentMechanics::class);
+        return count($assignmentRepo->findBy(['idMechanic' => $this->idMechanic])) > 0;
+    }
+    // Add this method to get Assignment objects directly
+    // Add this method to get Assignment objects directly
+    public function getAssignmentsThroughJoin(): array
+    {
+        return $this->getAssignmentMechanics()->map(
+            fn(AssignmentMechanics $am) => $am->getIdAssignment()
+        )->toArray();
+    }
+    
 }

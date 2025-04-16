@@ -158,9 +158,11 @@
                                     <td>{{ assignment.car.brandCar }} {{ assignment.car.modelCar }}</td>
                                     <td>
                                         {% for assignmentMechanic in assignment.assignmentMechanics %}
-                                            <span class="badge badge-info">{{ assignmentMechanic.idMechanic.nameMechanic }}</span>
+                                            <span class="badge badge-info" title="{{ assignmentMechanic.idMechanic.specialityMechanic }}">
+                                                {{ assignmentMechanic.idMechanic.nameMechanic }}
+                                            </span>
                                         {% else %}
-                                            <span class="badge badge-secondary">No mechanics assigned</span>
+                                            <span class="badge badge-secondary">No mechanics</span>
                                         {% endfor %}
                                     </td>
                                     <td class="action-column">

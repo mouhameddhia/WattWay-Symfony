@@ -74,6 +74,37 @@
                 </div>
             </div>
 
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Current Assignments</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for assignmentMechanic in mechanic.assignmentMechanics %}
+                            <a href="{{ path('app_assignment_show', {'idAssignment': assignmentMechanic.idAssignment.idAssignment}) }}" 
+                            class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">
+                                        {{ assignmentMechanic.idAssignment.descriptionAssignment|u.truncate(50, '...') }}
+                                    </h6>
+                                    <span class="badge badge-{{ assignmentMechanic.idAssignment.statusAssignment == 'Completed' ? 'success' : (assignmentMechanic.idAssignment.statusAssignment == 'In Progress' ? 'warning' : 'secondary') }}">
+                                        {{ assignmentMechanic.idAssignment.statusAssignment }}
+                                    </span>
+                                </div>
+                                <small>Assigned on: {{ assignmentMechanic.idAssignment.dateAssignment|date('Y-m-d') }}</small>
+                                <div class="mt-2">
+                                    <span class="badge badge-light">
+                                        {{ assignmentMechanic.idAssignment.car.brandCar }} {{ assignmentMechanic.idAssignment.car.modelCar }}
+                                    </span>
+                                </div>
+                            </a>
+                        {% else %}
+                            <div class="text-center text-muted py-3">No current assignments</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
             <div class="action-buttons mt-4">
                 <a href="{{ path('app_mechanic_edit', {'idMechanic': mechanic.idMechanic}) }}" 
                    class="btn btn-primary mr-2">

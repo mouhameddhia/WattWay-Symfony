@@ -15,7 +15,8 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\PositiveOrZero;
-use Symfony\Component\Form\Extension\Core\Type\File;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+
 
 class MechanicType extends AbstractType
 {
@@ -38,20 +39,19 @@ class MechanicType extends AbstractType
                     ])
                 ]
             ])
-            ->add('specialityMechanic', TextType::class, [
+            ->add('specialityMechanic', ChoiceType::class, [
                 'label' => 'Specialty',
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Enter mechanic specialty'
+                'choices' => [
+                    'Mechanic' => 'mechanic',
+                    'Software Engineer' => 'software',
+                    'Electrician' => 'electrician'
                 ],
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'placeholder' => 'Select a specialty', // Optional empty choice
                 'constraints' => [
-                    new NotBlank(['message' => 'Specialty is required']),
-                    new Length([
-                        'min' => 2,
-                        'max' => 255,
-                        'minMessage' => 'Specialty must be at least {{ limit }} characters long',
-                        'maxMessage' => 'Specialty cannot be longer than {{ limit }} characters'
-                    ])
+                    new NotBlank(['message' => 'Please select a specialty'])
                 ]
             ])
             ->add('emailMechanic', EmailType::class, [
@@ -65,21 +65,6 @@ class MechanicType extends AbstractType
                     new Email(['message' => 'The email "{{ value }}" is not a valid email'])
                 ]
             ])
-            ->add('imgMechanic', FileType::class, [
-                'label' => 'Profile Image',
-                'mapped' => false,
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'constraints' => [
-                    new File([
-                        'maxSize' => '2M',
-                        'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif'],
-                        'mimeTypesMessage' => 'Please upload a valid image (JPEG, PNG, GIF)'
-                    ])
-                ]
-            ])
             ->add('carsRepaired', IntegerType::class, [
                 'label' => 'Cars Repaired',
                 'attr' => [
@@ -91,6 +76,7 @@ class MechanicType extends AbstractType
                     new PositiveOrZero(['message' => 'Cars repaired cannot be negative'])
                 ]
             ])
+            
         ;
     }
 

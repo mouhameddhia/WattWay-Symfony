@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class AssignmentType extends AbstractType
 {
@@ -93,78 +94,42 @@ class AssignmentType extends AbstractType
                     new NotBlank(['message' => 'Please select a car'])
                 ]
             ])
-            ->add('mechanics', EntityType::class, [
-                'label' => 'Mechanics',
-                'class' => Mechanic::class,
-                'choice_label' => 'nameMechanic',
-                'multiple' => true,
-                'expanded' => true,
+            ->add('assignmentMechanics', CollectionType::class, [
+                'entry_type' => AssignmentMechanicsType::class,
+                'entry_options' => ['label' => false],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'label' => false,
+                'prototype' => true,
+                'prototype_name' => '__mechanics_prot__',
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'mechanics-collection'
                 ]
             ]);
+    }
 
-        $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
-            $assignment = $event->getData();
-            $form = $event->getForm();
-
-            if ($assignment) {
-                $mechanics = [];
-                foreach ($assignment->getAssignmentMechanics() as $assignmentMechanic) {
-                    $mechanics[] = $assignmentMechanic->getIdMechanic();
-                }
-                $form->get('mechanics')->setData($mechanics);
-            }
-        });
-
-        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
-            $assignment = $event->getData();
-            $form = $event->getForm();
-            $mechanics = $form->get('mechanics')->getData();
-
-            // Get existing mechanics for this assignment
-            $existingMechanics = [];
-            foreach ($assignment->getAssignmentMechanics() as $assignmentMechanic) {
-                $existingMechanics[$assignmentMechanic->getIdMechanic()->getIdMechanic()] = $assignmentMechanic;
-            }
-
-            // Add new mechanics
-            if ($mechanics) {
-                foreach ($mechanics as $mechanic) {
-                    $mechanicId = $mechanic->getIdMechanic();
-                    if (!isset($existingMechanics[$mechanicId])) {
-                        $assignmentMechanic = new AssignmentMechanics();
-                        $assignmentMechanic->setIdAssignment($assignment);
-                        $assignmentMechanic->setIdMechanic($mechanic);
-                        $assignment->addAssignmentMechanic($assignmentMechanic);
-                        $this->entityManager->persist($assignmentMechanic);
-                    }
-                }
-            }
-
-            // Remove mechanics that are no longer assigned
-            foreach ($existingMechanics as $mechanicId => $assignmentMechanic) {
-                $found = false;
-                if ($mechanics) {
-                    foreach ($mechanics as $mechanic) {
-                        if ($mechanic->getIdMechanic() === $mechanicId) {
-                            $found = true;
-                            break;
-                        }
-                    }
-                }
-                if (!$found) {
-                    $assignment->removeAssignmentMechanic($assignmentMechanic);
-                    $this->entityManager->remove($assignmentMechanic);
-                }
-            }
-        });
+    private function getMechanicsData(EntityManagerInterface $em): array
+    {
+        $mechanics = $em->getRepository(Mechanic::class)->findAll();
+        $data = [];
+        
+        foreach ($mechanics as $mechanic) {
+            $data[$mechanic->getIdMechanic()] = [
+                'id' => $mechanic->getIdMechanic(),
+                'name' => $mechanic->getNameMechanic(),
+                'specialty' => $mechanic->getSpecialityMechanic()
+            ];
+        }
+        
+        return $data;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Assignment::class,
+            'allow_extra_fields' => true, // Add this line
             'empty_data' => function () {
                 return new Assignment();
             }

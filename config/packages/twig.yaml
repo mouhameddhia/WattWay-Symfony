@@ -1,6 +1,12 @@
+# config/packages/twig.yaml
 twig:
     file_name_pattern: '*.twig'
+    default_path: '%kernel.project_dir%/templates'
+    form_themes: ['bootstrap_5_layout.html.twig']
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
 
+# Only include this if you're using Symfony 4.4+ or 5.1+
 when@test:
     twig:
         strict_variables: true

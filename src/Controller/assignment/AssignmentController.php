@@ -4,6 +4,8 @@ namespace App\Controller\assignment;
 
 use App\Entity\Assignment;
 use App\Form\AssignmentType;
+use App\Entity\Mechanic;
+use App\Entity\AssignmentMechanics;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,18 +41,50 @@ final class AssignmentController extends AbstractController
     {
         $assignment = new Assignment();
         $form = $this->createForm(AssignmentType::class, $assignment);
+        $mechanics = $entityManager->getRepository(Mechanic::class)->findAll();
+        
         $form->handleRequest($request);
+        if ($request->isMethod('POST')) {
+            $postData = $request->request->all();
+            file_put_contents('debug.txt', print_r($postData, true));
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Handle mechanics selection manually
+            $selectedMechanicIds = $request->request->all()['assignment']['mechanics'] ?? [];
+
+            // First persist the assignment to get an ID
             $entityManager->persist($assignment);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_assignment_index', [], Response::HTTP_SEE_OTHER);
+            // Clear existing mechanics (in case of form resubmission)
+            foreach ($assignment->getAssignmentMechanics() as $am) {
+                $assignment->removeAssignmentMechanic($am);
+                $entityManager->remove($am);
+            }
+
+            // Add selected mechanics
+            foreach ($selectedMechanicIds as $mechanicId) {
+                $mechanic = $entityManager->getRepository(Mechanic::class)->find($mechanicId);
+                if ($mechanic) {
+                    $assignmentMechanic = new AssignmentMechanics();
+                    $assignmentMechanic->setIdMechanic($mechanic);
+                    $assignmentMechanic->setIdAssignment($assignment);
+                    $assignment->addAssignmentMechanic($assignmentMechanic);
+                    $entityManager->persist($assignmentMechanic);
+                }
+            }
+
+            // Flush again to save the mechanics
+            $entityManager->flush();
+            
+            return $this->redirectToRoute('app_assignment_index');
         }
 
         return $this->render('backend/assignment/new.html.twig', [
             'assignment' => $assignment,
             'form' => $form->createView(),
+            'mechanics' => $mechanics
         ]);
     }
 
@@ -66,17 +100,40 @@ final class AssignmentController extends AbstractController
     public function edit(Request $request, Assignment $assignment, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(AssignmentType::class, $assignment);
+        $mechanics = $entityManager->getRepository(Mechanic::class)->findAll();
+        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Handle mechanics selection
+            $selectedMechanicIds = $request->request->all()['assignment']['mechanics'] ?? [];
+            
+            // Clear existing mechanics
+            foreach ($assignment->getAssignmentMechanics() as $am) {
+                $assignment->removeAssignmentMechanic($am);
+                $entityManager->remove($am);
+            }
+            
+            // Add selected mechanics
+            foreach ($selectedMechanicIds as $mechanicId) {
+                $mechanic = $entityManager->getRepository(Mechanic::class)->find($mechanicId);
+                if ($mechanic) {
+                    $assignmentMechanic = new AssignmentMechanics();
+                    $assignmentMechanic->setIdMechanic($mechanic);
+                    $assignmentMechanic->setIdAssignment($assignment);
+                    $assignment->addAssignmentMechanic($assignmentMechanic);
+                    $entityManager->persist($assignmentMechanic);
+                }
+            }
+            
             $entityManager->flush();
-
             return $this->redirectToRoute('app_assignment_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('backend/assignment/edit.html.twig', [
             'assignment' => $assignment,
             'form' => $form->createView(),
+            'mechanics' => $mechanics
         ]);
     }
 

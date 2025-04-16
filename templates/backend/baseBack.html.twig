@@ -219,7 +219,14 @@
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+    <script src="{{ asset('build/select2.js') }}"></script>
+
+    
     {% endblock %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('build/select2.css') }}">
+    {% endblock %}
+
 </body>
 
 </html>

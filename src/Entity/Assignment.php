@@ -37,7 +37,7 @@ class Assignment
     private string $statusAssignment;
 
     #[ORM\ManyToOne(targetEntity: Car::class)]
-    #[ORM\JoinColumn(name: "car_id", referencedColumnName: "idCar")]
+    #[ORM\JoinColumn(name: "idCar", referencedColumnName: "idCar")]
     #[Assert\NotBlank(message: "Car is required")]
     private ?Car $car = null;
 
@@ -121,5 +121,28 @@ class Assignment
     {
         $this->assignmentMechanics->removeElement($assignmentMechanic);
         return $this;
+    }
+    public function getMechanicNames(): array
+    {
+        return $this->getAssignmentMechanics()->map(
+            fn(AssignmentMechanics $am) => $am->getIdMechanic()->getNameMechanic()
+        )->toArray();
+    }
+
+    public function hasMechanic(Mechanic $mechanic): bool
+    {
+        foreach ($this->getAssignmentMechanics() as $am) {
+            if ($am->getIdMechanic() === $mechanic) {
+                return true;
+            }
+        }
+        return false;
+    }
+    // Add this method to get Mechanic objects directly
+    public function getMechanics(): array
+    {
+        return $this->getAssignmentMechanics()->map(
+            fn(AssignmentMechanics $am) => $am->getIdMechanic()
+        )->toArray();
     }
 }
