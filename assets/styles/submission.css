@@ -164,6 +164,8 @@ textarea.form-control {
     gap: 8px;
     transition: all 0.3s ease;
     cursor: pointer;
+    margin-right: 15px;
+
 }
 
 .btn-primary {
@@ -300,6 +302,20 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .single-testimonial-box:hover {
     transform: translateY(-5px);
     box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+    color: #1a237e;
+}
+
+.single-testimonial-box:hover .testimonial-description {
+    color: #1a237e !important;
+} /* Higher contrast dark color */
+
+
+.single-testimonial-box:hover .testimonial-description {
+    color: #1a202c !important;
+}
+
+.single-testimonial-box:hover .testimonial-description {
+    color: #2d3748 !important;
 }
 
 .testimonial-description {
@@ -323,7 +339,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     height: 160px;
     overflow: hidden;
     border-radius: 8px;
-    margin-bottom: 1rem;
+    margin-bottom: 50px;
+    width: 150px;
+    margin-left: 50px;
 }
 
 .testimonial-img img {
@@ -341,7 +359,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .car-details {
     display: flex;
     justify-content: space-between;
-    background: #f8f9fa;
+    background: #010427;
     padding: 0.75rem;
     border-radius: 6px;
     margin-bottom: 1rem;
@@ -360,7 +378,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .service-details {
-    background: #fff;
+    background: #010427;
     padding: 0.75rem;
     border-radius: 6px;
     border-left: 3px solid #365069;
@@ -375,21 +393,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-bottom: 0;
 }
 
-/* Responses styling */
-.responses-container {
-    margin-top: 1.5rem;
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid rgba(249, 143, 21, 0.2);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    transform-origin: top;
-    transition: all 0.3s ease-in-out;
-}
+
 
 .responses-title {
     font-size: 1.1rem;
-    color: #2d3748;
+    color: #011029;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
     border-bottom: 2px solid rgba(249, 143, 21, 0.2);

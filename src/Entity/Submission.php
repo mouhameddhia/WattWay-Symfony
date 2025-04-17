@@ -143,6 +143,7 @@ class Submission
 
     #[ORM\Column(name: 'preferredContactMethod', type: 'string', nullable: true)]
     #[Assert\Choice(choices: ['sms', 'phone', 'email'], message: 'Invalid contact method', groups: ['create'])]
+    #[Assert\NotBlank(message: 'Type should not be blank.')]
     private ?string $preferredContactMethod = null;
 
     public function getPreferredContactMethod(): ?string

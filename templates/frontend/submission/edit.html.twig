@@ -1,24 +1,86 @@
 
 {% block title %}Edit Submission{% endblock %}
 
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('assets/styles/edit_submission.css') }}">
-{% endblock %}
-
 {% block submission %}
-    <h1>Edit Submission</h1>
+<style>
+    .edit-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
 
-    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}} ) }}
-    {{ include('frontend/submission/_edit_form.html.twig', {'button_label': 'Update'}) }}
+    .form-grid {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
 
-    <a href="{{ path('app_Fsubmission_index') }}">back to list</a>
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+    }
 
-    {{ include('frontend/submission/_delete_form.html.twig') }}
-    {{ form_errors(form.description) }}
-    {{ form_errors(form.vinCode) }}
-    {{ form_errors(form.vinCode) }}
-    {{ form_errors(form.idUser) }}
-    {{ form_errors(form.preferredContactMethod) }}
-    {{ form_errors(form.preferredAppointmentDate) }}
-    {{ form_end(form) }}
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        transition: border-color 0.15s ease-in-out;
+    }
+
+    .form-actions {
+        margin-top: 2rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+
+    .btn-primary {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #95a5a6;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .edit-container {
+            margin: 1rem;
+            padding: 1rem;
+        }
+    }
+</style>
+    <div class="edit-container">
+        <h1>Edit Submission</h1>
+
+        <div class="form-wrapper">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'submission-form'}} ) }}
+            <div class="form-row">
+                {{ include('frontend/submission/_edit_form.html.twig', {'button_label': 'Update'}) }}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-save">Update</button>
+                <a href="{{ path('app_Fsubmission_index') }}" class="btn btn-back">Back to list</a>
+            </div>
+
+            {{ include('frontend/submission/_delete_form.html.twig') }}
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}

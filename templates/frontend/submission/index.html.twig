@@ -94,13 +94,14 @@
                                             </button>
                                         </form>
                                     </div>
-                                    <div class="testimonial-img">
-                                        <img src="{{ submission.carDetails.img }}" alt="Car Image" class="img-fluid rounded">
-                                    </div>
                                     <div class="car-details">
                                         <p><i class="fas fa-calendar-alt"></i> <strong>{{ submission.carDetails.year }}</strong></p>
                                         <p><i class="fas fa-car"></i> <strong>{{ submission.carDetails.brand }}</strong></p>
                                     </div>
+                                    <div class="testimonial-img">
+                                        <img src="{{ submission.carDetails.img }}" alt="Car Image" class="img-fluid rounded">
+                                    </div>
+                                    
                                     <div class="service-details">
                                         <p>{{ submission.description }}</p>
                                         <p><i class="fas fa-calendar-check"></i> <strong>Appointment:</strong> {{ submission.preferredAppointmentDate ? submission.preferredAppointmentDate|date('Y-m-d') : 'N/A' }}</p>

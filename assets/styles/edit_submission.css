@@ -1,50 +1,81 @@
-/* Styles for Edit Submission Page */
-
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f9;
-}
-
-h1 {
-    color: #333;
-    text-align: center;
-    margin-top: 20px;
-}
-
-a {
-    display: inline-block;
-    margin: 20px auto;
-    text-decoration: none;
-    color: #007bff;
-    text-align: center;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-form {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
+.edit-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #f8f9fa;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-button {
+.form-wrapper {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.form-row {
+    display: grid;
+    gap: 1rem;
+}
+
+.submission-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.submission-form label {
     display: block;
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #343a40;
 }
 
-button:hover {
-    background-color: #0056b3;
+.submission-form input,
+.submission-form select,
+.submission-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    transition: border-color 0.15s ease-in-out;
+}
+
+.submission-form input:focus,
+.submission-form select:focus,
+.submission-form textarea:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.btn-save {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-back {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.form-error {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
 }
