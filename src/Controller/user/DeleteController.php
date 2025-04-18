@@ -3,6 +3,7 @@
 // src/Controller/DeleteController.php
 namespace App\Controller\user;
 
+use App\Repository\FeedbackRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +17,7 @@ class DeleteController extends AbstractController
     public function deleteAccount(
         Request $request,
         EntityManagerInterface $entityManager,
+        FeedbackRepository $feedbackRepository,
         TokenStorageInterface $tokenStorage
     ): Response {
         $user = $this->getUser();
@@ -30,6 +32,10 @@ class DeleteController extends AbstractController
 
         // Remove user from database
         $entityManager->remove($user);
+        // Delete associated feedbacks
+        
+        $feedbackRepository->deleteAllFeedbacksForUser($user->getUserIdentifier());
+        
         $entityManager->flush();
 
         return $this->json(['success' => true]);

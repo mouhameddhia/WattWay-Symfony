@@ -8,6 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'user')]
@@ -69,6 +72,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(name:"firstNameUser", type: 'string', nullable: false)]
     #[Assert\NotBlank(message: "First name cannot be blank.")]
+    #[Groups(['bill:read'])]
     private ?string $firstNameUser = null;
 
     public function getFirstNameUser(): ?string
@@ -84,6 +88,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(name:"lastNameUser", type: 'string', nullable: false)]
     #[Assert\NotBlank(message: "Last name cannot be blank.")]
+    #[Groups(['bill:read'])]
     private ?string $lastNameUser = null;
 
     public function getLastNameUser(): ?string
@@ -185,6 +190,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->profilePicture;
     }
     
+
     public function setProfilePicture(?string $profilePicture): self
     {
         $this->profilePicture = $profilePicture;
@@ -202,7 +208,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return [$this->roleUser]; // You can customize this based on your needs
     }
-
     public function getUserIdentifier(): string
     {
         return $this->emailUser;
@@ -226,4 +231,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Bill::class)]
+    private Collection $bills;
+    public function __construct()
+    {
+        $this->bills = new ArrayCollection();
+    }
+    /**
+     * @return Collection<int, Bill>
+     */
+    public function getBills(): Collection
+    {
+        if (!$this->bills instanceof Collection) {
+            $this->bills = new ArrayCollection();
+        }
+        return $this->bills;
+    }
+    public function addBill(Bill $bill): self
+    {
+        if (!$this->bills->contains($bill)) {
+            $this->bills[] = $bill;
+            $bill->setUser($this);
+        }
+        return $this;
+    }
+    public function removeBill(Bill $bill): self
+    {
+        if ($this->bills->removeElement($bill)) {
+            // set the owning side to null (unless already changed)
+            if ($bill->getUser() === $this) {
+                $bill->setUser(null);
+            }
+        }
+        return $this;
+    }
 }

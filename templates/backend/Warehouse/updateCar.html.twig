@@ -1,0 +1,67 @@
+{% extends 'backend/baseBack.html.twig' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h2>Update Car</h2>
+                </div>
+                <div class="card-body">
+                    <h4 class="text-center mb-4">Car ID: {{ car.idCar }}</h4>
+                    {% if app.request.query.get('error') is not empty and app.request.query.get('error') == 1 %}
+                        <div class="alert alert-danger mt-4 text-center" role="alert">
+                            <h4>{{ app.request.query.get('errorMessage') }}</h4>
+                        </div>
+                    {% endif %}
+                    {{ form_start(carupdateform) }}
+                        <div class="form-group mb-3">
+                            {{ form_label(carupdateform.brandCar, 'Brand', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_errors(carupdateform.brandCar) }}
+                            {{ form_widget(carupdateform.brandCar, {'attr': {'class': 'form-control', 'placeholder': car.brandCar} }) }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form_label(carupdateform.modelCar, 'Model', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_errors(carupdateform.modelCar) }}
+                            {{ form_widget(carupdateform.modelCar, {'attr': {'class': 'form-control', 'placeholder': car.modelCar} }) }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form_label(carupdateform.yearCar, 'Year of Manufacture', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_errors(carupdateform.yearCar) }}
+                            {{ form_widget(carupdateform.yearCar, {'attr': {'class': 'form-control', 'placeholder': car.yearCar} }) }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form_label(carupdateform.priceCar, 'Price', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_errors(carupdateform.priceCar) }}
+                            {{ form_widget(carupdateform.priceCar, {'attr': {'class': 'form-control', 'placeholder': car.priceCar} }) }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form_label(carupdateform.kilometrageCar, 'Kilometrage', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_errors(carupdateform.kilometrageCar) }}
+                            {{ form_widget(carupdateform.kilometrageCar, {'attr': {'class': 'form-control', 'placeholder': car.kilometrageCar} }) }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form_label(carupdateform.statusCar, 'Status', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_errors(carupdateform.statusCar) }}
+                            {{ form_widget(carupdateform.statusCar, {'attr': {'class': 'form-control'} }) }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form_label(carupdateform.warehouse, 'Warehouse', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_errors(carupdateform.warehouse) }}
+                            {{ form_widget(carupdateform.warehouse, {'attr': {'class': 'form-control'} }) }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form_label(carupdateform.imgCar, 'Car Image', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_errors(carupdateform.imgCar) }}
+                            {{ form_widget(carupdateform.imgCar, {'attr': {'class': 'form-control'} }) }}
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success btn-lg">Update Car</button>
+                        </div>
+                    {{ form_end(carupdateform) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,289 @@
+{% extends 'backend/baseBack.html.twig' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ asset('css/Warehouse/floatingContainer.css') }}">
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">List of Warehouses</h6>
+    </div>
+    <div style="display: flex; align-self:center; gap: 20px;">
+        <button class="refresh"><a href="{{ path('warehouse') }}"><svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+      <path d="M463.5 224l8.5 0c13.3 0 24-10.7 24-24l0-128c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8l119.5 0z"/>
+    </svg></a></button>
+        <button id="openModal" class="dropdown dropdown-button">Add Warehouse</button>
+        <div class="dropdown">
+            <button class="dropdown-button" onclick="toggleDropdownSort()">Sort by</button>
+            <div class="dropdown-content" id="dropdownSortMenu">
+                <a href="#" id="sortCityASC">City (A-Z) </a>
+                <a href="#" id="sortCityDESC">City (Z-A) </a>
+                <a href="#" id="sortCapacityASC">Capacity <svg xmlns="http://www.w3.org/2000/svg" width=12 height=12 viewBox="0 0 320 512"><path fill="#ddd" d="M318 177.5c3.8-8.8 2-19-4.6-26l-136-144C172.9 2.7 166.6 0 160 0s-12.9 2.7-17.4 7.5l-136 144c-6.6 7-8.4 17.2-4.6 26S14.4 192 24 192l72 0 0 288c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-288 72 0c9.6 0 18.2-5.7 22-14.5z"/></svg></a>
+                <a href="#" id="sortCapacityDESC">Capacity <svg xmlns="http://www.w3.org/2000/svg" width=12 height=12 viewBox="0 0 320 512"><path fill="#ddd" d="M2 334.5c-3.8 8.8-2 19 4.6 26l136 144c4.5 4.8 10.8 7.5 17.4 7.5s12.9-2.7 17.4-7.5l136-144c6.6-7 8.4-17.2 4.6-26s-12.5-14.5-22-14.5l-72 0 0-288c0-17.7-14.3-32-32-32L128 0C110.3 0 96 14.3 96 32l0 288-72 0c-9.6 0-18.2 5.7-22 14.5z"/></svg></a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropdown-button" onclick="toggleDropdownFilter()">Filter by</button>
+            <div class="dropdown-content" id="dropdownFilterMenu">
+                <a href="#" id="filterStorage">Storage warehouses</a>
+                <a href="#" id="filterRepair">Repair warehouses</a>
+            </div>
+        </div>
+        <div class="alignSearchSVG">
+            <input type="text" id="searchInput" placeholder="Search..." />
+            <svg id="searchIconButton" xmlns="http://www.w3.org/2000/svg" style="margin-left:5px;" height="12" width="12" viewBox="0 0 512 512">
+                <path fill="#ddd" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
+            </svg>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+
+                <table class="table table-hover table-striped shadow" id="dataTable">
+                <thead class="thead">
+                    <tr>
+                        <th>Type</th>
+                        <th>City</th>
+                        <th>Street</th>
+                        <th>Postal Code</th>
+                        <th>Capacity</th>
+                        <th class="action-column">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for warehouse in warehouses %}
+                        <tr>
+                            <td>
+                                {% if warehouse.typeWarehouse == 'storage' %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width=15 height=15 viewBox="0 0 512 512"><path fill="#4A79D9" d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .2-24.5 .6l-1.1-.6C142.3 114.6 128 98 128 80c0-44.2 86-80 192-80S512 35.8 512 80zM160.7 161.1c10.2-.7 20.7-1.1 31.3-1.1c62.2 0 117.4 12.3 152.5 31.4C369.3 204.9 384 221.7 384 240c0 4-.7 7.9-2.1 11.7c-4.6 13.2-17 25.3-35 35.5c0 0 0 0 0 0c-.1 .1-.3 .1-.4 .2c0 0 0 0 0 0s0 0 0 0c-.3 .2-.6 .3-.9 .5c-35 19.4-90.8 32-153.6 32c-59.6 0-112.9-11.3-148.2-29.1c-1.9-.9-3.7-1.9-5.5-2.9C14.3 274.6 0 258 0 240c0-34.8 53.4-64.5 128-75.4c10.5-1.5 21.4-2.7 32.7-3.5zM416 240c0-21.9-10.6-39.9-24.1-53.4c28.3-4.4 54.2-11.4 76.2-20.5c16.3-6.8 31.5-15.2 43.9-25.5l0 35.4c0 19.3-16.5 37.1-43.8 50.9c-14.6 7.4-32.4 13.7-52.4 18.5c.1-1.8 .2-3.5 .2-5.3zm-32 96c0 18-14.3 34.6-38.4 48c-1.8 1-3.6 1.9-5.5 2.9C304.9 404.7 251.6 416 192 416c-62.8 0-118.6-12.6-153.6-32C14.3 370.6 0 354 0 336l0-35.4c12.5 10.3 27.6 18.7 43.9 25.5C83.4 342.6 135.8 352 192 352s108.6-9.4 148.1-25.9c7.8-3.2 15.3-6.9 22.4-10.9c6.1-3.4 11.8-7.2 17.2-11.2c1.5-1.1 2.9-2.3 4.3-3.4l0 3.4 0 5.7 0 26.3zm32 0l0-32 0-25.9c19-4.2 36.5-9.5 52.1-16c16.3-6.8 31.5-15.2 43.9-25.5l0 35.4c0 10.5-5 21-14.9 30.9c-16.3 16.3-45 29.7-81.3 38.4c.1-1.7 .2-3.5 .2-5.3zM192 448c56.2 0 108.6-9.4 148.1-25.9c16.3-6.8 31.5-15.2 43.9-25.5l0 35.4c0 44.2-86 80-192 80S0 476.2 0 432l0-35.4c12.5 10.3 27.6 18.7 43.9 25.5C83.4 438.6 135.8 448 192 448z"/></svg>
+                                {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width=15 height=15 viewBox="0 0 512 512"><path fill="#4A79D9" d="M78.6 5C69.1-2.4 55.6-1.5 47 7L7 47c-8.5 8.5-9.4 22-2.1 31.6l80 104c4.5 5.9 11.6 9.4 19 9.4l54.1 0 109 109c-14.7 29-10 65.4 14.3 89.6l112 112c12.5 12.5 32.8 12.5 45.3 0l64-64c12.5-12.5 12.5-32.8 0-45.3l-112-112c-24.2-24.2-60.6-29-89.6-14.3l-109-109 0-54.1c0-7.5-3.5-14.5-9.4-19L78.6 5zM19.9 396.1C7.2 408.8 0 426.1 0 444.1C0 481.6 30.4 512 67.9 512c18 0 35.3-7.2 48-19.9L233.7 374.3c-7.8-20.9-9-43.6-3.6-65.1l-61.7-61.7L19.9 396.1zM512 144c0-10.5-1.1-20.7-3.2-30.5c-2.4-11.2-16.1-14.1-24.2-6l-63.9 63.9c-3 3-7.1 4.7-11.3 4.7L352 176c-8.8 0-16-7.2-16-16l0-57.4c0-4.2 1.7-8.3 4.7-11.3l63.9-63.9c8.1-8.1 5.2-21.8-6-24.2C388.7 1.1 378.5 0 368 0C288.5 0 224 64.5 224 144l0 .8 85.3 85.3c36-9.1 75.8 .5 104 28.7L429 274.5c49-23 83-72.8 83-130.5zM56 432a24 24 0 1 1 48 0 24 24 0 1 1 -48 0z"/></svg>
+                                {% endif %}
+                            </td>
+                            <td>{{ warehouse.city }}</td>
+                            <td>{{ warehouse.street }}</td>
+                            <td>{{ warehouse.postalCode }}</td>
+                            <td>{{ warehouse.capacityWarehouse }}</td>
+                            <td class="action-column">
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ path('updateWarehouse', {'id': warehouse.idWarehouse}) }}"
+                                       class="btn btn-warning btn-sm"
+                                       title="Update">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{{ path('deleteWarehouse', {'id': warehouse.idWarehouse}) }}"
+                                       class="btn btn-danger btn-sm"
+                                       title="Delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-3">
+                                No records found
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+                {% if error %}
+                    <div class="alert alert-danger mt-4 text-center" role="alert">
+                        <h4>Warehouse already exists</h4>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="pagination" style="margin-top: 20px;">
+            {% if currentPage > 1 %}
+                <a href="{{ path('warehouse', {'page': currentPage - 1}) }}">Previous</a>
+            {% endif %}
+
+            {% for i in 1..totalPages %}
+                <a href="{{ path('warehouse', {'page': i}) }}"
+                class="{{ i == currentPage ? 'active' : '' }}">
+                    {{ i }}
+                </a>
+            {% endfor %}
+
+            {% if currentPage < totalPages %}
+                <a href="{{ path('warehouse', {'page': currentPage + 1}) }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+     
+    <!-- Background Overlay -->
+    <div id="overlay"></div>
+
+    <!-- Floating Container -->
+    <div id="floatingContainer" class="hidden">
+       <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            {{ form_start(warehouseform) }}
+                {{ form_widget(warehouseform.typeWarehouse) }}
+                {{ form_row(warehouseform.city) }}
+                {{ form_row(warehouseform.street) }}
+                {{ form_row(warehouseform.postalCode) }}
+                {{ form_row(warehouseform.capacityWarehouse) }}
+                <button type="submit" class="btn btn-success">Submit</button>
+            {{ form_end(warehouseform) }}
+        </div>
+
+    </div>
+
+    <script src="{{ asset('js/Warehouse/floatingContainer.js') }}"></script>
+    <script>
+        function toggleDropdownFilter() {
+            const dropdown = document.getElementById("dropdownFilterMenu");
+            dropdown.classList.toggle("show");
+        }
+            function toggleDropdownSort() {
+                const dropdown = document.getElementById("dropdownSortMenu");
+                dropdown.classList.toggle("show");
+            }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown-button')) {
+            const dropdownFilter = document.getElementById("dropdownFilterMenu");
+            if (dropdownFilter && dropdownFilter.classList.contains("show")) {
+                dropdownFilter.classList.remove("show");
+            }
+            const dropdownSort = document.getElementById("dropdownSortMenu");
+            if (dropdownSort && dropdownSort.classList.contains("show")) {
+                dropdownSort.classList.remove("show");
+            }
+            }
+        }
+        document.getElementById('filterStorage').addEventListener('click', function(e) {
+        fetch('/dashboard/warehouse/storage')
+            .then(handleAjaxResponse)
+            .then(data => updateWarehouseTable(data))
+            .catch(handleAjaxError);
+        });
+        document.getElementById('filterRepair').addEventListener('click', function(e) {
+            fetch('/dashboard/warehouse/repair')
+                .then(handleAjaxResponse)
+                .then(data => updateWarehouseTable(data))
+                .catch(handleAjaxError);
+        });
+        document.getElementById('sortCityASC').addEventListener('click', function(e) {
+            fetch('/dashboard/warehouse/city_asc')
+                .then(handleAjaxResponse)
+                .then(data => updateWarehouseTable(data))
+                .catch(handleAjaxError);
+        });
+        document.getElementById('sortCityDESC').addEventListener('click', function(e) {
+            fetch('/dashboard/warehouse/city_desc')
+                .then(handleAjaxResponse)
+                .then(data => updateWarehouseTable(data))
+                .catch(handleAjaxError);
+        });
+        document.getElementById('sortCapacityASC').addEventListener('click', function(e) {
+            fetch('/dashboard/warehouse/capacity_asc')
+                .then(handleAjaxResponse)
+                .then(data => updateWarehouseTable(data))
+                .catch(handleAjaxError);
+        });
+        document.getElementById('sortCapacityDESC').addEventListener('click', function(e) {
+            fetch('/dashboard/warehouse/capacity_desc')
+                .then(handleAjaxResponse)
+                .then(data => updateWarehouseTable(data))
+                .catch(handleAjaxError);
+        });
+        function handleAjaxResponse(response) {
+        if (!response.ok) {
+            throw new Error('No results found.');
+        }
+        return response.json();
+        }
+        function handleAjaxError(error) {
+            console.error('Error:', error);
+            document.querySelector('#dataTable tbody').innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-3">No results found</td>
+                </tr>
+            `;
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+        const input = document.getElementById("searchInput");
+        input.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+            e.preventDefault();
+            triggerAjax(input.value);
+            }
+            });
+            });
+
+            function triggerAjax(query) {
+                
+            console.log("AJAX triggered with:", query);
+            fetch('/dashboard/warehouse/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: query })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No results found.');
+                }
+                return response.json();
+            })
+            .then(data => updateWarehouseTable(data))
+            .catch(error => {
+                console.error('Error:', error);
+                document.querySelector('#dataTable tbody').innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-3">No results found</td>
+                    </tr>
+                `;
+            });
+            document.getElementById("searchIconButton").addEventListener("click", function() {
+                triggerAjax(document.getElementById("searchInput").value);
+            });
+    }
+        function updateWarehouseTable(warehouses) {
+            const tbody = document.querySelector('#dataTable tbody');
+            tbody.innerHTML = ''; // Clear existing rows
+
+            if (warehouses.length === 0) {
+                const row = `
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-3">
+                            No records found
+                        </td>
+                    </tr>`;
+                tbody.insertAdjacentHTML('beforeend', row);
+                return;
+            }
+
+            warehouses.forEach(warehouse => {
+                const isStorage = warehouse.typeWarehouse === 'storage';
+                const iconSVG = isStorage
+                    ? `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 512 512"><path fill="#4A79D9" d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .2-24.5 .6l-1.1-.6C142.3 114.6 128 98 128 80c0-44.2 86-80 192-80S512 35.8 512 80zM160.7 161.1c10.2-.7 20.7-1.1 31.3-1.1c62.2 0 117.4 12.3 152.5 31.4C369.3 204.9 384 221.7 384 240c0 4-.7 7.9-2.1 11.7c-4.6 13.2-17 25.3-35 35.5c0 0 0 0 0 0c-.1 .1-.3 .1-.4 .2c0 0 0 0 0 0s0 0 0 0c-.3 .2-.6 .3-.9 .5c-35 19.4-90.8 32-153.6 32c-59.6 0-112.9-11.3-148.2-29.1c-1.9-.9-3.7-1.9-5.5-2.9C14.3 274.6 0 258 0 240c0-34.8 53.4-64.5 128-75.4c10.5-1.5 21.4-2.7 32.7-3.5zM416 240c0-21.9-10.6-39.9-24.1-53.4c28.3-4.4 54.2-11.4 76.2-20.5c16.3-6.8 31.5-15.2 43.9-25.5l0 35.4c0 19.3-16.5 37.1-43.8 50.9c-14.6 7.4-32.4 13.7-52.4 18.5c.1-1.8 .2-3.5 .2-5.3zm-32 96c0 18-14.3 34.6-38.4 48c-1.8 1-3.6 1.9-5.5 2.9C304.9 404.7 251.6 416 192 416c-62.8 0-118.6-12.6-153.6-32C14.3 370.6 0 354 0 336l0-35.4c12.5 10.3 27.6 18.7 43.9 25.5C83.4 342.6 135.8 352 192 352s108.6-9.4 148.1-25.9c7.8-3.2 15.3-6.9 22.4-10.9c6.1-3.4 11.8-7.2 17.2-11.2c1.5-1.1 2.9-2.3 4.3-3.4l0 3.4 0 5.7 0 26.3zm32 0l0-32 0-25.9c19-4.2 36.5-9.5 52.1-16c16.3-6.8 31.5-15.2 43.9-25.5l0 35.4c0 10.5-5 21-14.9 30.9c-16.3 16.3-45 29.7-81.3 38.4c.1-1.7 .2-3.5 .2-5.3zM192 448c56.2 0 108.6-9.4 148.1-25.9c16.3-6.8 31.5-15.2 43.9-25.5l0 35.4c0 44.2-86 80-192 80S0 476.2 0 432l0-35.4c12.5 10.3 27.6 18.7 43.9 25.5C83.4 438.6 135.8 448 192 448z"/></svg>`
+                    : `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 512 512"><path fill="#4A79D9" d="M78.6 5C69.1-2.4 55.6-1.5 47 7L7 47c-8.5 8.5-9.4 22-2.1 31.6l80 104c4.5 5.9 11.6 9.4 19 9.4l54.1 0 109 109c-14.7 29-10 65.4 14.3 89.6l112 112c12.5 12.5 32.8 12.5 45.3 0l64-64c12.5-12.5 12.5-32.8 0-45.3l-112-112c-24.2-24.2-60.6-29-89.6-14.3l-109-109 0-54.1c0-7.5-3.5-14.5-9.4-19L78.6 5zM19.9 396.1C7.2 408.8 0 426.1 0 444.1C0 481.6 30.4 512 67.9 512c18 0 35.3-7.2 48-19.9L233.7 374.3c-7.8-20.9-9-43.6-3.6-65.1l-61.7-61.7L19.9 396.1zM512 144c0-10.5-1.1-20.7-3.2-30.5c-2.4-11.2-16.1-14.1-24.2-6l-63.9 63.9c-3 3-7.1 4.7-11.3 4.7L352 176c-8.8 0-16-7.2-16-16l0-57.4c0-4.2 1.7-8.3 4.7-11.3l63.9-63.9c8.1-8.1 5.2-21.8-6-24.2C388.7 1.1 378.5 0 368 0C288.5 0 224 64.5 224 144l0 .8 85.3 85.3c36-9.1 75.8 .5 104 28.7L429 274.5c49-23 83-72.8 83-130.5zM56 432a24 24 0 1 1 48 0 24 24 0 1 1 -48 0z"/></svg>`;
+
+                const row = `
+                    <tr>
+                        <td>${iconSVG}</td>
+                        <td>${warehouse.city}</td>
+                        <td>${warehouse.street}</td>
+                        <td>${warehouse.postalCode}</td>
+                        <td>${warehouse.capacityWarehouse}</td>
+                        <td class="action-column">
+                            <div class="btn-group btn-group-sm">
+                                <a href="/dashboard/warehouse/update/${warehouse.idWarehouse}" class="btn btn-warning btn-sm" title="Update">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="/dashboard/warehouse/delete/${warehouse.idWarehouse}" class="btn btn-danger btn-sm" title="Delete">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>`;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+
+    </script>
+{% endblock %}

@@ -1,0 +1,209 @@
+<link rel="stylesheet" href="{{ asset('css/User/feedback.css') }}">
+<section id="clients-say" class="clients-say">
+    <div class="container">
+        <div class="section-header" style="text-align: center;">
+                <h1 style="font-size: 4rem; font-weight: 700; color: #132ec2; text-align: center; text-transform: uppercase; margin-bottom: 20px; animation: fadeIn 1.5s ease-in-out;">
+                    See what others think
+                </h1>
+            <div style="margin-top: 20px;">
+
+                <button id="rateUsBtn" class="rate-us-button">
+                    <i class="fas fa-star"></i> Rate Us
+                </button>
+            </div>
+        </div>
+
+        {# Feedback Dialog #}
+        <div id="feedbackDialog" class="feedback-dialog">
+            <div class="dialog-content">
+                {% if app.user %}
+                    <div class="dialog-header">
+                        <h3>Share Your Experience</h3>
+                        <button class="close-dialog">&times;</button>
+                    </div>
+                    <form id="feedbackForm" action="{{ path('submit_feedback') }}" method="post">
+                        <div class="form-group">
+                            <label>How would you rate us?</label>
+                            <div class="star-rating">
+                                {% for i in 1..5 %}
+                                    <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}"/>
+                                    <label for="star{{ i }}" title="{{ i }} stars">
+                                        <i class="fas fa-star"></i>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Your Feedback</label>
+                            <textarea name="content" class="form-control" rows="4" 
+                                      placeholder="Tell us about your experience..." required></textarea>
+                        </div>
+                        <input type="hidden" name="_token" value="{{ csrf_token('feedback') }}">
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paper-plane"></i> Submit Feedback
+                        </button>
+                    </form>
+                {% else %}
+                    <div class="login-prompt">
+                        <i class="fas fa-lock" style="font-size: 2rem; color: #132EC2;"></i>
+                        <h3>Please login to leave feedback</h3>
+                        <a href="{{ path('app_login') }}" class="login-btn">
+                            <i class="fas fa-sign-in-alt"></i> Login Now
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="owl-carousel testimonial-carousel">
+                {% for feedback in feedbacks %}
+                <div class="col-sm-3 col-xs-12">
+                    <div class="single-testimonial-box" style="position: relative;">
+                        {# Delete button - only shows for feedback owner #}
+                        {% if app.user and feedback.user and app.user.getUserIdentifier() == feedback.user.getUserIdentifier() %}
+                <form method="post" action="{{ path('feedback_delete', {'id': feedback.idFeedback}) }}" 
+                      class="delete-feedback-form"
+                      style="position: absolute; top: 10px; right: 10px; z-index: 10;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete-feedback-' ~ feedback.idFeedback) }}">
+                    <button type="button" class="btn btn-link p-0 delete-feedback-btn"
+                            style="color: #dc3545; opacity: 0.7; transition: opacity 0.3s;"
+                            onmouseover="this.style.opacity='1'" 
+                            onmouseout="this.style.opacity='0.7'">
+                        <i class="fas fa-trash-alt" style="font-size: 14px;"></i>
+                    </button>
+                </form>
+                {% endif %}
+
+                        <div class="testimonial-description">
+                            <div class="testimonial-info">
+                                <div class="testimonial-img">
+                                    {% if feedback.user.profilePicture %}
+                                        <img src="{{ asset(feedback.user.profilePicture) }}" 
+                                             alt="{{ feedback.user.firstNameUser }}"
+                                             onerror="this.onerror=null;this.src='{{ asset('default.jpg') }}'">
+                                    {% else %}
+                                        <img src="{{ asset('default.jpg') }}" 
+                                             alt="Default profile">
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="testimonial-comment">
+                                <p>{{ feedback.content }}</p>
+                                <div class="rating">
+                                    {% for i in 1..5 %}
+                                        <span class="star {{ i <= feedback.rating ? 'filled' }}">★</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="testimonial-person">
+                                <h2>{{ feedback.user.firstNameUser }} {{ feedback.user.lastNameUser }}</h2>
+                                <h4>{{ feedback.date|date('M d, Y') }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<div id="deleteConfirmationModal" class="modal-overlay" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete your feedback? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-btn cl-btn">Cancel</button>
+                <button type="button" class="modal-btn cf-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const rateBtn = document.getElementById('rateUsBtn');
+    const dialog = document.getElementById('feedbackDialog');
+    const closeBtn = document.querySelector('.close-dialog');
+    
+    // Toggle dialog
+    rateBtn.addEventListener('click', () => {
+        dialog.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+    
+    // Close dialog
+    closeBtn.addEventListener('click', () => {
+        dialog.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+    
+    // Close when clicking outside
+    dialog.addEventListener('click', (e) => {
+        if (e.target === dialog) {
+            dialog.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Star rating interaction
+    const stars = document.querySelectorAll('.star-rating input');
+    stars.forEach(star => {
+        star.addEventListener('change', function() {
+            // This ensures all stars up to the selected one stay yellow
+            const rating = this.value;
+            stars.forEach((s, index) => {
+                const label = s.nextElementSibling;
+                label.style.color = index < rating ? '#FFD700' : '#000';
+            });
+        });
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Modal functionality
+    const modal = document.getElementById('deleteConfirmationModal');
+    const deleteButtons = document.querySelectorAll('.delete-feedback-btn');
+    let currentForm = null;
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            currentForm = this.closest('form');
+            modal.style.display = 'flex';
+        });
+    });
+
+    document.querySelector('.close-modal').addEventListener('click', closeModal);
+    document.querySelector('.cl-btn').addEventListener('click', closeModal);
+    document.querySelector('.cf-btn').addEventListener('click', function() {
+        if (currentForm) {
+            currentForm.submit();
+        }
+        closeModal();
+    });
+
+    function closeModal() {
+        modal.style.display = 'none';
+        currentForm = null;
+    }
+
+    // Close modal when clicking outside
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+});
+</script>

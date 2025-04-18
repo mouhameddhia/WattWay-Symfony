@@ -1,0 +1,52 @@
+{% extends 'backend/baseBack.html.twig' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h2>Update Bill</h2>
+                </div>
+                {% if error == false %}
+                <div class="card-body">
+                {{ form_start(billupdateform) }}
+                    <div class="form-group mb-3">
+                        {{ form_label(billupdateform.dateBill, 'Issue Date', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                        {{ form_errors(billupdateform.dateBill) }}
+                        {{ form_widget(billupdateform.dateBill, {'attr': {'class': 'form-control', 'placeholder': bill.dateBill ? bill.dateBill|date('Y-m-d') : ''} }) }}
+                    </div>
+                        <div class="form-group mb-3">
+                            {{ form_label(billupdateform.totalAmountBill, 'Total Amount', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_errors(billupdateform.totalAmountBill) }}
+                            {{ form_widget(billupdateform.totalAmountBill, {'attr': {'class': 'form-control', 'placeholder': bill.totalAmountBill} }) }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form_label(billupdateform.car, 'Associated Car', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_errors(billupdateform.car) }}
+                            {{ form_widget(billupdateform.car, {'attr': {'class': 'form-control'} }) }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form_label(billupdateform.user, 'Client', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_errors(billupdateform.user) }}
+                            {{ form_widget(billupdateform.user, {'attr': {'class': 'form-control'} }) }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form_label(billupdateform.statusBill, 'Status', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_errors(billupdateform.statusBill) }}
+                            {{ form_widget(billupdateform.statusBill, {'attr': {'class': 'form-control d-inline-block text-center'}}) }}
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success btn-lg">Update Bill</button>
+                        </div>
+                    {{ form_end(billupdateform) }}
+                </div>
+                {% else %}
+                    <div class="alert alert-danger mt-4 text-center" role="alert">
+                        <h4>There is no available car at the lot</h4>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

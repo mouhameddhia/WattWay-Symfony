@@ -14,15 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class FeedbackController extends AbstractController
 {
-    #[Route('/', name: 'Front')]  // Added route annotation
-    public function showFeedbacks(FeedbackRepository $feedbackRepository): Response
-    {
-        $feedbacks = $feedbackRepository->findLatestFeedbacks(5); // Get 5 latest feedbacks
-        
-        return $this->render('frontend/baseFront.html.twig', [
-            'feedbacks' => $feedbacks,
-        ]);
-    }
+    
     #[Route('/feedback/delete/{id}', name: 'feedback_delete', methods: ['POST'])]
     public function delFeedback(
         Request $request,

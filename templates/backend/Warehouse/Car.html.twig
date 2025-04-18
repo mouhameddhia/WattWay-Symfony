@@ -1,0 +1,340 @@
+{% extends 'backend/baseBack.html.twig' %}
+{% block content %}
+<link rel="stylesheet" href="{{ asset('css/Warehouse/floatingContainer.css') }}">
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">List of Cars</h6>
+    </div>
+    <div style="display: flex; align-self:center; gap: 20px;">
+        <button class="refresh"><a href="{{ path('car') }}"><svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path d="M463.5 224l8.5 0c13.3 0 24-10.7 24-24l0-128c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8l119.5 0z"/>
+        </svg></a></button>
+        <button id="openModal" class="dropdown dropdown-button">Add Car</button>
+        <div class="dropdown">
+            <button class="dropdown-button" onclick="toggleDropdownSort()">Sort by</button>
+            <div class="dropdown-content" id="dropdownSortMenu">
+                <a href="#" id="sortBrandModelASC">Car make (A-Z) </a>
+                <a href="#" id="sortBrandModelDESC">Car make (Z-A) </a>
+                <a href="#" id="sortPriceASC">Price <svg xmlns="http://www.w3.org/2000/svg" width=12 height=12 viewBox="0 0 320 512"><path fill="#ddd" d="M318 177.5c3.8-8.8 2-19-4.6-26l-136-144C172.9 2.7 166.6 0 160 0s-12.9 2.7-17.4 7.5l-136 144c-6.6 7-8.4 17.2-4.6 26S14.4 192 24 192l72 0 0 288c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-288 72 0c9.6 0 18.2-5.7 22-14.5z"/></svg></a>
+                <a href="#" id="sortPriceDESC">Price <svg xmlns="http://www.w3.org/2000/svg" width=12 height=12 viewBox="0 0 320 512"><path fill="#ddd" d="M2 334.5c-3.8 8.8-2 19 4.6 26l136 144c4.5 4.8 10.8 7.5 17.4 7.5s12.9-2.7 17.4-7.5l136-144c6.6-7 8.4-17.2 4.6-26s-12.5-14.5-22-14.5l-72 0 0-288c0-17.7-14.3-32-32-32L128 0C110.3 0 96 14.3 96 32l0 288-72 0c-9.6 0-18.2 5.7-22 14.5z"/></svg></a>
+                <a href="#" id="sortKilometrageASC">Kilometrage <svg xmlns="http://www.w3.org/2000/svg" width=12 height=12 viewBox="0 0 320 512"><path fill="#ddd" d="M318 177.5c3.8-8.8 2-19-4.6-26l-136-144C172.9 2.7 166.6 0 160 0s-12.9 2.7-17.4 7.5l-136 144c-6.6 7-8.4 17.2-4.6 26S14.4 192 24 192l72 0 0 288c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-288 72 0c9.6 0 18.2-5.7 22-14.5z"/></svg></a>
+                <a href="#" id="sortKilometrageDESC">Kilometrage <svg xmlns="http://www.w3.org/2000/svg" width=12 height=12 viewBox="0 0 320 512"><path fill="#ddd" d="M2 334.5c-3.8 8.8-2 19 4.6 26l136 144c4.5 4.8 10.8 7.5 17.4 7.5s12.9-2.7 17.4-7.5l136-144c6.6-7 8.4-17.2 4.6-26s-12.5-14.5-22-14.5l-72 0 0-288c0-17.7-14.3-32-32-32L128 0C110.3 0 96 14.3 96 32l0 288-72 0c-9.6 0-18.2 5.7-22 14.5z"/></svg></a>
+                <a href="#" id="sortYearASC">Date <svg xmlns="http://www.w3.org/2000/svg" width=12 height=12 viewBox="0 0 320 512"><path fill="#ddd" d="M318 177.5c3.8-8.8 2-19-4.6-26l-136-144C172.9 2.7 166.6 0 160 0s-12.9 2.7-17.4 7.5l-136 144c-6.6 7-8.4 17.2-4.6 26S14.4 192 24 192l72 0 0 288c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-288 72 0c9.6 0 18.2-5.7 22-14.5z"/></svg></a>
+                <a href="#" id="sortYearDESC">Date <svg xmlns="http://www.w3.org/2000/svg" width=12 height=12 viewBox="0 0 320 512"><path fill="#ddd" d="M2 334.5c-3.8 8.8-2 19 4.6 26l136 144c4.5 4.8 10.8 7.5 17.4 7.5s12.9-2.7 17.4-7.5l136-144c6.6-7 8.4-17.2 4.6-26s-12.5-14.5-22-14.5l-72 0 0-288c0-17.7-14.3-32-32-32L128 0C110.3 0 96 14.3 96 32l0 288-72 0c-9.6 0-18.2 5.7-22 14.5z"/></svg></a>
+                
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropdown-button" onclick="toggleDropdownFilter()">Filter by</button>
+            <div class="dropdown-content" id="dropdownFilterMenu">
+                <a href="#" id="filterAvailable">Available cars</a>
+                <a href="#" id="filterUnavailable">Unavailable cars</a>
+                <a href="#" id="filterUnderRepair">Cars under repair</a>
+                <a href="#" id="filterSold">Sold cars</a>
+                <a href="#" id="filterNew">New cars</a>
+                <a href="#" id="filterUsed">Used cars</a>
+            </div>
+        </div>
+        <div class="alignSearchSVG">
+            <input type="text" id="searchInput" placeholder="Search..." />
+            <svg id="searchIconButton" xmlns="http://www.w3.org/2000/svg" style="margin-left:5px;" height="12" width="12" viewBox="0 0 512 512">
+                <path fill="#ddd" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
+            </svg>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped shadow" id="dataTable">
+                <thead class="thead">
+                    <tr>
+                        <th>Brand</th>
+                        <th>Model</th>
+                        <th>Year</th>
+                        <th>Price</th>
+                        <th>Kilometrage</th>
+                        <th>Status</th>
+                        <th>Stored In</th>
+                        <th>Image</th>
+                        <th class="action-column">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for car in cars %}
+                        <tr>
+                            <td>{{ car.brandCar }}</td>
+                            <td>{{ car.modelCar }}</td>
+                            <td>{{ car.yearCar }}</td>
+                            <td>{{ car.priceCar ~ ' DT' }}</td>
+                            <td>{{ car.kilometrageCar }}</td>
+                            <td>{{ car.statusCar }}</td>
+                            <td>{{ car.warehouse.street ~ ', ' ~ car.warehouse.city ~ ', ' ~ car.warehouse.postalCode }}</td>
+                            <td>
+                                <img src="{{ asset('images/Warehouse/' ~ car.imgCar) }}" alt="Image not found" class="img-thumbnail zoomIn" style="width: auto; height: 50px;">
+                            </td>
+                            <td class="action-column">
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ path('updateCar', {'id': car.idCar}) }}" class="btn btn-warning btn-sm" title="Update">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{{ path('deleteCar', {'id': car.idCar}) }}" class="btn btn-danger btn-sm" title="Delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-3">
+                                No records found
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% if app.request.query.get('error') is not empty and app.request.query.get('error') == 1 %}
+                <div class="alert alert-danger mt-4 text-center" role="alert">
+                    <h4>{{ app.request.query.get('errorMessage') }}</h4>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="pagination" style="margin-top: 20px;">
+    {% if currentPage > 1 %}
+        <a href="{{ path('car', {'page': currentPage - 1}) }}">Previous</a>
+    {% endif %}
+
+    {% for i in 1..totalPages %}
+        <a href="{{ path('car', {'page': i}) }}"
+           class="{{ i == currentPage ? 'active' : '' }}">
+            {{ i }}
+        </a>
+    {% endfor %}
+
+    {% if currentPage < totalPages %}
+        <a href="{{ path('car', {'page': currentPage + 1}) }}">Next</a>
+    {% endif %}
+</div>
+</div>
+
+<!-- Background Overlay -->
+<div id="overlay"></div>
+
+<!-- Image Zoom Overlay -->
+<div id="imageZoomOverlay">
+    <img id="zoomedImage" src="" alt="Zoomed Image" >
+</div>
+
+<!-- Floating Container -->
+<div id="floatingContainer" class="hidden">
+    <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        {{ form_start(carform) }}
+            {{ form_row(carform.brandCar) }}
+            {{ form_row(carform.modelCar) }}
+            {{ form_row(carform.yearCar) }}
+            {{ form_row(carform.priceCar) }}
+            {{ form_row(carform.kilometrageCar) }}
+            {{ form_row(carform.warehouse) }}
+            {{ form_row(carform.imgCar) }}
+            <button type="submit" class="btn btn-success">Submit</button>
+        {{ form_end(carform) }}
+    </div>
+</div>
+
+<script src="{{ asset('js/Warehouse/floatingContainer.js') }}"></script>
+<script>
+    function toggleDropdownFilter() {
+        const dropdown = document.getElementById("dropdownFilterMenu");
+        dropdown.classList.toggle("show");
+    }
+        function toggleDropdownSort() {
+            const dropdown = document.getElementById("dropdownSortMenu");
+            dropdown.classList.toggle("show");
+        }
+
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropdown-button')) {
+        const dropdownFilter = document.getElementById("dropdownFilterMenu");
+        if (dropdownFilter && dropdownFilter.classList.contains("show")) {
+            dropdownFilter.classList.remove("show");
+        }
+        const dropdownSort = document.getElementById("dropdownSortMenu");
+        if (dropdownSort && dropdownSort.classList.contains("show")) {
+            dropdownSort.classList.remove("show");
+        }
+        }
+    }
+    document.getElementById('sortPriceASC').addEventListener('click', function(e) {
+    fetch('/dashboard/car/sort_price_asc')
+        .then(handleAjaxResponse)
+        .then(data => updateCarTable(data))
+        .catch(handleAjaxError);
+
+    });
+    document.getElementById('sortPriceDESC').addEventListener('click', function(e) {
+        fetch('/dashboard/car/sort_price_desc')
+            .then(handleAjaxResponse)
+            .then(data => updateCarTable(data))
+            .catch(handleAjaxError);
+    });
+    document.getElementById('sortKilometrageASC').addEventListener('click', function(e) {
+        fetch('/dashboard/car/sort_kilometrage_asc')
+            .then(handleAjaxResponse)
+            .then(data => updateCarTable(data))
+            .catch(handleAjaxError);
+    });
+    document.getElementById('sortKilometrageDESC').addEventListener('click', function(e) {
+        fetch('/dashboard/car/sort_kilometrage_desc')
+            .then(handleAjaxResponse)
+            .then(data => updateCarTable(data))
+            .catch(handleAjaxError);
+    });
+    document.getElementById('sortBrandModelASC').addEventListener('click', function(e) {
+        fetch('/dashboard/car/sort_brand_model_asc')
+            .then(handleAjaxResponse)
+            .then(data => updateCarTable(data))
+            .catch(handleAjaxError);
+    });
+    document.getElementById('sortBrandModelDESC').addEventListener('click', function(e) {
+        fetch('/dashboard/car/sort_brand_model_desc')
+            .then(handleAjaxResponse)
+            .then(data => updateCarTable(data))
+            .catch(handleAjaxError);
+    });
+    document.getElementById('sortYearASC').addEventListener('click', function(e) {
+        fetch('/dashboard/car/sort_year_asc')
+            .then(handleAjaxResponse)
+            .then(data => updateCarTable(data))
+            .catch(handleAjaxError);
+    });
+    document.getElementById('sortYearDESC').addEventListener('click', function(e) {
+        fetch('/dashboard/car/sort_year_desc')
+            .then(handleAjaxResponse)
+            .then(data => updateCarTable(data))
+            .catch(handleAjaxError);
+    });
+    document.getElementById('filterAvailable').addEventListener('click', function(e) {
+        fetch('/dashboard/car/available')
+            .then(handleAjaxResponse)
+            .then(data => updateCarTable(data))
+            .catch(handleAjaxError);
+    });
+    document.getElementById('filterUnavailable').addEventListener('click', function(e) {
+        fetch('/dashboard/car/not_available')
+            .then(handleAjaxResponse)
+            .then(data => updateCarTable(data))
+            .catch(handleAjaxError);
+    });
+    document.getElementById('filterUnderRepair').addEventListener('click', function(e) {
+        fetch('/dashboard/car/under_repair')
+            .then(handleAjaxResponse)
+            .then(data => updateCarTable(data))
+            .catch(handleAjaxError);
+    });
+    document.getElementById('filterSold').addEventListener('click', function(e) {
+        fetch('/dashboard/car/sold')
+            .then(handleAjaxResponse)
+            .then(data => updateCarTable(data))
+            .catch(handleAjaxError);
+    });
+    document.getElementById('filterNew').addEventListener('click', function(e) {
+        fetch('/dashboard/car/new')
+            .then(handleAjaxResponse)
+            .then(data => updateCarTable(data))
+            .catch(handleAjaxError);
+    });
+    document.getElementById('filterUsed').addEventListener('click', function(e) {
+        fetch('/dashboard/car/used')
+            .then(handleAjaxResponse)
+            .then(data => updateCarTable(data))
+            .catch(handleAjaxError);
+    });
+
+    function handleAjaxResponse(response) {
+        if (!response.ok) {
+            throw new Error('No results found.');
+        }
+        return response.json();
+    }
+    function handleAjaxError(error) {
+        console.error('Error:', error);
+        document.querySelector('#dataTable tbody').innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center text-muted py-3">No results found</td>
+            </tr>
+        `;
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        const input = document.getElementById("searchInput");
+        input.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+            e.preventDefault();
+            triggerAjax(input.value);
+            }
+            });
+            });
+
+            function triggerAjax(query) {
+                
+            console.log("AJAX triggered with:", query);
+            fetch('/dashboard/car/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: query })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No results found.');
+                }
+                return response.json();
+            })
+            .then(data => updateCarTable(data))
+            .catch(error => {
+                console.error('Error:', error);
+                document.querySelector('#dataTable tbody').innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-3">No results found</td>
+                    </tr>
+                `;
+            });
+            document.getElementById("searchIconButton").addEventListener("click", function() {
+                triggerAjax(document.getElementById("searchInput").value);
+            });
+    }
+    function updateCarTable(cars) {
+        const tbody = document.querySelector('#dataTable tbody');
+        tbody.innerHTML = ''; // clear existing
+
+        cars.forEach(car => {
+            const row = `
+                <tr>
+                    <td>${car.brandCar}</td>
+                    <td>${car.modelCar}</td>
+                    <td>${car.yearCar}</td>
+                    <td>${car.priceCar} DT</td>
+                    <td>${car.kilometrageCar}</td>
+                    <td>${car.statusCar}</td>
+                    <td>${car.warehouse.street}, ${car.warehouse.city}, ${car.warehouse.postalCode}</td>
+                    <td>
+                        <img src="/images/Warehouse/${car.imgCar}" alt="Image not found" class="img-thumbnail zoomIn" style="width: auto; height: 50px;">
+                    </td>
+                    <td class="action-column">
+                        <div class="btn-group btn-group-sm">
+                            <a href="/dashboard/car/update/${car.idCar}" class="btn btn-warning btn-sm" title="Update">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="/dashboard/car/delete/${car.idCar}" class="btn btn-danger btn-sm" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>`;
+            tbody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,53 @@
+<link rel="stylesheet" href="{{ asset('css/Warehouse/repairCar.css') }}">
+<div id="repaircar-toggle-container">
+    <button class="repaircar-toggle-btn" onclick="toggleRepairForm()">Let's get started</button>
+    <div id="repaircar-form-wrapper" class="repaircar-form-hidden">
+        <div class="repaircar-wrapper">
+            <div class="repaircar-left-container">
+                <div class="repaircar-card">
+                    <p class="repaircar-title">Please enter your car details</p>
+                    {{ form_start(repaircarform) }}
+                        <div class="repaircar-form-group">
+                            {{ form_label(repaircarform.brandCar, 'Brand', {'label_attr': {'class': 'repaircar-label'}}) }}
+                            {{ form_errors(repaircarform.brandCar) }}
+                            {{ form_widget(repaircarform.brandCar, {'attr': {'class': 'repaircar-input', 'placeholder': "e.g. WALLYS"}}) }}
+                        </div>
+                        <div class="repaircar-form-group">
+                            {{ form_label(repaircarform.modelCar, 'Model', {'label_attr': {'class': 'repaircar-label'}}) }}
+                            {{ form_errors(repaircarform.modelCar) }}
+                            {{ form_widget(repaircarform.modelCar, {'attr': {'class': 'repaircar-input', 'placeholder': "619 EV"}}) }}
+                        </div>
+                        <div class="repaircar-form-group">
+                            {{ form_label(repaircarform.yearCar, 'Year of Manufacture', {'label_attr': {'class': 'repaircar-label'}}) }}
+                            {{ form_errors(repaircarform.yearCar) }}
+                            {{ form_widget(repaircarform.yearCar, {'attr': {'class': 'repaircar-input', 'placeholder': "When cars start to fly"}}) }}
+                        </div>
+                        <div class="repaircar-form-group">
+                            {{ form_label(repaircarform.kilometrageCar, 'Kilometrage', {'label_attr': {'class': 'repaircar-label'}}) }}
+                            {{ form_errors(repaircarform.kilometrageCar) }}
+                            {{ form_widget(repaircarform.kilometrageCar, {'attr': {'class': 'repaircar-input'}}) }}
+                        </div>
+                        <div class="repaircar-form-group">
+                            {{ form_label(repaircarform.imgCar, 'Car Image', {'label_attr': {'class': 'repaircar-label'}})}}
+                            {{ form_errors(repaircarform.imgCar) }}
+                            {{ form_widget(repaircarform.imgCar, {'attr': {'class': 'repaircar-input'}}) }}
+                        </div>
+                        <div class="repaircar-submit-container">
+                            <button type="submit" class="repaircar-submit-btn">Submit your request</button>
+                        </div>
+                    {{ form_end(repaircarform) }}
+                </div>
+            </div>
+            <div class="repaircar-right-container">
+                <img src="{{ asset('images/Warehouse/slider-img.png') }}" alt="Car Repair" class="repaircar-image">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function toggleRepairForm() {
+        const formWrapper = document.getElementById('repaircar-form-wrapper');
+        formWrapper.classList.toggle('repaircar-form-visible');
+        formWrapper.classList.toggle('repaircar-form-hidden');
+    }
+</script>

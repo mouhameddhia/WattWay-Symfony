@@ -1,0 +1,132 @@
+body {
+    background: #f4f6f8;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.repaircar-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 60px;
+}
+
+.repaircar-left-container {
+    max-width: 420px; 
+    flex-shrink: 0;   
+    margin-right: 80px; 
+}
+
+.repaircar-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    padding: 40px;
+}
+
+.repaircar-title {
+    font-size: 24px;
+    font-weight: bolder;
+    color: #0A1F44;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.repaircar-form-group {
+    margin-bottom: 20px;
+}
+
+.repaircar-label {
+    display: block;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.repaircar-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+}
+
+.repaircar-input:focus {
+    border-color: #132ec2;
+    box-shadow: 0 0 0 0.2rem rgba(19, 46, 194, 0.1);
+    outline: none;
+}
+
+.repaircar-submit-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.repaircar-submit-btn {
+    background-color: #132ec2;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.repaircar-submit-btn:hover {
+    background-color: #0f25a0;
+}
+
+.repaircar-toggle-container {
+    position: relative;
+    padding: 60px;
+}
+
+.repaircar-toggle-btn {
+    background-color: #132ec2;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    margin-top: 100px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.repaircar-toggle-btn:hover {
+    background-color: #0f25a0;
+}
+
+.repaircar-form-hidden {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transform: translateY(-20px);
+    transition: all 0.4s ease;
+}
+
+.repaircar-form-visible {
+    opacity: 1;
+    max-height: 1000px;
+    transform: translateY(0);
+    transition: all 0.4s ease;
+}
+
+.repaircar-right-container {
+    flex-shrink: 0; 
+    width: auto;
+}
+.repaircar-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 12px;
+}
