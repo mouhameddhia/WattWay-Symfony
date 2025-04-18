@@ -24,6 +24,15 @@ class BillRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+    public function getBillIdByUserId($idUser)
+    {
+        return $this->createQueryBuilder('b')
+            ->select('DISTINCT b.idBill')
+            ->andWhere('b.user = :idUser')
+            ->setParameter('idUser', $idUser)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
     public function filterByPaidBills(){
         return $this->createQueryBuilder('b')
             ->andWhere('b.statusBill = 1')
@@ -80,6 +89,18 @@ class BillRepository extends ServiceEntityRepository
             ->orderBy('b.totalAmountBill', 'DESC')
             ->getQuery()
             ->getResult();
+    }
+    public function deleteAllBillsForUser(String $emailUser): int
+    {
+    return $this->createQueryBuilder('b')
+        ->delete('App\Entity\Bill', 'b')
+        ->where('b.user IN (
+            SELECT u.idUser FROM App\Entity\User u 
+            WHERE u.emailUser = :emailUser
+        )')
+        ->setParameter('emailUser', $emailUser)
+        ->getQuery()
+        ->execute();
     }
     //    /**
     //     * @return Bill[] Returns an array of Bill objects

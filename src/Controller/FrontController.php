@@ -48,7 +48,7 @@ class FrontController extends AbstractController
                 $bill->setDateBill(new \DateTime());
                 $bill->setTotalAmountBill(($car->getPriceCar() * 1.08) + 1500);
                 $bill->setCar($car);
-                $bill->setUser($userRepository->find(22));
+                $bill->setUser($userRepository->getLoggedInUser($this->getUser()->getUserIdentifier()));
     
                 $entityManager = $doctrine->getManager();
                 $entityManager->persist($bill);
@@ -67,8 +67,7 @@ class FrontController extends AbstractController
             }
         }
         if ($request->isMethod('POST') && $request->request->has('deleteBill')) {
-            $idCar = $request->request->get('deleteBill');
-            $idBill = $billRepository->getBillIdByCarId($idCar);
+            $idBill = $request->request->get('deleteBill');
             $bill = $billRepository->find($idBill);
     
             if (!$bill) {
@@ -114,7 +113,7 @@ class FrontController extends AbstractController
             $entityManager = $doctrine->getManager();
             $bill->setDateBill(new \DateTime());
             $bill->setCar($car);
-            $bill->setUser($userRepository->find(22));
+            $bill->setUser($userRepository->getLoggedInUser($this->getUser()->getUserIdentifier()));
             $bill->setTotalAmountBill($totalAmountBill);
             $bill->setStatusBill(1);
             $car->setStatusCar('rented');

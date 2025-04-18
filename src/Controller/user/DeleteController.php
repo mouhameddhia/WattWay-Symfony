@@ -3,6 +3,7 @@
 // src/Controller/DeleteController.php
 namespace App\Controller\user;
 
+use App\Repository\BillRepository;
 use App\Repository\FeedbackRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +19,8 @@ class DeleteController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         FeedbackRepository $feedbackRepository,
-        TokenStorageInterface $tokenStorage
+        TokenStorageInterface $tokenStorage,
+        BillRepository $billRepository
     ): Response {
         $user = $this->getUser();
         
@@ -35,6 +37,8 @@ class DeleteController extends AbstractController
         // Delete associated feedbacks
         
         $feedbackRepository->deleteAllFeedbacksForUser($user->getUserIdentifier());
+        // Delete associated bills
+        $billRepository->deleteAllBillsForUser($user->getUserIdentifier());
         
         $entityManager->flush();
 
