@@ -1,200 +1,784 @@
 {% extends 'frontend/baseFront.html.twig' %}
 
-{% block title %}Submissions{% endblock %}
+{% block title %}Submissions<div id="deleteConfirmationModal" class="modal-overlay" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this submission? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-btn cancel-btn">Cancel</button>
+                <button type="button" class="modal-btn confirm-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-{% block css %}
-    {{ parent() }}
-    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ asset('styles/submission.css') }}" rel="stylesheet">
-   
+<script>
+function scrollCarousel(direction) {
+    const container = document.querySelector('.card-container');
+    const scrollAmount = 330; // card width + gap
+    if (direction === 'left') {
+        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else {
+        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+}
+
+// Optional: Add touch swipe support
+let touchStartX = 0;
+let touchEndX = 0;
+const container = document.querySelector('.card-container');
+
+container.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+});
+
+container.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    if (touchStartX - touchEndX > 50) {
+        scrollCarousel('right');
+    } else if (touchEndX - touchStartX > 50) {
+        scrollCarousel('left');
+    }
+});
+function toggleResponses(submissionId) {
+    const responsesContainer = document.getElementById(`responses-${submissionId}`);
+    const toggleButton = responsesContainer.nextElementSibling;
+    const card = responsesContainer.closest('.card');
+    const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+    
+    responsesContainer.style.display = isExpanded ? 'none' : 'block';
+    toggleButton.setAttribute('aria-expanded', !isExpanded);
+    card.classList.toggle('expanded');
+    
+    const iconClosed = toggleButton.querySelector('.icon-closed');
+    const iconOpened = toggleButton.querySelector('.icon-opened');
+    iconClosed.style.display = isExpanded ? 'block' : 'none';
+    iconOpened.style.display = isExpanded ? 'none' : 'block';
+}
+function handleEdit(submissionId) {
+    // Implement edit functionality
+    console.log('Edit submission:', submissionId);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('deleteConfirmationModal');
+    const deleteButtons = document.querySelectorAll('.delete-icon');
+    let currentForm = null;
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            currentForm = this.closest('form');
+            modal.style.display = 'flex';
+        });
+    });
+
+    document.querySelector('.close-modal').addEventListener('click', closeModal);
+    document.querySelector('.cancel-btn').addEventListener('click', closeModal);
+    document.querySelector('.confirm-btn').addEventListener('click', function() {
+        if (currentForm) {
+            currentForm.submit();
+        }
+        closeModal();
+    });
+
+    function closeModal() {
+        modal.style.display = 'none';
+        currentForm = null;
+    }
+
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+});
+<script>
+function updateProgress() {
+    const form = document.getElementById('submissionForm');
+    const fields = form.querySelectorAll('.form-field');
+    let filledFields = 0;
+
+    fields.forEach(field => {
+        if (field.value.trim() !== '') {
+            filledFields++;
+            field.classList.add('active');
+        }
+    });
+
+    const progress = (filledFields / fields.length) * 100;
+    document.querySelector('.progress-fill').style.width = `${progress}%`;
+    document.getElementById('submitBtn').disabled = progress !== 100;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const fields = document.querySelectorAll('.form-field');
+    fields.forEach(field => {
+        field.addEventListener('focus', () => field.classList.add('active'));
+        if (field.value.trim() !== '') {
+            field.classList.add('active');
+        }
+    });
+    updateProgress();
+});
+</script>
 {% endblock %}
 
-{% block submission %}
-    <div class="clients-say">
-        <div class="container">
-            <div class="section-header">
-                <h2>New Submission</h2>
+
+{% block listSubmission %}
+<style>
+    .carousel-wrapper {
+        position: relative;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 50px;
+    }
+    .card {
+        width: 300px;
+        min-height: 400px;
+        border-radius: 20px;
+        background: linear-gradient(145deg, #ffffff, #f0f0f0);
+        box-shadow: 8px 8px 16px #d1d1d1,
+                   -8px -8px 16px #ffffff;
+        padding: 25px;
+        margin: 15px;
+        transition: height 0.3s ease;
+        flex: 0 0 auto;
+        overflow: hidden;
+    }
+    .card.expanded {
+        height: auto;
+        min-height: 400px;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .card-container {
+        display: flex;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        gap: 25px;
+        padding: 30px 0;
+    }
+    .card-container::-webkit-scrollbar {
+        display: none;
+    }
+    .carousel-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #ffffff;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        z-index: 1;
+    }
+    .carousel-button:hover {
+        background: #f0f0f0;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .carousel-button.prev {
+        left: 0;
+    }
+    .carousel-button.next {
+        right: 0;
+    }
+    .card-content {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .card-field {
+        color: #4a5568;
+        line-height: 1.5;
+        font-size: 0.95em;
+    }
+    .card-field strong {
+        color: #2d3748;
+        font-weight: 600;
+        margin-right: 5px;
+    }
+    .card-title {
+        font-size: 1.25em;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 15px;
+        line-height: 1.4;
+    }
+    .container.mt-4 h1 {
+        color: #2d3748;
+        font-size: 2.25em;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        font-weight: 600;
+        margin-right: 8px;
+        color: white;
+        margin-bottom: 11px;
+
+    }
+    .status-pending { background-color: #f59e0b; }
+    .status-approved { background-color: #3b82f6; }
+    .status-responded { background-color: #10b981; }
+    
+    .urgency-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+    .urgency-low { background-color: #e5e7eb; color: #374151; }
+    .urgency-medium { background-color: #fde68a; color: #92400e; }
+    .urgency-high { background-color: #fecaca; color: #991b1b; }
+    
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+    .status-badge, .urgency-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 1px 3px;
+        border-radius: 3px;
+        font-size: 0.55em;
+        font-weight: 500;
+    }
+    .status-badge::before {
+        content: "Status: ";
+        opacity: 0.8;
+        margin-right: 2px;
+    }
+    .urgency-badge::before {
+        content: "Urgency: ";
+        opacity: 0.8;
+        margin-right: 2px;
+    }
+    .card-meta {
+        margin-top: auto;
+        padding-top: 12px;
+        border-top: 1px solid #e5e7eb;
+        font-size: 0.8em;
+    }
+    .card-field {
+        color: #64748b;
+        line-height: 1.4;
+        margin-bottom: 4px;
+    }
+    .card-field strong {
+        color: #475569;
+        font-weight: 500;
+    }
+    .responses-section {
+        margin-top: 12px;
+        border-top: 1px solid #e5e7eb;
+        padding-top: 12px;
+    }
+    .responses-container {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 15px;
+        overflow: hidden;
+    }
+    .responses-title {
+        font-size: 1.1em;
+        color: #374151;
+        margin: 0;
+        padding: 15px;
+        border-bottom: 1px solid #e5e7eb;
+        background: #f9fafb;
+    }
+    .responses-wrapper {
+        padding: 15px;
+    }
+    .response-card {
+        transition: transform 0.2s ease;
+    }
+    .response-card:hover {
+        transform: translateY(-2px);
+    }
+    .response-type-email { border-left: 4px solid #3b82f6; }
+    .response-type-phone { border-left: 4px solid #10b981; }
+    .response-type-message { border-left: 4px solid #f59e0b; }
+    .empty-response {
+        text-align: center;
+        padding: 20px;
+        color: #6b7280;
+    }
+    .toggle-responses {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        transition: all 0.3s ease;
+        gap: 8px;
+    }
+    .toggle-responses:hover {
+        background: rgba(249, 143, 21, 0.1);
+        border-radius: 8px;
+    }
+    .toggle-text {
+        font-size: 0.9em;
+        color: #f98f15;
+        font-weight: 500;
+    }
+    .card {
+        width: 300px;
+        min-height: 280px;
+        border-radius: 20px;
+        background: linear-gradient(145deg, #ffffff, #f0f0f0);
+        box-shadow: 8px 8px 16px #d1d1d1,
+                   -8px -8px 16px #ffffff;
+        padding: 25px;
+        margin: 15px;
+        transition: transform 0.2s ease;
+        flex: 0 0 auto;
+        height: fit-content;
+    }
+    .icon-closed, .icon-opened {
+        transition: transform 0.3s ease;
+    }
+    [aria-expanded="true"] .icon-closed {
+        display: none;
+    }
+    [aria-expanded="false"] .icon-opened {
+        display: none;
+    }
+</style>
+<style>
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 140, 0, 0.1);
+    margin-bottom: 20px;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #ff8c00, #ffa500);
+    transition: width 0.3s ease;
+}
+
+.form-field {
+    opacity: 0.7;
+    transform: translateY(10px);
+    transition: all 0.4s ease;
+}
+
+.form-field.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.form-section {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, rgba(100, 116, 139, 0.05) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(100, 116, 139, 0.15),
+                inset 0 -2px 10px rgba(255, 255, 255, 0.5),
+                inset 0 2px 10px rgba(100, 116, 139, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.form-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #3b82f6, #64748b);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+}
+
+.form-section:hover {
+    transform: translateY(-5px) rotateX(2deg);
+    box-shadow: 0 20px 40px rgba(100, 116, 139, 0.2),
+                inset 0 -2px 10px rgba(255, 255, 255, 0.7),
+                inset 0 2px 10px rgba(100, 116, 139, 0.2);
+}
+
+.btn-primary {
+    width: auto;
+    min-width: 200px;
+    margin: 2rem auto;
+    padding: 1rem 2rem;
+    background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+    display: block;
+}
+
+.form-row {
+    margin-bottom: 1.75rem;
+    position: relative;
+}
+
+.form-row label {
+    display: block;
+    margin-bottom: 0.75rem;
+    color: #4a5568;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1rem;
+    color: #2d3748;
+    box-shadow: 0 4px 6px rgba(255, 165, 0, 0.05);
+}
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+    border-color: #ff8c00;
+    box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.form-row textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.btn-primary {
+    display: block;
+    width: 100%;
+    padding: 1.25rem;
+    background: linear-gradient(90deg, #2563eb 0%, #3b82f6  100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: -100%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+    transition: all 0.6s ease;
+}
+
+.btn-primary:hover::after {
+    left: 100%;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 140, 0, 0.4);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(90deg, #ff8c00 0%, #ffa500 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+}
+
+@media (max-width: 768px) {
+    .form-section {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .form-section h2 {
+        font-size: 1.75rem;
+    }
+}
+</style>
+<style>
+    .card-actions {
+        margin-left: auto;
+        display: flex;
+        gap: 8px;
+    }
+    .edit-icon, .delete-icon {
+        cursor: pointer;
+        padding: 4px;
+        color: #6b7280;
+        transition: all 0.2s ease;
+    }
+    .edit-icon:hover {
+        color: #3b82f6;
+    }
+    .delete-icon:hover {
+        color: #ef4444;
+    }
+</style>
+{# Add the form section #}
+    <div class="form-section" style="margin-bottom: 40px;">
+        <div class="progress-bar" id="formProgress">
+            <div class="progress-fill"></div>
+        </div>
+        <h2>Create New Submission</h2>
+        {{ form_start(form, {'attr': {'id': 'submissionForm'}}) }}
+            <div class="form-row" data-step="1">
+                {{ form_row(form.description, {'attr': {'class': 'form-field', 'onchange': 'updateProgress()'}}) }}
             </div>
-            <div class="card mb-4 shadow-sm submission-form-card">
-                <div class="card-body">
-                    {% for message in app.flashes('success') %}
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="fas fa-check-circle me-2"></i>{{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
-                    {% for message in app.flashes('error') %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="fas fa-exclamation-circle me-2"></i>{{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
+            <div class="form-row" data-step="2">
+                {{ form_row(form.vinCode, {'attr': {'class': 'form-field', 'onchange': 'updateProgress()'}}) }}
+            </div>
+            <div class="form-row" data-step="3">
+                {{ form_row(form.idUser, {'attr': {'class': 'form-field', 'onchange': 'updateProgress()'}}) }}
+            </div>
+            <div class="form-row" data-step="4">
+                {{ form_row(form.preferredContactMethod, {'attr': {'class': 'form-field', 'onchange': 'updateProgress()'}}) }}
+            </div>
+            <div class="form-row" data-step="5">
+                {{ form_row(form.preferredAppointmentDate, {'attr': {'class': 'form-field', 'onchange': 'updateProgress()'}}) }}
+            </div>
+            <button type="submit" class="btn btn-primary" id="submitBtn" disabled>Submit</button>
+        {{ form_end(form) }}
+    </div>
 
-                    {{ form_start(form, {'action': path('app_Fsubmission_index'), 'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}} ) }}
-                        <div class="mb-3">
-                            {{ form_label(form.description, 'Service Description', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.description) }}
-                            {{ form_errors(form.description) }}
-                        </div>
+    
+<div class="container mt-4">
+    <h1 class="submission-title" style="font-size: 2.5rem; font-weight: 700; color: #2d3748; text-align: center; margin-top: 70px; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #e2e8f0;">Customers' Submissions</h1>
+    <div class="carousel-wrapper">
+        <button class="carousel-button prev" onclick="scrollCarousel('left')">←</button>
+        <button class="carousel-button next" onclick="scrollCarousel('right')">→</button>
+        <div class="card-container">
+        {% for submission in submissions %}
+        <div class="card">
+            <div class="card-content">
+                <div class="card-header">
+                    <span class="status-badge status-{{ submission.status|lower }}">{{ submission.status }}</span>
+                    <span class="urgency-badge urgency-{{ submission.urgencyLevel|lower }}">{{ submission.urgencyLevel }}</span>
+                    <div class="card-actions">
 
-                        <div class="mb-3">
-                            {{ form_label(form.vinCode, 'VIN Code', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.vinCode) }}
-                            {{ form_errors(form.vinCode) }}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_label(form.idUser, 'User ID', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.idUser) }}
-                            {{ form_errors(form.idUser) }}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_label(form.preferredContactMethod, 'Preferred Contact Method', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.preferredContactMethod) }}
-                            {{ form_errors(form.preferredContactMethod) }}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_label(form.preferredAppointmentDate, 'Preferred Appointment Date', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.preferredAppointmentDate) }}
-                            {{ form_errors(form.preferredAppointmentDate) }}
-                        </div>
-
-                        {{ form_widget(form.status) }}
-                        {{ form_widget(form.urgencyLevel) }}
-                        {{ form_widget(form.dateSubmission) }}
-
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </div>
-                    {{ form_end(form) }}
+                    <a href="{{ path('Front_Submission_edit', {'idSubmission': submission.idSubmission}) }}" 
+       class="edit-icon"
+       title="Edit submission">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+    </a>
+    <form action="{{ path('Front_Submission_delete', {'idSubmission': submission.idSubmission}) }}" method="POST" 
+          onsubmit="return confirm('Are you sure you want to delete this submission?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ submission.idSubmission) }}">
+        <button type="submit" class="delete-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+        </button>
+    </form>
+</div>
                 </div>
-            </div>
 
-            <div class="section-header mt-5">
-                <h2>Submissions</h2>
-            </div>
-            <div class="row">
-                <div class="owl-carousel testimonial-carousel">
-                    {% for submission in submissions %}
-                        <div class="col-sm-3 col-xs-12 submission-item" data-user-id="{{ submission.idUser }}">
-                            <div class="single-testimonial-box shadow-sm p-3 mb-5 bg-white rounded">
-                                <div class="testimonial-description">
-                                    <div class="submission-actions">
-                                    <button onclick="window.location.href='{{ path('app_Fsubmission_edit', {idSubmission: submission.idSubmission}) }}'" class="btn btn-warning edit-btn" title="Edit Submission">
-                                        <i class="fa fa-edit"></i> Edit
-                                    </button>
-                                        <form method="post" action="{{ path('app_Fsubmission_delete', {idSubmission: submission.idSubmission}) }}" style="display:inline;">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ submission.idSubmission) }}">
-                                            <button type="submit" class="btn btn-danger delete-btn" title="Delete Submission" onclick="return confirm('Are you sure you want to delete this submission?');">
-                                                <i class="fa fa-trash"></i> Delete
-                                            </button>
-                                        </form>
+                <div class="card-title">{{ submission.description }}</div>
+                <div class="card-meta">
+                    <div class="card-field">
+                        <strong>Submitted:</strong> {{ submission.dateSubmission|date('Y-m-d') }}
+                    </div>
+                    <div class="card-field">
+                        <strong>Contact Method:</strong> {{ submission.preferredContactMethod }}
+                    </div>
+                    <div class="card-field">
+                        <strong>Preferred Date:</strong> {{ submission.preferredAppointmentDate|date('Y-m-d') }}
+                    </div>
+                    <div class="responses-section">
+                        <div class="responses-container" id="responses-{{ submission.idSubmission }}" style="display: none;">
+                            <h4 class="responses-title"><i class="fas fa-comments"></i> Responses</h4>
+                            <div class="responses-wrapper">
+                                {% for response in submission.responses %}
+                                <div class="response-card response-item response-type-{{ response.typeResponse|lower }} shadow-sm p-3 mb-3 bg-light rounded">
+                                    <div class="response-header">
+                                        <span class="response-type">{{ response.typeResponse }}</span>
+                                        <span class="response-date">{{ response.dateResponse ? response.dateResponse|date('Y-m-d') : 'N/A' }}</span>
                                     </div>
-                                    <div class="car-details">
-                                        <p><i class="fas fa-calendar-alt"></i> <strong>{{ submission.carDetails.year }}</strong></p>
-                                        <p><i class="fas fa-car"></i> <strong>{{ submission.carDetails.brand }}</strong></p>
-                                    </div>
-                                    <div class="testimonial-img">
-                                        <img src="{{ submission.carDetails.img }}" alt="Car Image" class="img-fluid rounded">
-                                    </div>
-                                    
-                                    <div class="service-details">
-                                        <p>{{ submission.description }}</p>
-                                        <p><i class="fas fa-calendar-check"></i> <strong>Appointment:</strong> {{ submission.preferredAppointmentDate ? submission.preferredAppointmentDate|date('Y-m-d') : 'N/A' }}</p>
-                                        <p><i class="fas fa-phone-alt"></i> <strong>Contact:</strong> {{ submission.preferredContactMethod }}</p>
-                                    </div>
-                                    <div class="responses-container" id="responses-{{ submission.idSubmission }}" style="display: none;">
-                                        <h4 class="responses-title"><i class="fas fa-comments"></i> Responses</h4>
-                                        <div class="responses-wrapper">
-                                            {% for response in submission.responses %}
-                                            <div class="response-card response-item response-type-{{ response.typeResponse|lower }} shadow-sm p-3 mb-3 bg-light rounded">
-                                                <div class="response-header">
-                                                    <span class="response-type">{{ response.typeResponse }}</span>
-                                                    <span class="response-date">{{ response.dateResponse ? response.dateResponse|date('Y-m-d') : 'N/A' }}</span>
-                                                </div>
-                                                <div class="response-content">
-                                                    <p>{{ response.message }}</p>
-                                                </div>
-                                            </div>
-                                            {% else %}
-                                            <div class="response-card response-item empty-response">
-                                                <p class="text-muted"><i class="fas fa-info-circle"></i> No responses found for this submission.</p>
-                                            </div>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                    <div class="toggle-responses" style="cursor: pointer;">
-                                        <svg class="icon-closed" xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 512 512">
-                                            <path fill="#f98f15" d="M256 464a208 208 0 1 1 0-416 208 208 0 1 1 0 416zM256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM376.9 294.6c4.5-4.2 7.1-10.1 7.1-16.3c0-12.3-10-22.3-22.3-22.3L304 256l0-96c0-17.7-14.3-32-32-32l-32 0c-17.7 0-32 14.3-32 32l0 96-57.7 0C138 256 128 266 128 278.3c0 6.2 2.6 12.1 7.1 16.3l107.1 99.9c3.8 3.5 8.7 5.5 13.8 5.5s10.1-2 13.8-5.5l107.1-99.9z"/>
-                                        </svg>
-                                        <svg class="icon-opened" xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 512 512" style="display: none;">
-                                            <path fill="#f98f15" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm11.3-395.3l112 112c4.6 4.6 5.9 11.5 3.5 17.4s-8.3 9.9-14.8 9.9l-64 0 0 96c0 17.7-14.3 32-32 32l-32 0c-17.7 0-32-14.3-32-32l0-96-64 0c-6.5 0-12.3-3.9-14.8-9.9s-1.1-12.9 3.5-17.4l112-112c6.2-6.2 16.4-6.2 22.6 0z"/>
-                                        </svg>
+                                    <div class="response-content">
+                                        <p>{{ response.message }}</p>
                                     </div>
                                 </div>
+                                {% else %}
+                                <div class="response-card response-item empty-response">
+                                    <p class="text-muted"><i class="fas fa-info-circle"></i> No responses found for this submission.</p>
+                                </div>
+                                {% endfor %}
                             </div>
                         </div>
-                    {% else %}
-                        <div class="col-sm-12">
-                            <p class="text-center text-muted py-3">No submissions found</p>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-
-            <!-- Modal for editing submission -->
-            <div class="modal fade" id="editSubmissionModal" tabindex="-1" aria-labelledby="editSubmissionModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editSubmissionModalLabel">Edit Submission</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body" id="editSubmissionForm">
-                            <!-- Form will be loaded here -->
+                        <div class="toggle-responses" onclick="toggleResponses({{ submission.idSubmission }})" style="cursor: pointer;">
+                            <svg class="icon-closed" xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 512 512">
+                                <path fill="#f98f15" d="M256 464a208 208 0 1 1 0-416 208 208 0 1 1 0 416zM256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM376.9 294.6c4.5-4.2 7.1-10.1 7.1-16.3c0-12.3-10-22.3-22.3-22.3L304 256l0-96c0-17.7-14.3-32-32-32l-32 0c-17.7 0-32 14.3-32 32l0 96-57.7 0C138 256 128 266 128 278.3c0 6.2 2.6 12.1 7.1 16.3l107.1 99.9c3.8 3.5 8.7 5.5 13.8 5.5s10.1-2 13.8-5.5l107.1-99.9z"/>
+                            </svg>
+                            <span class="toggle-text">See responses</span>
+                            <svg class="icon-opened" xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 512 512" style="display: none;">
+                                <path fill="#f98f15" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm11.3-395.3l112 112c4.6 4.6 5.9 11.5 3.5 17.4s-8.3 9.9-14.8 9.9l-64 0 0 96c0 17.7-14.3 32-32 32l-32 0c-17.7 0-32-14.3-32-32l0-96-64 0c-6.5 0-12.3-3.9-14.8-9.9s-1.1-12.9 3.5-17.4l112-112c6.2-6.2 16.4-6.2 22.6 0z"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <script>
-                // Function to load and show edit form in modal
-                function showEditModal(submissionId) {
-                    const modal = new bootstrap.Modal(document.getElementById('editSubmissionModal'));
-                    fetch(`/submission/${submissionId}/edit`)
-                        .then(response => response.text())
-                        .then(html => {
-                            document.getElementById('editSubmissionForm').innerHTML = html;
-                            modal.show();
-                        });
-                }
-
-                document.querySelectorAll('.toggle-responses').forEach(icon => {
-                    icon.addEventListener('click', () => {
-                        const container = icon.previousElementSibling;
-                        const closedIcon = icon.querySelector('.icon-closed');
-                        const openedIcon = icon.querySelector('.icon-opened');
-
-                        if (container.style.display === 'none') {
-                            container.style.display = 'block';
-                            closedIcon.style.display = 'none';
-                            openedIcon.style.display = 'inline';
-                        } else {
-                            container.style.display = 'none';
-                            closedIcon.style.display = 'inline';
-                            openedIcon.style.display = 'none';
-                        }
-                    });
-                });
-     
-     
-            </script>
-
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div id="deleteConfirmationModal" class="modal-overlay" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this submission? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-btn cancel-btn">Cancel</button>
+                <button type="button" class="modal-btn confirm-btn">Delete</button>
+            </div>
         </div>
     </div>
+</div>
+
+<script>
+function scrollCarousel(direction) {
+    const container = document.querySelector('.card-container');
+    const scrollAmount = 330; // card width + gap
+    if (direction === 'left') {
+        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else {
+        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+}
+
+// Optional: Add touch swipe support
+let touchStartX = 0;
+let touchEndX = 0;
+const container = document.querySelector('.card-container');
+
+container.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+});
+
+container.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    if (touchStartX - touchEndX > 50) {
+        scrollCarousel('right');
+    } else if (touchEndX - touchStartX > 50) {
+        scrollCarousel('left');
+    }
+});
+function toggleResponses(submissionId) {
+    const responsesContainer = document.getElementById(`responses-${submissionId}`);
+    const toggleButton = responsesContainer.nextElementSibling;
+    const card = responsesContainer.closest('.card');
+    const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+    
+    responsesContainer.style.display = isExpanded ? 'none' : 'block';
+    toggleButton.setAttribute('aria-expanded', !isExpanded);
+    card.classList.toggle('expanded');
+    
+    const iconClosed = toggleButton.querySelector('.icon-closed');
+    const iconOpened = toggleButton.querySelector('.icon-opened');
+    iconClosed.style.display = isExpanded ? 'block' : 'none';
+    iconOpened.style.display = isExpanded ? 'none' : 'block';
+}
+function handleEdit(submissionId) {
+    // Implement edit functionality
+    console.log('Edit submission:', submissionId);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('deleteConfirmationModal');
+    const deleteButtons = document.querySelectorAll('.delete-icon');
+    let currentForm = null;
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            currentForm = this.closest('form');
+            modal.style.display = 'flex';
+        });
+    });
+
+    document.querySelector('.close-modal').addEventListener('click', closeModal);
+    document.querySelector('.cancel-btn').addEventListener('click', closeModal);
+    document.querySelector('.confirm-btn').addEventListener('click', function() {
+        if (currentForm) {
+            currentForm.submit();
+        }
+        closeModal();
+    });
+
+    function closeModal() {
+        modal.style.display = 'none';
+        currentForm = null;
+    }
+
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+});
+</script>
 {% endblock %}

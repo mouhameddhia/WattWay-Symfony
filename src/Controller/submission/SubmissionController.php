@@ -66,10 +66,10 @@ final class SubmissionController extends AbstractController
             return $this->redirectToRoute('app_submission_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('backend/submission/edit.html.twig', [
-            'submission' => $submission,
-            'form' => $form,
-        ]);
+        // return $this->render('backend/submission/edit.html.twig', [
+        //     'submission' => $submission,
+        //     'form' => $form,
+        // ]);
     }
 
     #[Route('/{idSubmission}', name: 'app_submission_delete', methods: ['POST'])]
@@ -82,21 +82,5 @@ final class SubmissionController extends AbstractController
 
         return $this->redirectToRoute('app_submission_index', [], Response::HTTP_SEE_OTHER);
     }
-
-    #[Route('/{idSubmission}/export-pdf', name: 'app_submission_export_pdf', methods: ['GET'])]
-    public function exportPdf(Submission $submission, Dompdf\Dompdf $dompdf): Response
-    {
-        $html = $this->renderView('backend/submission/export_pdf.html.twig', [
-            'submission' => $submission
-        ]);
-    
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-    
-        return new Response($dompdf->output(), 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="submission-'.$submission->getIdSubmission().'.pdf"'
-        ]);
-    }
+  
 }

@@ -25,15 +25,18 @@ class FrontSubmissionType extends AbstractType
             ])
             ->add('status', null, [
                 'data' => 'pending',
-                'attr' => ['style' => 'display: none;']
+                'attr' => ['style' => 'display: none;', 'class' => 'hidden-field'],
+                'label' => false
             ])
             ->add('urgencyLevel', null, [
                 'data' => 'low',
-                'attr' => ['style' => 'display: none;']
+                'attr' => ['style' => 'display: none;', 'class' => 'hidden-field'],
+                'label' => false
             ])
             ->add('dateSubmission', null, [
                 'data' => new \DateTime(),
-                'attr' => ['style' => 'display: none;']
+                'attr' => ['style' => 'display: none;', 'class' => 'hidden-field'],
+                'label' => false
             ])
             ->add('vinCode', null, [
                 'mapped' => false,

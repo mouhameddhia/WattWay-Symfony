@@ -12,6 +12,7 @@ class FrontController extends AbstractController
 
         public function index(): Response
     {
-        return $this->render('frontend/baseFront.html.twig');
-    }
+                return $this->render('frontend/baseFront.html.twig');
+
+         }
 }

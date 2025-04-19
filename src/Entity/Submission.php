@@ -94,22 +94,19 @@ class Submission
         $this->dateSubmission = $dateSubmission;
         return $this;
     }
-
-    #[ORM\Column(name: 'idCar', type: 'integer', nullable: false)]
-    #[AssertNotNull(message: 'Car ID is required', groups: ['create'])]
-    #[AssertPositive(message: 'Car ID must be a positive number', groups: ['create'])]
-    private ?int $idCar = null;
-
-    public function getIdCar(): ?int
+    #[ORM\ManyToOne(targetEntity: Car::class, inversedBy: 'submissions')]
+    #[ORM\JoinColumn(name: 'idCar', referencedColumnName: 'idCar')]
+    private ?Car $car = null;
+    public function getCar(): ?Car
     {
-        return $this->idCar;
+        return $this->car;
     }
-
-    public function setIdCar(int $idCar): self
+    public function setCar(?Car $car): self
     {
-        $this->idCar = $idCar;
+        $this->car = $car;
         return $this;
     }
+    
 
     #[ORM\Column(name: 'idUser', type: 'integer', nullable: false)]
     #[AssertNotNull(message: 'User ID is required', groups: ['create'])]

@@ -1,86 +1,267 @@
 
 {% block title %}Edit Submission{% endblock %}
 
-{% block submission %}
+{% block stylesheets %}
 <style>
-    .edit-container {
+    .edit-submission-container {
         max-width: 800px;
         margin: 2rem auto;
         padding: 2rem;
-        background: #f8f9fa;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        background: linear-gradient(135deg, #ffffff, #f8f9fa);
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        position: relative;
     }
 
-    .form-grid {
-        display: grid;
-        gap: 1.5rem;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-        color: #2c3e50;
-    }
-
-    .form-control {
+    .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #ced4da;
-        border-radius: 4px;
-        transition: border-color 0.15s ease-in-out;
+        height: 4px;
+        background: #e2e8f0;
+        z-index: 1000;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, #3b82f6, #2563eb);
+        transition: width 0.3s ease;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.7; }
+        100% { opacity: 1; }
+    }
+
+    .edit-submission-title {
+        color: #2563eb;
+        font-size: 2.25rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        font-weight: 700;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        animation: slideDown 0.5s ease-out;
+    }
+
+    @keyframes slideDown {
+        from { transform: translateY(-20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .form-section {
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .form-row {
+        margin-bottom: 1.75rem;
+        transform-origin: left;
+        animation: scaleIn 0.3s ease-out;
+    }
+
+    @keyframes scaleIn {
+        from { transform: scaleX(0.9); opacity: 0; }
+        to { transform: scaleX(1); opacity: 1; }
+    }
+
+    .form-row label {
+        display: block;
+        margin-bottom: 0.75rem;
+        color: #1e40af;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: color 0.3s ease;
+    }
+
+    .form-row input,
+    .form-row select,
+    .form-row textarea {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+        background: white;
+    }
+
+    .form-row input:focus,
+    .form-row select:focus,
+    .form-row textarea:focus {
+        border-color: #3b82f6;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
+        border: 1px solid #f87171;
+        color: #991b1b;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 0.75rem;
+        font-weight: 500;
+        animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
     }
 
     .form-actions {
-        margin-top: 2rem;
         display: flex;
-        gap: 1rem;
+        gap: 1.5rem;
         justify-content: flex-end;
+        margin-top: 2.5rem;
+        padding-top: 1.5rem;
+        border-top: 2px solid #e2e8f0;
+        animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
     }
 
     .btn {
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 4px;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
         cursor: pointer;
-        transition: opacity 0.2s ease;
+        transition: all 0.3s ease;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 5px;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.5);
+        opacity: 0;
+        border-radius: 100%;
+        transform: scale(1, 1) translate(-50%);
+        transform-origin: 50% 50%;
+    }
+
+    .btn:active::after {
+        animation: ripple 1s ease-out;
+    }
+
+    @keyframes ripple {
+        0% {
+            transform: scale(0, 0);
+            opacity: 0.5;
+        }
+        100% {
+            transform: scale(20, 20);
+            opacity: 0;
+        }
     }
 
     .btn-primary {
-        background-color: #3498db;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
         color: white;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
     }
 
     .btn-secondary {
-        background-color: #95a5a6;
+        background: linear-gradient(135deg, #64748b, #475569);
         color: white;
+        text-decoration: none;
     }
 
-    @media (max-width: 768px) {
-        .edit-container {
-            margin: 1rem;
-            padding: 1rem;
-        }
+    .btn-secondary:hover {
+        background: linear-gradient(135deg, #475569, #334155);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(71, 85, 105, 0.2);
     }
 </style>
-    <div class="edit-container">
-        <h1>Edit Submission</h1>
 
-        <div class="form-wrapper">
-            {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'submission-form'}} ) }}
-            <div class="form-row">
-                {{ include('frontend/submission/_edit_form.html.twig', {'button_label': 'Update'}) }}
-            </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const progressBar = document.querySelector('.progress-bar-fill');
+    const formInputs = document.querySelectorAll('input, select, textarea');
+    const totalFields = formInputs.length;
+    let filledFields = 0;
 
-            <div class="form-actions">
-                <button type="submit" class="btn btn-save">Update</button>
-                <a href="{{ path('app_Fsubmission_index') }}" class="btn btn-back">Back to list</a>
-            </div>
+    function updateProgress() {
+        filledFields = Array.from(formInputs).filter(input => input.value.trim() !== '').length;
+        const progress = (filledFields / totalFields) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
 
-            {{ include('frontend/submission/_delete_form.html.twig') }}
-            {{ form_end(form) }}
-        </div>
-    </div>
+    formInputs.forEach(input => {
+        input.addEventListener('input', updateProgress);
+    });
+
+    // Initial progress calculation
+    updateProgress();
+});
+</script>
 {% endblock %}
+
+{% block listSubmission %}
+<div class="progress-bar">
+    <div class="progress-bar-fill"></div>
+</div>
+<div class="edit-submission-container">
+    <h1 class="edit-submission-title">Edit Submission</h1>
+    
+    <div class="form-section">
+        {{ form_start(form) }}
+            <div class="form-row">
+                {{ form_row(form.description) }}
+            </div>
+            <div class="form-row">
+                {{ form_row(form.vinCode) }}
+                {% if form.vinCode.vars.errors|length > 0 %}
+                    <div class="alert alert-danger">
+                        {{ form_errors(form.vinCode) }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-row">
+                {{ form_row(form.idUser) }}
+            </div>
+            <div class="form-row">
+                {{ form_row(form.preferredContactMethod) }}
+            </div>
+            <div class="form-row">
+                {{ form_row(form.preferredAppointmentDate) }}
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update</button>
+                <a href="{{ path('Front_Submission') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}
+

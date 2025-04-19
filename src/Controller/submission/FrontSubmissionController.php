@@ -10,229 +10,134 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Entity\Car;
-use App\Repository\CarRepository;
 use App\Repository\ResponseRepository;
+use App\Repository\CarRepository;
 
-#[Route('/Front/submission')]
-final class FrontSubmissionController extends AbstractController
+
+class FrontSubmissionController extends AbstractController
 {
-    #[Route(name: 'app_Fsubmission_index', methods: ['GET', 'POST'])]
-    public function index(SubmissionRepository $submissionRepository, CarRepository $carRepository, ResponseRepository $responseRepository, Request $request, EntityManagerInterface $entityManager): Response
-    {
-        // Create new submission form
+    #[Route('/submission', name: 'Front_Submission', methods: ['GET', 'POST'])]
+    public function index(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SubmissionRepository $submissionRepository,
+        ResponseRepository $responseRepository,
+        CarRepository $carRepository
+    ): Response {
+
+  
         $submission = new Submission();
         $form = $this->createForm(FrontSubmissionType::class, $submission);
+        
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
+            // Get VIN from unmapped field
             $vinCode = $form->get('vinCode')->getData();
             
-            if (empty($vinCode)) {
-                $this->addFlash('error', 'VIN code is required.');
-                return $this->redirectToRoute('app_Fsubmission_index');
-            }
-            
-            $car = $carRepository->findOneByVinCode($vinCode);
+            // Find the Car
+            $car = $carRepository->findOneBy(['vinCode' => $vinCode]);
             
             if (!$car) {
-                $this->addFlash('error', 'Car with this VIN code does not exist.');
-                return $this->redirectToRoute('app_Fsubmission_index');
+                $this->addFlash('error', 'No car found with this VIN');
+                return $this->redirectToRoute('Front_Submission');
             }
             
-            // Set the car ID to the submission
-            $submission->setIdCar($car->getIdCar());
+            // Link Car to Submission
+            $submission->setCar($car);
             
-            try {
-                $entityManager->persist($submission);
-                $entityManager->flush();
-                $this->addFlash('success', 'Submission created successfully!');
-            } catch (\Exception $e) {
-                $this->addFlash('error', 'An error occurred while creating the submission.');
-            }
+            // Set default values
+            $submission->setDateSubmission(new \DateTime());
+            $submission->setStatus('Pending');
             
-            return $this->redirectToRoute('app_Fsubmission_index', [], Response::HTTP_SEE_OTHER);
+            // Persist and flush
+            $entityManager->persist($submission);
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'Submission created!');
+            return $this->redirectToRoute('Front_Submission');
         }
 
-        // Filter submissions by idUser if provided
-        $userId = $request->query->get('userId');
+        // Get existing submissions with responses
         $submissions = $submissionRepository->findAll();
-
-        if ($userId) {
-            foreach ($submissions as $submission) {
-                $submission->isEditable = ($submission->getIdUser() == $userId);
-            }
-        } else {
-            foreach ($submissions as $submission) {
-                $submission->isEditable = false;
-            }
-        }
-
-        // Fetch all submissions and mark the ones related to the userId
-        $userId = $request->query->get('userId');
-        $submissions = $submissionRepository->findAll();
-
+        $submissionsWithResponses = [];
+        
         foreach ($submissions as $submission) {
-            $submission->isRelatedToUser = ($userId && $submission->getIdUser() == $userId);
-        }
-
-        // Fetch car details for each submission
-        foreach ($submissions as $submission) {
-            $car = $carRepository->find($submission->getIdCar());
-            if ($car) {
-                $submission->carDetails = [
-                    'img' => $car->getImgCar(),
-                    'year' => $car->getYearCar(),
-                    'brand' => $car->getBrandCar(),
-                ];
-            }
-
             $responses = $responseRepository->findBySubmissionId($submission->getIdSubmission());
-            $submission->responses = $responses;
+            $submissionsWithResponses[] = [
+                'idSubmission' => $submission->getIdSubmission(),
+                'status' => $submission->getStatus(),
+                'urgencyLevel' => $submission->getUrgencyLevel(),
+                'description' => $submission->getDescription(),
+                'dateSubmission' => $submission->getDateSubmission(),
+                'preferredContactMethod' => $submission->getPreferredContactMethod(),
+                'preferredAppointmentDate' => $submission->getPreferredAppointmentDate(),
+                'responses' => $responses
+            ];
         }
 
         return $this->render('frontend/submission/index.html.twig', [
-            'submissions' => $submissions,
-            'form' => $form,
+            'submissions' => $submissionsWithResponses,
+            'form' => $form->createView()
         ]);
     }
 
-    #[Route('/new', name: 'app_Fsubmission_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, CarRepository $carRepository): Response
-    {
-        $submission = new Submission();
-        $form = $this->createForm(FrontSubmissionType::class, $submission);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $vinCode = $form->get('vinCode')->getData();
-            
-            if (empty($vinCode)) {
-                $this->addFlash('error', 'VIN code is required.');
-                return $this->redirectToRoute('app_Fsubmission_new');
-            }
-            
-            $car = $carRepository->findOneByVinCode($vinCode);
-            
+    #[Route('/submission/delete/{idSubmission}', name: 'Front_Submission_delete', methods: ['POST'])]
+public function delete(
+    Request $request, 
+    Submission $submission, 
+    EntityManagerInterface $entityManager
+): Response {
+    if ($this->isCsrfTokenValid('delete'.$submission->getIdSubmission(), $request->request->get('_token'))) {
+        $entityManager->remove($submission);
+        $entityManager->flush();
+        $this->addFlash('success', 'Submission deleted successfully');
+    } else {
+        $this->addFlash('error', 'Invalid CSRF token');
+    }
+
+    return $this->redirectToRoute('Front_Submission');
+}
+
+#[Route('/submission/edit/{idSubmission}', name: 'Front_Submission_edit', methods: ['GET', 'POST'])]
+public function edit(
+    Request $request,
+    Submission $submission,
+    EntityManagerInterface $entityManager,
+    CarRepository $carRepository
+): Response {
+    // Get current VIN code from associated car
+    $currentVin = $submission->getCar() ? $submission->getCar()->getVinCode() : '';
+
+    $form = $this->createForm(FrontSubmissionType::class, $submission);
+    $form->get('vinCode')->setData($currentVin); // Pre-fill VIN code
+
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Handle VIN code changes
+        $newVin = $form->get('vinCode')->getData();
+        
+        if ($newVin !== $currentVin) {
+            $car = $carRepository->findOneBy(['vinCode' => $newVin]);
             if (!$car) {
-                $this->addFlash('error', 'Car with this VIN code does not exist.');
-                return $this->redirectToRoute('app_Fsubmission_new');
+                $this->addFlash('error', 'No car found with this VIN code');
+                return $this->redirectToRoute('Front_Submission_edit', [
+                    'idSubmission' => $submission->getIdSubmission()
+                ]);
             }
-            
-            // Set the car ID to the submission
-            $submission->setIdCar($car->getIdCar());
-            
-            try {
-                $entityManager->persist($submission);
-                $entityManager->flush();
-                $this->addFlash('success', 'Submission created successfully!');
-            } catch (\Exception $e) {
-                $this->addFlash('error', 'An error occurred while creating the submission.');
-            }
-
-            return $this->redirectToRoute('app_Fsubmission_index', [], Response::HTTP_SEE_OTHER);
+            $submission->setCar($car);
         }
 
-        return $this->render('frontend/submission/new.html.twig', [
-            'submission' => $submission,
-            'form' => $form,
-        ]);
+        $entityManager->flush();
+        $this->addFlash('success', 'Submission updated successfully!');
+        return $this->redirectToRoute('Front_Submission');
     }
 
-    #[Route('/{idSubmission}', name: 'app_Fsubmission_show', methods: ['GET'])]
-    public function show(Submission $submission): Response
-    {
-        return $this->render('frontend/submission/show.html.twig', [
-            'submission' => $submission,
-        ]);
-    }
-
-    #[Route('/{idSubmission}/edit', name: 'app_Fsubmission_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Submission $submission, EntityManagerInterface $entityManager, CarRepository $carRepository): Response
-    {
-        // Get the current car's VIN code
-        $currentCar = $carRepository->find($submission->getIdCar());
-        $initialVinCode = $currentCar ? $currentCar->getVinCode() : '';
-
-        $form = $this->createForm(FrontSubmissionType::class, $submission, [
-            'car_repository' => $carRepository
-        ]);
-
-        // Set the initial VIN code value
-        $form->get('vinCode')->setData($initialVinCode);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $vinCode = $form->get('vinCode')->getData();
-            
-            if (empty($vinCode)) {
-                $this->addFlash('error', 'VIN code is required.');
-                if ($request->isXmlHttpRequest()) {
-                    return $this->render('frontend/submission/_edit_form.html.twig', [
-                        'form' => $form,
-                        'submission' => $submission
-                    ]);
-                }
-                return $this->redirectToRoute('app_Fsubmission_edit', ['idSubmission' => $submission->getIdSubmission()]);
-            }
-            
-            $car = $carRepository->findOneByVinCode($vinCode);
-            
-            if (!$car) {
-                $this->addFlash('error', 'Car with this VIN code does not exist.');
-                if ($request->isXmlHttpRequest()) {
-                    return $this->render('frontend/submission/_edit_form.html.twig', [
-                        'form' => $form,
-                        'submission' => $submission
-                    ]);
-                }
-                return $this->redirectToRoute('app_Fsubmission_edit', ['idSubmission' => $submission->getIdSubmission()]);
-            }
-            
-            // Set the car ID to the submission
-            $submission->setIdCar($car->getIdCar());
-            
-            try {
-                $entityManager->flush();
-                $this->addFlash('success', 'Submission updated successfully!');
-                if ($request->isXmlHttpRequest()) {
-                    return new JsonResponse(['success' => true]);
-                }
-            } catch (\Exception $e) {
-                $this->addFlash('error', 'An error occurred while updating the submission.');
-                if ($request->isXmlHttpRequest()) {
-                    return $this->render('frontend/submission/_edit_form.html.twig', [
-                        'form' => $form,
-                        'submission' => $submission
-                    ]);
-                }
-            }
-
-            return $this->redirectToRoute('app_Fsubmission_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        if ($request->isXmlHttpRequest()) {
-            return $this->render('frontend/submission/_edit_form.html.twig', [
-                'form' => $form,
-                'submission' => $submission
-            ]);
-        }
-
-        return $this->render('frontend/submission/edit.html.twig', [
-            'submission' => $submission,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{idSubmission}', name: 'app_Fsubmission_delete', methods: ['POST'])]
-    public function delete(Request $request, Submission $submission, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$submission->getIdSubmission(), $request->get('_token'))) {
-            $entityManager->remove($submission);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('app_Fsubmission_index', [], Response::HTTP_SEE_OTHER);
-    }
+    return $this->render('frontend/submission/edit.html.twig', [
+        'submission' => $submission,
+        'form' => $form->createView(),
+    ]);
+}
 }
