@@ -175,37 +175,61 @@ class OrdersController extends AbstractController
         return $this->json(['success' => true]);
     }
 
+    #[Route('/order/item/update/{itemId}', name: 'update_item_quantity', methods: ['POST'])]
+    public function updateItemQuantity(
+        int $itemId,
+        Request $request,
+        EntityManagerInterface $em
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        $newQuantity = $data['quantity'] ?? null;
+    
+        if (!is_numeric($newQuantity) || $newQuantity < 0) {
+            return $this->json(['success' => false, 'message' => 'Invalid quantity'], 400);
+        }
+    
+        $query = $em->createQuery('UPDATE App\Entity\Item i SET i.quantityItem = :qty WHERE i.idItem = :id')
+            ->setParameter('qty', (int)$newQuantity)
+            ->setParameter('id', $itemId);
+    
+        $rowsAffected = $query->execute();
+    
+        if ($rowsAffected === 0) {
+            return $this->json(['success' => false, 'message' => 'Item not found'], 404);
+        }
+    
+        return $this->json(['success' => true, 'newQuantity' => (int)$newQuantity]);
+    }
+    
+    
 
-    // Classify Items (Client/Admin)
-    private function divideItemsByAdmin(array $items, OrderRepository $orderRepository): array
-    {
-        return $orderRepository->divideItemsByAdmin($items);
+#[Route('/order/item/delete/{itemId}', name: 'delete_item', methods: ['DELETE'])]
+public function deleteItem(
+    int $itemId,
+    EntityManagerInterface $entityManager
+): JsonResponse {
+    $item = $entityManager->getRepository(Item::class)->find($itemId);
+
+    if (!$item) {
+        return $this->json(['success' => false, 'message' => 'Item not found'], 404);
     }
 
+    try {
+        $entityManager->remove($item);
+        $entityManager->flush();
 
-    // Calculate Stock Levels
-    private function calculateItemQuantities(array $clientItems, array $adminItems): array
-    {
-        $quantities = [];
-
-        foreach ($clientItems as $item) {
-            $itemName = $item->getNameItem();
-            $quantities[$itemName]['clientQuantity'] = ($quantities[$itemName]['clientQuantity'] ?? 0) + $item->getQuantityItem();
-            $quantities[$itemName]['adminQuantity'] = $quantities[$itemName]['adminQuantity'] ?? 0;
-        }
-
-        foreach ($adminItems as $item) {
-            $itemName = $item->getNameItem();
-            $quantities[$itemName]['adminQuantity'] = ($quantities[$itemName]['adminQuantity'] ?? 0) + $item->getQuantityItem();
-            $quantities[$itemName]['clientQuantity'] = $quantities[$itemName]['clientQuantity'] ?? 0;
-        }
-
-        return $quantities;
+        return $this->json(['success' => true, 'message' => 'Item deleted successfully']);
+    } catch (\Exception $e) {
+        return $this->json([
+            'success' => false,
+            'message' => 'Error deleting item: ' . $e->getMessage()
+        ], 500);
     }
+}
 
-   
 
 
+ 
 
     
     

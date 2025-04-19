@@ -70,10 +70,10 @@
             <tbody>
                 {% for order in orders %}
                 <tr class="clickable-order 
-    {{ order.supplierOrder == 'WattShop' ? 'wattshop-row' : '' }} 
-    {{ order.idOrder == highlightId|default('')|number_format(0, '.', '') ? 'highlighted-row' : '' }}
-" 
-    data-order-id="{{ order.idOrder }}">
+                {{ order.supplierOrder == 'WattShop' ? 'wattshop-row' : '' }} 
+                {{ order.idOrder == highlightId|default('')|number_format(0, '.', '') ? 'highlighted-row' : '' }}
+            " 
+                 data-order-id="{{ order.idOrder }}">
                        
                         <td style="text-align: center;">{{ order.idOrder }}</td>
                         <td>{{ order.supplierOrder }}</td>
@@ -199,6 +199,7 @@
                             <h5 class="modal-title" id="editOrderModalLabel">Edit Order #<span id="editOrderId"></span></h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
+            
                         <div class="modal-body">
                             <form id="editOrderForm">
                                 <div class="row mb-3">
@@ -216,7 +217,7 @@
                                                title="Date cannot be in the future.">
                                     </div>
                                 </div>
-                
+            
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label for="editStatus" class="form-label">Status</label>
@@ -236,7 +237,7 @@
                                                title="Enter a valid total between $0 and $100,000.">
                                     </div>
                                 </div>
-                
+            
                                 <div class="mb-3">
                                     <label for="editAddress" class="form-label">Supplier Address</label>
                                     <textarea class="form-control" id="editAddress" rows="3" required
@@ -244,17 +245,36 @@
                                               placeholder="Enter supplier address..."></textarea>
                                 </div>
                             </form>
+            
+                            <!-- Order Items Table -->
+                            <div class="mt-4">
+                                <h6>Order Items</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Quantity</th>
+                                                <th>Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="editOrderItemsList">
+                                            <!-- Items will be populated dynamically -->
+                                            <tr><td colspan="3" class="text-center text-muted">Loading items...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                        
-                        
+            
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary" id="saveOrderChanges">Save changes</button>
                         </div>
                     </div>
                 </div>
-                
-</div>
+            </div>
+            
         </div>
     </div>
 </div>

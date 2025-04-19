@@ -126,43 +126,71 @@ class ShopCart {
 
     async handleAddToCart(button) {
         const itemId = button.getAttribute('data-item-id');
-        const availableQuantity = await this.getAvailableQuantity(itemId); // Fetch quantity from backend
+        const availableQuantity = await this.getAvailableQuantityByItemId(itemId);
+    
         this.currentItem = {
             id: itemId,
             name: button.closest('.product-card').querySelector('.product-title').textContent,
             price: parseFloat(button.closest('.product-card').querySelector('.product-price').textContent.replace('$', '')),
-            quantity: 1,
+            quantity: 1, // ← Temporary, will be overwritten in confirmQuantity()
             maxQuantity: availableQuantity
         };
+    
         this.quantityInput.value = 1;
         this.quantityInput.max = availableQuantity;
         this.quantityDialog.style.display = 'flex';
+    }
+    
+    
+    async getAvailableQuantityByItemId(itemId) {
+        try {
+            const response = await fetch(`/api/item/${itemId}/quantity`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            return data.availableQuantity;
+        } catch (error) {
+            console.error('Error fetching available quantity:', error);
+            return 0; // fallback
+        }
     }
     
     async confirmQuantity() {
         if (!this.currentItem) return;
     
         const requestedQuantity = parseInt(this.quantityInput.value);
+    
+        // Log the available quantity to see if it's correct
+        console.log('Available Quantity:', this.currentItem.maxQuantity);
+    
+        // Check if the requested quantity is greater than the available quantity
         if (requestedQuantity > this.currentItem.maxQuantity) {
             alert(`Only ${this.currentItem.maxQuantity} items available in stock.`);
             return;
         }
     
         const existingItemIndex = this.cart.findIndex(item => item.id === this.currentItem.id);
+    
         if (existingItemIndex >= 0) {
-            const combinedQuantity = this.cart[existingItemIndex].quantity + this.currentItem.quantity;
+            // Combine quantities if the item already exists in the cart
+            const combinedQuantity = this.cart[existingItemIndex].quantity + requestedQuantity;
+    
             if (combinedQuantity > this.currentItem.maxQuantity) {
                 alert(`Cannot add more than ${this.currentItem.maxQuantity} items of this product.`);
                 return;
             }
+    
             this.cart[existingItemIndex].quantity = combinedQuantity;
         } else {
-            this.cart.push({ ...this.currentItem });
+            // Ensure the quantity doesn't exceed available stock when adding a new item
+            const safeQuantity = Math.min(requestedQuantity, this.currentItem.maxQuantity);
+            this.cart.push({ ...this.currentItem, quantity: safeQuantity });
         }
     
         this.updateCartDisplay();
         this.closeQuantityDialog();
     }
+    
+    
     
 
     updateCartDisplay() {
@@ -240,7 +268,7 @@ class ShopCart {
                 const itemId = button.getAttribute('data-item-id');
                 const itemIndex = this.cart.findIndex(item => item.id === itemId);
     
-                const availableQuantity = await this.getAvailableQuantity(itemId);
+                const availableQuantity = await this.getAvailableQuantityByItemId(itemId);
                 const totalRequested = this.cart[itemIndex].quantity + 1;
     
                 if (totalRequested > availableQuantity) {
@@ -339,14 +367,14 @@ class ShopCart {
     }
     openAIChatDialog() {
         this.aiChatMessages.innerHTML = `
-            <div class="ai-welcome-message">
-                <p>Hello! I'm WattAI, your smart energy assistant. How can I help you today?</p>
-                <div class="quick-suggestions">
-                    <button class="suggestion-chip" data-prompt="Show me solar panels">Solar panels</button>
-                    <button class="suggestion-chip" data-prompt="Recommend batteries">Batteries</button>
-                    <button class="suggestion-chip" data-prompt="Help with installation">Installation help</button>
-                </div>
-            </div>`;
+        <div class="ai-welcome-message">
+        <p>Hello! I'm WattAI, your smart assistant for electric vehicles and car management. How can I help you today?</p>
+        <div class="quick-suggestions">
+            <button class="suggestion-chip" data-prompt="Show me available electric cars">Available EVs</button>
+            <button class="suggestion-chip" data-prompt="Recommend a car based on range">Best range</button>
+            <button class="suggestion-chip" data-prompt="Help me choose a charging station">Charging stations</button>
+        </div>
+        </div>`;
         
         // Add event listeners to new suggestion chips
         document.querySelectorAll('.suggestion-chip').forEach(chip => {

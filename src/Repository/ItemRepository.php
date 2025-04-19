@@ -124,7 +124,7 @@ class ItemRepository extends ServiceEntityRepository
     public function getAvailableQuantityByItemId(int $itemId): ?int
     {
         $qb = $this->createQueryBuilder('i')
-            ->select('i.availableQuantity')
+            ->select('i.quantityItem')
             ->where('i.idItem = :id')
             ->setParameter('id', $itemId)
             ->getQuery();
@@ -164,4 +164,12 @@ class ItemRepository extends ServiceEntityRepository
         return [];
     }
 }
+public function remove(Item $item, bool $flush = false): void
+{
+    $this->_em->remove($item);
+    if ($flush) {
+        $this->_em->flush();
+    }
+}
+
 }

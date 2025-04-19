@@ -137,7 +137,23 @@ class FrontController extends AbstractController
 
         return $quantities;
     }
+    #[Route('/update-cart', name: 'update_cart', methods: ['POST'])]
+    public function updateCart(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
 
+        // Example logging to debug
+        // dump($data); // or use logger
+
+        // Simulate cart processing (replace with actual logic later)
+        if (!isset($data['cart'])) {
+            return new JsonResponse(['error' => 'No cart data'], 400);
+        }
+
+        // You could save the cart to session or database here
+
+        return new JsonResponse(['success' => true]);
+    }
 
 }
 ?>
