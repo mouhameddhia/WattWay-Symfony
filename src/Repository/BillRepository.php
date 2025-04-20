@@ -24,14 +24,40 @@ class BillRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
-    public function getBillIdByUserId($idUser)
+    public function getBillIdByUserId($emailUser)
+        {
+            return $this->createQueryBuilder('b')
+                ->select('DISTINCT b.idBill')
+                ->join('b.user', 'u')
+                ->where('u.emailUser = :emailUser')
+                ->setParameter('emailUser', $emailUser)
+                ->getQuery()
+                ->getSingleScalarResult();
+        }
+
+    public function getBillIdByCarUserId($idCar, $emailUser)
     {
         return $this->createQueryBuilder('b')
             ->select('DISTINCT b.idBill')
-            ->andWhere('b.user = :idUser')
-            ->setParameter('idUser', $idUser)
+            ->join('b.user', 'u')
+            ->where('u.emailUser = :emailUser')
+            ->andWhere('b.car = :idCar')
+            ->setParameter('emailUser', $emailUser)
+            ->setParameter('idCar', $idCar)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function deleteAllPendingBillsForCarIdExcept($idCar,$emailUser){
+        return $this->createQueryBuilder('b')
+            ->delete('App\Entity\Bill', 'b')
+            ->where('b.user NOT IN (
+            SELECT u.idUser FROM App\Entity\User u 
+            WHERE u.emailUser = :emailUser) AND b.car = :idCar AND b.statusBill=0')
+            ->setParameter('emailUser',$emailUser)
+            ->setParameter('idCar',$idCar)
+            ->getQuery()
+            ->execute();
     }
     public function filterByPaidBills(){
         return $this->createQueryBuilder('b')

@@ -94,8 +94,9 @@ class FrontController extends AbstractController
         if($request->isMethod('POST') && $request->request->has('payBill')){
             $idCar = $request->request->get('payBill');
             $car = $carRepository->find($idCar);  
-            $idBill = $billRepository->getBillIdByCarId($idCar);
+            $idBill = $billRepository->getBillIdByCarUserId($idCar,$userRepository->getLoggedInUser($this->getUser()->getUserIdentifier())->getEmailUser());
             $bill = $billRepository->find($idBill);
+            $billRepository->deleteAllPendingBillsForCarIdExcept($idCar,$userRepository->getLoggedInUser($this->getUser()->getUserIdentifier())->getEmailUser());
             if (!$bill) {
                 throw $this->createNotFoundException('Bill not found');
             }
@@ -108,6 +109,7 @@ class FrontController extends AbstractController
         if($request->isMethod('POST')&& $request->request->has('payBillRent')){
             $bill = new Bill();
             $idCar = $request->request->get('payBillRent');
+            $billRepository->deleteAllPendingBillsForCarIdExcept($idCar,$userRepository->getLoggedInUser($this->getUser()->getUserIdentifier())->getEmailUser());
             $totalAmountBill = $request->request->get('priceRent');
             $car = $carRepository->find($idCar);
             $entityManager = $doctrine->getManager();

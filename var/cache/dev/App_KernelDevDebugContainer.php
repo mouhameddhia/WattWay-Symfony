@@ -16,7 +16,7 @@ if (!\class_exists(App_KernelDevDebugContainer::class, false)) {
 
 return new \ContainerURLhxVC\App_KernelDevDebugContainer([
     'container.build_hash' => 'URLhxVC',
-    'container.build_id' => '0a31c5a4',
-    'container.build_time' => 1745075621,
+    'container.build_id' => '2803813c',
+    'container.build_time' => 1745175876,
     'container.runtime_mode' => \in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true) ? 'web=0' : 'web=1',
 ], __DIR__.\DIRECTORY_SEPARATOR.'ContainerURLhxVC');
