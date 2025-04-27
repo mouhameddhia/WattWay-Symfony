@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Component\HttpClient\HttpClient;
 
 class WarehouseController extends AbstractController
 {
@@ -154,4 +155,57 @@ class WarehouseController extends AbstractController
         }
         return $this->json($warehouses, Response::HTTP_OK, [], ['groups' => 'warehouse:read']);
     }
+    #[Route('/get-city-from-coordinates', name: 'get_city_from_coordinates', methods: ['POST'])]
+public function getCityFromCoordinates(Request $request): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
+    $latitude = $data['latitude'] ?? null;
+    $longitude = $data['longitude'] ?? null;
+
+    if (!$latitude || !$longitude) {
+        return $this->json([
+            'success' => false,
+            'message' => 'Latitude and longitude are required'
+        ], 400);
+    }
+
+    try {
+        $client = HttpClient::create();
+        $response = $client->request('GET', 'https://nominatim.openstreetmap.org/reverse', [
+            'query' => [
+                'format' => 'json',
+                'lat' => $latitude,
+                'lon' => $longitude,
+                'zoom' => 10,
+                'addressdetails' => 1
+            ],
+            'headers' => [
+                'User-Agent' => 'YourAppName/1.0 (your@email.com)'
+            ]
+        ]);
+
+        $data = $response->toArray();
+
+        if (isset($data['address'])) {
+            $city = $data['address']['city'] ??
+                   'Unknown location';
+
+            return $this->json([
+                'success' => true,
+                'city' => $city
+            ]);
+        }
+
+        return $this->json([
+            'success' => false,
+            'message' => 'Could not determine city from coordinates'
+        ]);
+
+    } catch (\Exception $e) {
+        return $this->json([
+            'success' => false,
+            'message' => 'Error fetching location data: ' . $e->getMessage()
+        ], 500);
+    }
+}
 }

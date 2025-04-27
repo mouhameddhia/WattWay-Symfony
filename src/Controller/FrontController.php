@@ -19,22 +19,30 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use App\Form\AddCarFormType;
 use App\Repository\FeedbackRepository;
+use App\Service\PDFService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class FrontController extends AbstractController
 {
     #[Route('/Front', name: 'Front')]
-    public function index(FeedbackRepository $feedbackRepository,SluggerInterface $slugger, CarRepository $carRepository, BillRepository $billRepository, UserRepository $userRepository , WarehouseRepository $warehouseRepository, ManagerRegistry $doctrine, Request $request): Response
+    public function index(PDFService $pdfService, HttpClientInterface $client, FeedbackRepository $feedbackRepository, SluggerInterface $slugger, CarRepository $carRepository, BillRepository $billRepository, UserRepository $userRepository , WarehouseRepository $warehouseRepository, ManagerRegistry $doctrine, Request $request): Response
     {
         // CAR CONTROLLER
         $car = new Car();
         $bill= new Bill();
-        $cars = $carRepository->availableCars();
+        //DEFAULT CAR CATALOGUE
+        $brand='all';$city='all';$sliderValue=$carRepository->maxPriceCar();$direction='ASC';
+        $cars = $carRepository->getSliderCars($brand,$city,$sliderValue,$direction);
+        //
         $formCar = $this->createForm(FormAddCarType::class);
         $formCar->remove('priceCar');
         $formCar->remove('statusCar');
         $formCar->remove('warehouse');
         $formCar->handleRequest($request);
+        //Make this yours button implementation
         if ($request->isMethod('POST') && $request->request->has('car_id')) {
             try {
                 $carId = $request->request->get('car_id');
@@ -66,6 +74,7 @@ class FrontController extends AbstractController
                 ], 500);
             }
         }
+        //Cancel button implementation
         if ($request->isMethod('POST') && $request->request->has('deleteBill')) {
             $idBill = $request->request->get('deleteBill');
             $bill = $billRepository->find($idBill);
@@ -91,10 +100,12 @@ class FrontController extends AbstractController
     
             return $this->redirectToRoute('Front');
         }
+        // Proceed button implementation
         if($request->isMethod('POST') && $request->request->has('payBill')){
             $idCar = $request->request->get('payBill');
             $car = $carRepository->find($idCar);  
-            $idBill = $billRepository->getBillIdByCarUserId($idCar,$userRepository->getLoggedInUser($this->getUser()->getUserIdentifier())->getEmailUser());
+            $user=$userRepository->getLoggedInUser($this->getUser()->getUserIdentifier());
+            $idBill = $billRepository->getBillIdByCarUserId($idCar,$user->getEmailUser());
             $bill = $billRepository->find($idBill);
             $billRepository->deleteAllPendingBillsForCarIdExcept($idCar,$userRepository->getLoggedInUser($this->getUser()->getUserIdentifier())->getEmailUser());
             if (!$bill) {
@@ -104,8 +115,15 @@ class FrontController extends AbstractController
             $bill->setStatusBill(1);
             $car->setStatusCar('sold');
             $entityManager->persist($bill);
-            $entityManager->flush();          
+            $entityManager->flush();
+            $pdfUrl = $pdfService->generatePDF($idBill, $bill->getDateBill()->format('Y-m-d'), $car->getBrandCar()." ".$car->getModelCar(), $bill->getTotalAmountBill(), $user->getFirstNameUser(), $user->getAddress(), $user->getPhoneNumber());
+
+            if ($pdfUrl) {
+                return $this->redirect($pdfUrl);
+            }
+            return new Response('Failed to generate PDF.', Response::HTTP_INTERNAL_SERVER_ERROR);          
         }
+        // Take this for a drive button implementation
         if($request->isMethod('POST')&& $request->request->has('payBillRent')){
             $bill = new Bill();
             $idCar = $request->request->get('payBillRent');
@@ -122,6 +140,7 @@ class FrontController extends AbstractController
             $entityManager->persist($bill);
             $entityManager->flush();
         }
+        //Repair car implementation
         if ($formCar->isSubmitted() && $formCar->isValid()) {
             $imageFile = $formCar->get('imgCar')->getData();
             $car = $formCar->getData();
@@ -148,10 +167,47 @@ class FrontController extends AbstractController
             $entityManager->persist($car);
             $entityManager->flush();
         }
+        //City API determination via OpenStreet
+        if ($request->isXmlHttpRequest() && $request->request->has('lat') && $request->request->has('lon')) {
+            $lat = $request->request->get('lat');
+            $lon = $request->request->get('lon');
+    
+            $apiUrl = "https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon&zoom=10&addressdetails=1&accept-language=en";
+    
+            $response = $client->request('GET', $apiUrl, [
+                'headers' => [
+                    'User-Agent' => 'SymfonyApp'
+                ]
+            ]);
+    
+            $data = $response->toArray();
+    
+            $city = $data['address']['city'] ?? $data['address']['town'] ?? $data['address']['village'] ?? null;
+    
+            return new JsonResponse(['city' => $city]);
+        }
+        //Basic features for car catalogue (AJAX)
+        if ($request->isXmlHttpRequest() && $request->isMethod('POST')) {
+            $brand = $request->request->get('brand');
+            $city = $request->request->get('city');
+            $sliderValue = $request->request->get('sliderValue');
+            $direction = $request->request->get('direction');
+            $filteredCars = $carRepository->getSliderCars($brand, $city, $sliderValue, $direction);
+            $html=$this->renderView('frontend/Warehouse/filteredCars.html.twig', [
+                'cars' => $filteredCars,
+            ]);
+            return $this->json([
+                'success' => true,
+                'html' => $html
+            ]);
+        }
         // FEEDBACK CONTROLLER
         $feedbacks = $feedbackRepository->findLatestFeedbacks(5); // Get 5 latest feedbacks
         return $this->render('frontend/baseFront.html.twig', [
             'cars' =>$cars,
+            'maximumCarPrice'=>$carRepository->maxPriceCar(),
+            'minimumCarPrice'=>$carRepository->minPriceCar(),
+            'brands'=>$carRepository->getAllBrands(),
             'repaircarform' => $formCar->createView(),
             'user' => $this->getUser(),
             'feedbacks' => $feedbacks,

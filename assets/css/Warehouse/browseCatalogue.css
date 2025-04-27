@@ -31,7 +31,7 @@ body {
     overflow: visible;
     font-family: 'Poppins', sans-serif;
     animation: fadeIn 0.5s ease;
-    z-index: 0; /* Ensure the container is above the buttons visually */
+    
 }
 
 .car-card:hover {
@@ -386,4 +386,236 @@ input:checked + .slider:before {
 
 .close-btn:hover {
     color: #000;
+}
+.bf-container {
+    display: flex;
+    justify-content: space-evenly; 
+    justify-self: center;
+    align-items: center; 
+    width: 80%;
+    height: 50px;
+    border-style: solid;
+    border-color: #132ec2;
+    border-radius: 50px;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+    padding: 0 20px;
+}
+
+.bf-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    height: 100%;
+}
+
+.bf-buttons button {
+    height: 70%; 
+    width: 200px;
+    background-color: #132ec2;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex; 
+    justify-content: center;
+    align-items: center; 
+}
+
+.bf-buttons button h3 {
+    font-size: 14px;
+    font-weight: bold;
+    color: #ddd;
+    margin: 0; 
+}
+
+.bf-buttons button:hover {
+    background-color: #0f25a1;
+}
+
+.bf-buttons button:active {
+    transform: scale(0.97);
+}
+
+.custom-slider-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; 
+    width: 35%;
+}
+.custom-slider-container h3{
+    font-size: 14px;
+    font-weight: bold;
+    color: #132ec2;
+    margin: 0; 
+}
+
+.custom-slider {
+    width: 150px; 
+    height: 8px;
+    -webkit-appearance: none; 
+    appearance: none;
+    background: #e6e0e0; 
+    border-radius: 5px;
+    outline: none;
+    transition: background 0.3s ease;
+}
+
+
+.custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #132ec2; 
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.custom-slider::-webkit-slider-thumb:hover {
+    background: #0f25a1;
+    transform: scale(1.1);
+}
+.price-text {
+    display: flex;
+    align-items: center;
+    gap: 5px; 
+    margin-right: 20px;
+}
+
+.price-text h3 {
+    margin: 0;
+    white-space: nowrap;
+    font-size: 14px;
+}
+.sliderDropdown { 
+    position: relative;
+    align-self: center;
+    align-items: center;
+    
+  }
+  
+  .sliderDropdown-content {
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+      position: absolute;
+      top: 100%;
+      left: 4%;
+      background-color: white;
+      border: none;
+      border-style: solid;
+      border-color: #132ec2;
+      border-width: 3px;
+      border-end-end-radius: 15px;
+      border-bottom-left-radius: 15px;
+      width: 160px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+    
+    .sliderDropdown-content.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  
+  .sliderDropdown-content a {
+      
+    color: #000;
+    text-align: center;
+    font-size: 12px;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .sliderDropdown-content a:hover {
+    background-color: #f1f1f1;
+  }
+  /* Map function */
+
+#mapModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    
+}
+
+
+#mapModal .modal-content {
+    top: 10%;
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 800px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.4s ease;
+}
+
+
+#map {
+    width: 100%;
+    height: 400px;
+    border: 2px solid #fff;
+    border-radius: 8px;
+}
+
+#mapModal .modal-content > div:last-child {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+}
+
+
+#mapModal button {
+    padding: 10px 25px;
+    width: 300px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#mapModal button:hover {
+    background-color: #1d4ed8;
+}
+
+#mapModal button:nth-child(2) {
+    background-color: #ef4444;
+}
+
+#mapModal button:nth-child(2):hover {
+    background-color: #dc2626;
+}
+.modal-overlay-map {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
 }

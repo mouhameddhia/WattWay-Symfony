@@ -195,7 +195,7 @@
 					<h1 style="font-size: 4rem; font-weight: 700; color: #132ec2; text-align: center; text-transform: uppercase; margin-bottom: 20px; animation: fadeIn 1.5s ease-in-out;">
 						Our car collection
 					</h1>
-					{% include 'frontend/Warehouse/browseCatalogue.html.twig' with {'cars' : cars} %}
+					{% include 'frontend/Warehouse/browseCatalogue.html.twig' with {'cars' : cars , 'maximumCarPrice': maximumCarPrice, 'minimumCarPrice': minimumCarPrice , 'brands':brands} %}
 					</div>
 				</div>
 			</div><!--/.container-->

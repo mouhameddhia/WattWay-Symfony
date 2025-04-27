@@ -474,6 +474,7 @@ nav.navbar.bootsnav.no-background{
 /* Navbar Sticky
 =================================*/
 .wrap-sticky{
+    
     position: relative;
     -webkit-transition: all 0.3s ease-in-out;
 	-moz-transition: all 0.3s ease-in-out;
@@ -487,6 +488,7 @@ nav.navbar.bootsnav.no-background{
     width: 100%;
     left: 0;
     top: 0;
+    
 }
 
 .wrap-sticky nav.navbar.bootsnav.sticked{
@@ -496,6 +498,7 @@ nav.navbar.bootsnav.no-background{
 	-o-transition: all 0.2s ease-in-out;
 	-ms-transition: all 0.2s ease-in-out;
 	transition: all 0.2s ease-in-out;
+    
 }
 
 body.on-side .wrap-sticky nav.navbar.bootsnav.sticked{
