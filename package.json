@@ -1,0 +1,22 @@
+{
+    "name": "submission-management",
+    "version": "1.0.0",
+    "description": "Submission Management System",
+    "scripts": {
+        "dev-server": "encore dev-server",
+        "dev": "encore dev",
+        "watch": "encore dev --watch",
+        "build": "encore production --progress"
+    },
+    "dependencies": {
+        "@hotwired/stimulus": "^3.2.2",
+        "chart.js": "^4.4.1"
+    },
+    "devDependencies": {
+        "@symfony/stimulus-bridge": "^3.2.0",
+        "@symfony/webpack-encore": "^4.2.0",
+        "webpack": "^5.88.2",
+        "webpack-cli": "^5.1.4",
+        "webpack-notifier": "^1.15.0"
+    }
+} 

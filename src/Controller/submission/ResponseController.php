@@ -6,6 +6,7 @@ use App\Entity\Response;
 use App\Form\ResponseType;
 use App\Repository\ResponseRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
@@ -14,11 +15,36 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/dashboard/response')]
 final class ResponseController extends AbstractController
 {
-    #[Route(name: 'app_response_index', methods: ['GET'])]
-    public function index(ResponseRepository $responseRepository): HttpResponse
+    #[Route('/filter', name: 'app_response_filter', methods: ['GET'])]
+    public function filter(Request $request, ResponseRepository $responseRepository): HttpResponse
     {
+        $type = $request->query->get('type');
+        $search = $request->query->get('search');
+
+        $responses = $responseRepository->filterAndSearch($type, $search);
+
+        return $this->render('backend/response/_responses_table.html.twig', [
+            'responses' => $responses
+        ]);
+    }
+
+    #[Route(name: 'app_response_index', methods: ['GET'])]
+    public function index(
+        ResponseRepository $responseRepository,
+        Request $request,
+        PaginatorInterface $paginator
+    ): HttpResponse {
+        $query = $responseRepository->createQueryBuilder('r')
+            ->orderBy('r.dateResponse', 'DESC');
+
+        $knp_pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1), // Current page number
+            10 // Items per page
+        );
+
         return $this->render('backend/response/index.html.twig', [
-            'responses' => $responseRepository->findAll(),
+            'knp_pagination' => $knp_pagination,
         ]);
     }
 

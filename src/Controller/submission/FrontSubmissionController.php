@@ -1,63 +1,35 @@
 <?php
-
 namespace App\Controller\submission;
 
 use App\Entity\Submission;
 use App\Form\FrontSubmissionType;
 use App\Repository\SubmissionRepository;
+use App\Services\GeminiService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\ResponseRepository;
 use App\Repository\CarRepository;
-
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use MercurySeries\FlashyBundle\FlashyNotifier;
 
 class FrontSubmissionController extends AbstractController
 {
-    #[Route('/submission', name: 'Front_Submission', methods: ['GET', 'POST'])]
+    public function __construct(
+        private FlashyNotifier $flashy,
+        private GeminiService $geminiService
+    ) {
+    }
+
+    #[Route('/submission', name: 'Front_Submission', methods: ['GET'])]
     public function index(
         Request $request,
-        EntityManagerInterface $entityManager,
         SubmissionRepository $submissionRepository,
-        ResponseRepository $responseRepository,
-        CarRepository $carRepository
+        ResponseRepository $responseRepository
     ): Response {
-
-  
-        $submission = new Submission();
-        $form = $this->createForm(FrontSubmissionType::class, $submission);
-        
-        $form->handleRequest($request);
-    
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Get VIN from unmapped field
-            $vinCode = $form->get('vinCode')->getData();
-            
-            // Find the Car
-            $car = $carRepository->findOneBy(['vinCode' => $vinCode]);
-            
-            if (!$car) {
-                $this->addFlash('error', 'No car found with this VIN');
-                return $this->redirectToRoute('Front_Submission');
-            }
-            
-            // Link Car to Submission
-            $submission->setCar($car);
-            
-            // Set default values
-            $submission->setDateSubmission(new \DateTime());
-            $submission->setStatus('Pending');
-            
-            // Persist and flush
-            $entityManager->persist($submission);
-            $entityManager->flush();
-            
-            $this->addFlash('success', 'Submission created!');
-            return $this->redirectToRoute('Front_Submission');
-        }
-
         // Get existing submissions with responses
         $submissions = $submissionRepository->findAll();
         $submissionsWithResponses = [];
@@ -76,68 +48,235 @@ class FrontSubmissionController extends AbstractController
             ];
         }
 
+        $submission = new Submission();
+        $formSubmission = $this->createForm(FrontSubmissionType::class, $submission);
+
         return $this->render('frontend/submission/index.html.twig', [
             'submissions' => $submissionsWithResponses,
-            'form' => $form->createView()
+            'formSubmission' => $formSubmission->createView()
         ]);
     }
 
+    #[Route('/submission/create', name: 'Front_Submission_create', methods: ['POST'])]
+    public function create(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        CarRepository $carRepository,
+        ValidatorInterface $validator
+    ): JsonResponse {
+        try {
+            // Create new submission and form
+            $submission = new Submission();
+            $formSubmission = $this->createForm(FrontSubmissionType::class, $submission);
+            
+            // Handle the request
+            $formSubmission->handleRequest($request);
+            
+            if ($formSubmission->isSubmitted()) {
+                if (!$formSubmission->isValid()) {
+                    // Get form errors
+                    $errors = [];
+                    foreach ($formSubmission->getErrors(true) as $error) {
+                        $errors[] = $error->getMessage();
+                    }
+                    
+                    return $this->json([
+                        'success' => false,
+                        'message' => 'Please check your input and try again',
+                        'errors' => $errors
+                    ], 400);
+                }
+
+                // Get VIN from unmapped field
+                $vinCode = $formSubmission->get('vinCode')->getData();
+                
+                // Find the Car
+                $car = $carRepository->findOneBy(['vinCode' => $vinCode]);
+                
+                if (!$car) {
+                    return $this->json([
+                        'success' => false,
+                        'message' => 'Please verify the VIN code and try again'
+                    ], 404);
+                }
+
+                // Check content for inappropriate language
+                try {
+                    $contentCheck = $this->geminiService->checkContent($submission->getDescription());
+                    
+                    if (!$contentCheck['is_appropriate']) {
+                        return $this->json([
+                            'success' => false,
+                            'message' => $contentCheck['message']
+                        ], 400);
+                    }
+                } catch (\Exception $e) {
+                    // Log the error but allow the submission to proceed
+                    error_log('Gemini API error: ' . $e->getMessage());
+                }
+                
+                // Link Car to Submission
+                $submission->setCar($car);
+                
+                // Set default values
+                $submission->setDateSubmission(new \DateTime());
+                $submission->setStatus('Pending');
+                $submission->setUrgencyLevel('Low');
+                
+                try {
+                    $entityManager->persist($submission);
+                    $entityManager->flush();
+
+                    return $this->json([
+                        'success' => true,
+                        'message' => 'Submission created successfully'
+                    ]);
+                } catch (\Exception $e) {
+                    error_log('Database error: ' . $e->getMessage());
+                    return $this->json([
+                        'success' => false,
+                        'message' => 'Please try again in a moment'
+                    ], 500);
+                }
+            }
+
+            return $this->json([
+                'success' => false,
+                'message' => 'Invalid form submission'
+            ], 400);
+
+        } catch (\Exception $e) {
+            error_log('Server error: ' . $e->getMessage());
+            error_log('Stack trace: ' . $e->getTraceAsString());
+            return $this->json([
+                'success' => false,
+                'message' => 'Please try again in a moment'
+            ], 500);
+        }
+    }
 
     #[Route('/submission/delete/{idSubmission}', name: 'Front_Submission_delete', methods: ['POST'])]
-public function delete(
-    Request $request, 
-    Submission $submission, 
-    EntityManagerInterface $entityManager
-): Response {
-    if ($this->isCsrfTokenValid('delete'.$submission->getIdSubmission(), $request->request->get('_token'))) {
-        $entityManager->remove($submission);
-        $entityManager->flush();
-        $this->addFlash('success', 'Submission deleted successfully');
-    } else {
-        $this->addFlash('error', 'Invalid CSRF token');
+    public function delete(
+        Request $request,
+        Submission $submission,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        try {
+            if (!$this->isCsrfTokenValid('delete'.$submission->getIdSubmission(), $request->request->get('_token'))) {
+                $this->addFlash('info', 'Please refresh the page and try again');
+                return $this->json([
+                    'success' => false
+                ], 403);
+            }
+
+            $entityManager->remove($submission);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Submission deleted successfully');
+            return $this->json([
+                'success' => true,
+                'message' => 'Submission deleted successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Failed to delete submission');
+            return $this->json([
+                'success' => false,
+                'error' => 'Server error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
-    return $this->redirectToRoute('Front_Submission');
-}
+    #[Route('/submission/edit/{idSubmission}', name: 'Front_Submission_edit', methods: ['GET', 'POST'])]
+    public function edit(
+        Request $request,
+        Submission $submission,
+        EntityManagerInterface $entityManager,
+        CarRepository $carRepository,
+        ValidatorInterface $validator
+    ): Response|JsonResponse {
+        // Set the locale
+        $locale = $request->getLocale();
+        $request->setLocale($locale);
 
-#[Route('/submission/edit/{idSubmission}', name: 'Front_Submission_edit', methods: ['GET', 'POST'])]
-public function edit(
-    Request $request,
-    Submission $submission,
-    EntityManagerInterface $entityManager,
-    CarRepository $carRepository
-): Response {
-    // Get current VIN code from associated car
-    $currentVin = $submission->getCar() ? $submission->getCar()->getVinCode() : '';
+        if ($request->isMethod('GET')) {
+            $currentVin = $submission->getCar() ? $submission->getCar()->getVinCode() : '';
+            $formSubmission = $this->createForm(FrontSubmissionType::class, $submission);
+            $formSubmission->get('vinCode')->setData($currentVin);
 
-    $form = $this->createForm(FrontSubmissionType::class, $submission);
-    $form->get('vinCode')->setData($currentVin); // Pre-fill VIN code
-
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        // Handle VIN code changes
-        $newVin = $form->get('vinCode')->getData();
-        
-        if ($newVin !== $currentVin) {
-            $car = $carRepository->findOneBy(['vinCode' => $newVin]);
-            if (!$car) {
-                $this->addFlash('error', 'No car found with this VIN code');
-                return $this->redirectToRoute('Front_Submission_edit', [
-                    'idSubmission' => $submission->getIdSubmission()
-                ]);
-            }
-            $submission->setCar($car);
+            return $this->render('frontend/submission/edit.html.twig', [
+                'submission' => $submission,
+                'formSubmission' => $formSubmission->createView(),
+                'current_locale' => $locale
+            ]);
         }
 
-        $entityManager->flush();
-        $this->addFlash('success', 'Submission updated successfully!');
-        return $this->redirectToRoute('Front_Submission');
-    }
+        try {
+            $formSubmission = $this->createForm(FrontSubmissionType::class, $submission);
+            $formSubmission->handleRequest($request);
+            
+            if ($formSubmission->isSubmitted() && $formSubmission->isValid()) {
+                // Get VIN from unmapped field
+                $vinCode = $formSubmission->get('vinCode')->getData();
+                
+                // Find the Car
+                $car = $carRepository->findOneBy(['vinCode' => $vinCode]);
+                
+                if (!$car) {
+                    return $this->json([
+                        'success' => false,
+                        'error' => 'No car found with this VIN'
+                    ], 404);
+                }
+                
+                // Link Car to Submission
+                $submission->setCar($car);
+                
+                try {
+                    $entityManager->flush();
 
-    return $this->render('frontend/submission/edit.html.twig', [
-        'submission' => $submission,
-        'form' => $form->createView(),
-    ]);
-}
+                    return $this->json([
+                        'success' => true,
+                        'message' => 'Submission updated successfully',
+                        'submission' => [
+                            'idSubmission' => $submission->getIdSubmission(),
+                            'status' => $submission->getStatus(),
+                            'description' => $submission->getDescription(),
+                            'dateSubmission' => $submission->getDateSubmission()->format('Y-m-d'),
+                            'preferredContactMethod' => $submission->getPreferredContactMethod(),
+                            'preferredAppointmentDate' => $submission->getPreferredAppointmentDate()->format('Y-m-d')
+                        ]
+                    ]);
+                } catch (\Exception $e) {
+                    error_log('Database error: ' . $e->getMessage());
+                    return $this->json([
+                        'success' => false,
+                        'error' => 'Database error',
+                        'message' => $e->getMessage()
+                    ], 500);
+                }
+            } else {
+                // Get form errors
+                $errors = [];
+                foreach ($formSubmission->getErrors(true) as $error) {
+                    $errors[] = $error->getMessage();
+                }
+                
+                return $this->json([
+                    'success' => false,
+                    'error' => 'Form validation failed',
+                    'messages' => $errors
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            error_log('Server error: ' . $e->getMessage());
+            error_log('Stack trace: ' . $e->getTraceAsString());
+            return $this->json([
+                'success' => false,
+                'error' => 'Server error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -1,0 +1,6 @@
+frontend_submission:
+    resource:
+        path: ../../src/Controller/submission/FrontSubmissionController.php
+        namespace: App\Controller\submission
+    type: attribute
+    host: '%app.host%' 

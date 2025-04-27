@@ -1,0 +1,470 @@
+{% extends 'backend/baseBack.html.twig' %}
+
+{% block title %}Submissions Kanban{% endblock %}
+
+{% block css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.css">
+    <style>
+        .kanban-container {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            overflow-x: auto;
+            min-height: calc(100vh - 200px);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        }
+
+        .kanban-column {
+            flex: 1;
+            min-width: 280px;
+            max-width: 300px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .kanban-column:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .kanban-column-header {
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .kanban-column-header:hover {
+            transform: scale(1.02);
+        }
+
+        .kanban-column-header.pending {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .kanban-column-header.approved {
+            background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%);
+        }
+
+        .kanban-column-header.responded {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .kanban-card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            cursor: move;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kanban-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .kanban-card h5 {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .kanban-card p {
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+            color: #4a5568;
+            line-height: 1.4;
+        }
+
+        .kanban-card .badge {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .badge-urgency-high {
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            color: white;
+        }
+
+        .badge-urgency-medium {
+            background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
+            color: white;
+        }
+
+        .badge-urgency-low {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+            color: white;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: 300px;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        /* Special style for the burn-down chart container */
+        .chart-container:has(#div_chart) {
+            height: 500px;
+            grid-column: 1 / -1; /* Make it span all columns */
+            width: 100%;
+        }
+
+        #div_chart {
+            width: 100%;
+            height: 100%;
+            min-height: 450px;
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1rem;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Submissions Kanban Board</h1>
+            <a href="{{ path('app_submission_index') }}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-list"></i> List View
+            </a>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Status Distribution Chart -->
+            <div class="chart-container">
+                <h2 class="chart-title">Status Distribution</h2>
+                <canvas id="statusChart"></canvas>
+            </div>
+
+            <!-- Urgency Distribution Chart -->
+            <div class="chart-container">
+                <h2 class="chart-title">Urgency Distribution</h2>
+                <canvas id="urgencyChart"></canvas>
+            </div>
+
+            <!-- Response Time by Urgency Chart -->
+            <div class="chart-container">
+                <h2 class="chart-title">Average Response Time by Urgency</h2>
+                <canvas id="responseTimeChart"></canvas>
+            </div>
+
+            <!-- Burn Down Chart -->
+            <div class="chart-container">
+                <div id="div_chart"></div>
+            </div>
+        </div>
+
+        <!-- Kanban Board -->
+        <div class="kanban-container">
+            <!-- To Do Column -->
+            <div class="kanban-column" data-status="PENDING">
+                <div class="kanban-column-header pending">
+                    To Do ({{ submissions.pending|length }})
+                </div>
+                <div class="kanban-cards">
+                    {% for submission in submissions.pending %}
+                        <div class="kanban-card" draggable="true" data-submission-id="{{ submission.idSubmission }}">
+                            <h5>Submission #{{ submission.idSubmission }}</h5>
+                            <p>{{ submission.description|slice(0, 100) }}{% if submission.description|length > 100 %}...{% endif %}</p>
+                            <span class="badge badge-urgency-{{ submission.urgencyLevel|lower }}">
+                                {{ submission.urgencyLevel }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Doing Column -->
+            <div class="kanban-column" data-status="APPROVED">
+                <div class="kanban-column-header approved">
+                    Doing ({{ submissions.approved|length }})
+                </div>
+                <div class="kanban-cards">
+                    {% for submission in submissions.approved %}
+                        <div class="kanban-card" draggable="true" data-submission-id="{{ submission.idSubmission }}">
+                            <h5>Submission #{{ submission.idSubmission }}</h5>
+                            <p>{{ submission.description|slice(0, 100) }}{% if submission.description|length > 100 %}...{% endif %}</p>
+                            <span class="badge badge-urgency-{{ submission.urgencyLevel|lower }}">
+                                {{ submission.urgencyLevel }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Done Column -->
+            <div class="kanban-column" data-status="RESPONDED">
+                <div class="kanban-column-header responded">
+                    Done ({{ submissions.responded|length }})
+                </div>
+                <div class="kanban-cards">
+                    {% for submission in submissions.responded %}
+                        <div class="kanban-card" draggable="true" data-submission-id="{{ submission.idSubmission }}">
+                            <h5>Submission #{{ submission.idSubmission }}</h5>
+                            <p>{{ submission.description|slice(0, 100) }}{% if submission.description|length > 100 %}...{% endif %}</p>
+                            <span class="badge badge-urgency-{{ submission.urgencyLevel|lower }}">
+                                {{ submission.urgencyLevel }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        {{ gc_draw(lineChart, 'div_chart') }}
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.kanban-card');
+            const columns = document.querySelectorAll('.kanban-column');
+
+            cards.forEach(card => {
+                card.addEventListener('dragstart', dragStart);
+                card.addEventListener('dragend', dragEnd);
+            });
+
+            columns.forEach(column => {
+                column.addEventListener('dragover', dragOver);
+                column.addEventListener('drop', drop);
+            });
+
+            function dragStart(e) {
+                e.target.classList.add('dragging');
+                e.dataTransfer.setData('text/plain', e.target.dataset.submissionId);
+            }
+
+            function dragEnd(e) {
+                e.target.classList.remove('dragging');
+            }
+
+            function dragOver(e) {
+                e.preventDefault();
+            }
+
+            function drop(e) {
+                e.preventDefault();
+                const cardId = e.dataTransfer.getData('text/plain');
+                const card = document.querySelector(`[data-submission-id="${cardId}"]`);
+                const newStatus = e.target.closest('.kanban-cards') || e.target;
+                
+                if (card && newStatus) {
+                    const originalColumn = document.querySelector(`[data-status="${card.dataset.status}"] .kanban-cards`);
+                    
+                    // Move the card visually first
+                    newStatus.appendChild(card);
+                    
+                    // Update the card's status data attribute
+                    card.dataset.status = newStatus.closest('.kanban-column').dataset.status;
+
+                    // Send AJAX request to update status
+                    fetch(`{{ path('app_submission_update_status', {'idSubmission': 'PLACEHOLDER'}) }}`.replace('PLACEHOLDER', cardId), {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({ status: newStatus.closest('.kanban-column').dataset.status })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (!data.success) {
+                            throw new Error(data.error || 'Failed to update status');
+                        }
+                        
+                        // Update the column counts
+                        updateColumnCounts();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Revert the card to its original position
+                        if (originalColumn) {
+                            originalColumn.appendChild(card);
+                            card.dataset.status = originalColumn.closest('.kanban-column').dataset.status;
+                        }
+                        alert('Failed to update submission status: ' + error.message);
+                    });
+                }
+            }
+
+            function updateColumnCounts() {
+                const columns = document.querySelectorAll('.kanban-column');
+                columns.forEach(column => {
+                    const count = column.querySelectorAll('.kanban-card').length;
+                    const header = column.querySelector('.kanban-column-header');
+                    const status = column.dataset.status;
+                    header.textContent = `${getColumnTitle(status)} (${count})`;
+                });
+            }
+
+            function getColumnTitle(status) {
+                switch(status) {
+                    case 'PENDING':
+                        return 'To Do';
+                    case 'APPROVED':
+                        return 'Doing';
+                    case 'RESPONDED':
+                        return 'Done';
+                    default:
+                        return status;
+                }
+            }
+
+            // Status Distribution Chart
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            new Chart(statusCtx, {
+                type: 'pie',
+                data: {
+                    labels: {{ detailedStats.status.labels|json_encode|raw }},
+                    datasets: [{
+                        data: {{ detailedStats.status.data|json_encode|raw }},
+                        backgroundColor: [
+                            'rgba(102, 126, 234, 0.8)',
+                            'rgba(0, 198, 251, 0.8)',
+                            'rgba(17, 153, 142, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(102, 126, 234, 1)',
+                            'rgba(0, 198, 251, 1)',
+                            'rgba(17, 153, 142, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+
+            // Urgency Distribution Chart
+            const urgencyCtx = document.getElementById('urgencyChart').getContext('2d');
+            new Chart(urgencyCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: {{ chartData.urgency.labels|json_encode|raw }},
+                    datasets: [{
+                        data: {{ chartData.urgency.data|json_encode|raw }},
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+
+            // Response Time by Urgency Chart
+            const responseTimeCtx = document.getElementById('responseTimeChart').getContext('2d');
+            new Chart(responseTimeCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ detailedStats.responseTime.labels|json_encode|raw }},
+                    datasets: [{
+                        label: 'Hours',
+                        data: {{ detailedStats.responseTime.data|json_encode|raw }},
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(255, 99, 132, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Hours'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %} 

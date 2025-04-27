@@ -52,4 +52,21 @@ class ResponseRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function filterAndSearch(?string $type = null, ?string $search = null): array
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->orderBy('r.dateResponse', 'DESC');
+
+        if ($type) {
+            $qb->andWhere('r.typeResponse = :type')
+               ->setParameter('type', $type);
+        }
+
+        if ($search) {
+            $qb->andWhere('r.message LIKE :search')
+               ->setParameter('search', '%' . $search . '%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

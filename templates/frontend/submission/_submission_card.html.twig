@@ -1,0 +1,22 @@
+<div class="card" id="submission-{{ submission.idSubmission }}">
+    <div class="card-content">
+        <div class="card-header">
+            <span class="status-badge status-{{ submission.status|lower }}">{{ submission.status }}</span>
+            <span class="urgency-badge urgency-{{ submission.urgencyLevel|lower }}">{{ submission.urgencyLevel }}</span>
+            <div class="card-actions">
+                <a href="#" 
+                   class="edit-icon"
+                   data-submission-id="{{ submission.idSubmission }}"
+                   title="Edit submission">
+                    <!-- SVG icon -->
+                </a>
+                <button class="delete-icon" 
+                        data-submission-id="{{ submission.idSubmission }}"
+                        title="Delete submission">
+                    <!-- SVG icon -->
+                </button>
+            </div>
+        </div>
+        <!-- Rest of your card content -->
+    </div>
+</div>
