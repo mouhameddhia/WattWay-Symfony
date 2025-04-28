@@ -55,22 +55,11 @@ class TwigExtraConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
     }
     
     /**
-     * @template TValue
-     * @param TValue $value
-     * @default {"enabled":false}
-     * @return \Symfony\Config\TwigExtra\HtmlConfig|$this
-     * @psalm-return (TValue is array ? \Symfony\Config\TwigExtra\HtmlConfig : static)
-     */
-    public function html(array $value = []): \Symfony\Config\TwigExtra\HtmlConfig|static
+     * @default {"enabled":true}
+    */
+    public function html(array $value = []): \Symfony\Config\TwigExtra\HtmlConfig
     {
-        if (!\is_array($value)) {
-            $this->_usedProperties['html'] = true;
-            $this->html = $value;
-    
-            return $this;
-        }
-    
-        if (!$this->html instanceof \Symfony\Config\TwigExtra\HtmlConfig) {
+        if (null === $this->html) {
             $this->_usedProperties['html'] = true;
             $this->html = new \Symfony\Config\TwigExtra\HtmlConfig($value);
         } elseif (0 < \func_num_args()) {
@@ -237,7 +226,7 @@ class TwigExtraConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
     
         if (array_key_exists('html', $value)) {
             $this->_usedProperties['html'] = true;
-            $this->html = \is_array($value['html']) ? new \Symfony\Config\TwigExtra\HtmlConfig($value['html']) : $value['html'];
+            $this->html = new \Symfony\Config\TwigExtra\HtmlConfig($value['html']);
             unset($value['html']);
         }
     
@@ -289,7 +278,7 @@ class TwigExtraConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
             $output['cache'] = $this->cache instanceof \Symfony\Config\TwigExtra\CacheConfig ? $this->cache->toArray() : $this->cache;
         }
         if (isset($this->_usedProperties['html'])) {
-            $output['html'] = $this->html instanceof \Symfony\Config\TwigExtra\HtmlConfig ? $this->html->toArray() : $this->html;
+            $output['html'] = $this->html->toArray();
         }
         if (isset($this->_usedProperties['markdown'])) {
             $output['markdown'] = $this->markdown instanceof \Symfony\Config\TwigExtra\MarkdownConfig ? $this->markdown->toArray() : $this->markdown;

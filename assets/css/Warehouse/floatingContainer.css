@@ -314,3 +314,16 @@ thead{
     pointer-events: none;
     font-weight: bold;
 }
+
+.charts-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+.chart-box {
+    flex: 1 1 45%;
+    height: 100%;
+    min-width: 300px;
+}

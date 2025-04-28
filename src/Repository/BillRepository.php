@@ -128,6 +128,52 @@ class BillRepository extends ServiceEntityRepository
         ->getQuery()
         ->execute();
     }
+    public function getMonthlySumForYear($year)
+    {
+        $connection = $this->getEntityManager()->getConnection();
+        $sql = '
+            SELECT MONTH(dateBill) AS month, SUM(totalAmountBill) AS total
+            FROM bill
+            WHERE YEAR(dateBill) = :year AND statusBill=1
+            GROUP BY month
+            ORDER BY month ASC
+        ';
+
+        $stmt = $connection->prepare($sql);
+        $resultSet = $stmt->executeQuery(['year' => $year]);
+
+        return $resultSet->fetchAllAssociative();
+    }
+    public function getAllYearsBill(){
+        $connection = $this->getEntityManager()->getConnection();
+        $sql = '
+            SELECT DISTINCT YEAR(dateBill) AS year
+            FROM bill
+            ORDER BY year DESC
+        ';
+
+        $stmt = $connection->prepare($sql);
+        $resultSet = $stmt->executeQuery();
+
+        return $resultSet->fetchFirstColumn();
+
+    }
+    public function getTotalRentedTotalSoldByYear($year){
+        $connection = $this->getEntityManager()->getConnection();
+        $sql = "
+            SELECT 
+                SUM(CASE WHEN c.statusCar = 'sold' THEN b.totalAmountBill ELSE 0 END) AS soldCars,
+                SUM(CASE WHEN c.statusCar = 'rented' THEN b.totalAmountBill ELSE 0 END) AS rentedCars
+            FROM bill b
+            JOIN car c ON b.idCar = c.idCar
+            WHERE YEAR(b.dateBill) = :year
+            AND c.statusCar IN ('sold', 'rented')";
+        
+        $stmt = $connection->prepare($sql);
+        $resultSet = $stmt->executeQuery(['year' => $year]);
+    
+        return $resultSet->fetchAllAssociative();
+    }
     //    /**
     //     * @return Bill[] Returns an array of Bill objects
     //     */
