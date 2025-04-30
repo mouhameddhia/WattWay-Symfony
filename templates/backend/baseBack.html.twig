@@ -16,7 +16,62 @@
         <link href="{{ asset('back/css/sb-admin-2.min.css') }}" rel="stylesheet">
     {% endblock %}
 </head>
+<style>
+    /* Notifications, haroun */
+   .notify-message {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 1050;
+    background-color:rgb(65, 114, 163);
+    color: #ffffff;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    max-width: 350px;
+    width: auto;
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: slideIn 0.4s ease-out forwards;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
 
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.notify-dismiss {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.notify-dismiss:hover {
+    color: #ffffff;
+}
+</style>
+<div data-controller="ux-notify" data-ux-notify-position-value="top-end">
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="notify-message" data-notify-target="container" data-ux-notify-type="{{ label }}">
+                <span>{{ message|raw }}</span>
+                <button class="notify-dismiss" onclick="this.parentElement.remove()">×</button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>
 <body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">

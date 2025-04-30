@@ -50,6 +50,7 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
             'Symfony\\UX\\TwigComponent\\' => 25,
             'Symfony\\UX\\Turbo\\' => 17,
             'Symfony\\UX\\StimulusBundle\\' => 26,
+            'Symfony\\UX\\Notify\\' => 18,
             'Symfony\\UX\\Chartjs\\' => 19,
             'Symfony\\Runtime\\Symfony\\Component\\' => 34,
             'Symfony\\Polyfill\\Uuid\\' => 22,
@@ -86,10 +87,12 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
             'Symfony\\Component\\Process\\' => 26,
             'Symfony\\Component\\PasswordHasher\\' => 33,
             'Symfony\\Component\\OptionsResolver\\' => 34,
+            'Symfony\\Component\\Notifier\\Bridge\\Mercure\\' => 42,
             'Symfony\\Component\\Notifier\\' => 27,
             'Symfony\\Component\\Mime\\' => 23,
             'Symfony\\Component\\Messenger\\Bridge\\Doctrine\\' => 44,
             'Symfony\\Component\\Messenger\\' => 28,
+            'Symfony\\Component\\Mercure\\' => 26,
             'Symfony\\Component\\Mailer\\' => 25,
             'Symfony\\Component\\Intl\\' => 23,
             'Symfony\\Component\\HttpKernel\\' => 29,
@@ -116,6 +119,7 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
             'Symfony\\Bundle\\TwigBundle\\' => 26,
             'Symfony\\Bundle\\SecurityBundle\\' => 30,
             'Symfony\\Bundle\\MonologBundle\\' => 29,
+            'Symfony\\Bundle\\MercureBundle\\' => 29,
             'Symfony\\Bundle\\MakerBundle\\' => 27,
             'Symfony\\Bundle\\FrameworkBundle\\' => 31,
             'Symfony\\Bundle\\DebugBundle\\' => 27,
@@ -214,6 +218,10 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
         'Symfony\\UX\\StimulusBundle\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/stimulus-bundle/src',
+        ),
+        'Symfony\\UX\\Notify\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/ux-notify/src',
         ),
         'Symfony\\UX\\Chartjs\\' => 
         array (
@@ -359,6 +367,10 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
         array (
             0 => __DIR__ . '/..' . '/symfony/options-resolver',
         ),
+        'Symfony\\Component\\Notifier\\Bridge\\Mercure\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/mercure-notifier',
+        ),
         'Symfony\\Component\\Notifier\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/notifier',
@@ -374,6 +386,10 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
         'Symfony\\Component\\Messenger\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/messenger',
+        ),
+        'Symfony\\Component\\Mercure\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/mercure/src',
         ),
         'Symfony\\Component\\Mailer\\' => 
         array (
@@ -478,6 +494,10 @@ class ComposerStaticInit54c05e64f01f49eb136e9af7b3075bdd
         'Symfony\\Bundle\\MonologBundle\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/monolog-bundle',
+        ),
+        'Symfony\\Bundle\\MercureBundle\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/mercure-bundle/src',
         ),
         'Symfony\\Bundle\\MakerBundle\\' => 
         array (

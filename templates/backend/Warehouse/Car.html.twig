@@ -1,7 +1,6 @@
 {% extends 'backend/baseBack.html.twig' %}
 {% block content %}
 <link rel="stylesheet" href="{{ asset('css/Warehouse/floatingContainer.css') }}">
-
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">List of Cars</h6>
@@ -138,11 +137,11 @@
             {{ form_row(carform.kilometrageCar) }}
             {{ form_row(carform.warehouse) }}
             {{ form_row(carform.imgCar) }}
-            <button type="submit" class="btn btn-success">Submit</button>
+            <button type="submit" class="btn btn-success" id="carSubmit">Submit</button>
         {{ form_end(carform) }}
     </div>
 </div>
-
+<div id="turbo-stream-buffer" hidden></div>
 <script src="{{ asset('js/Warehouse/floatingContainer.js') }}"></script>
 <script>
     function toggleDropdownFilter() {
@@ -166,6 +165,40 @@
         }
         }
     }
+    //Snackbar
+    document.querySelector('#carSubmit').addEventListener('click', async function(e) {
+    e.preventDefault();
+
+    // 1. Submit the form normally (handles validation, files, etc.)
+    const form = document.querySelector('form[name="{{ carform.vars.name }}"]');
+    const formData = new FormData(form);
+    
+    const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData
+    });
+
+    // 2. Only proceed if form submission succeeded
+    if (response.ok) {
+        const brand = document.querySelector('#{{ carform.brandCar.vars.id }}').value;
+        const model = document.querySelector('#{{ carform.modelCar.vars.id }}').value;
+
+        // 3. Send Turbo Stream notification
+        await fetch('{{ path('notify_new_car') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({ brand, model })
+        });
+
+        // 4. Reload to show the new car
+        window.location.reload();
+    }
+});
+
+
+    //
     document.getElementById('sortPriceASC').addEventListener('click', function(e) {
     fetch('/dashboard/car/sort_price_asc')
         .then(handleAjaxResponse)
@@ -324,10 +357,10 @@
                     </td>
                     <td class="action-column">
                         <div class="btn-group btn-group-sm">
-                            <a href="/dashboard/car/update/${car.idCar}" class="btn btn-warning btn-sm" title="Update">
+                            <a href="/dashboard/car/update${car.idCar}" class="btn btn-warning btn-sm" title="Update">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a href="/dashboard/car/delete/${car.idCar}" class="btn btn-danger btn-sm" title="Delete">
+                            <a href="/dashboard/car/delete${car.idCar}" class="btn btn-danger btn-sm" title="Delete">
                                 <i class="fas fa-trash-alt"></i>
                             </a>
                         </div>

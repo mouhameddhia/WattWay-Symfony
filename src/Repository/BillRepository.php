@@ -128,6 +128,19 @@ class BillRepository extends ServiceEntityRepository
         ->getQuery()
         ->execute();
     }
+    public function getTotalByYear($year){
+        $connection = $this->getEntityManager()->getConnection();
+        $sql = '
+            SELECT SUM(totalAmountBill)
+            FROM bill
+            WHERE YEAR(dateBill) = :year
+        ';
+
+        $stmt = $connection->prepare($sql);
+        $resultSet = $stmt->executeQuery(['year' => $year]);
+
+        return $resultSet->fetchFirstColumn();
+    }
     public function getMonthlySumForYear($year)
     {
         $connection = $this->getEntityManager()->getConnection();

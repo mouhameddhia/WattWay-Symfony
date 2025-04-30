@@ -17,9 +17,9 @@ class PDFService
     public function __construct(HttpClientInterface $client)
     {
         $this->client = $client;
-        $this->apiKey = "44a316a1ee26e04599bf8b61855db2cb3f6f0d7ca8f585a3e23f231285f967ca";
-        $this->apiSecret = "de581a36616b0dbad36ad235e64babca83c5441475affd3027b70a8fe864e61a";
-        $this->templateId = 1387252;
+        $this->apiKey = "2f2641bd9ee356b6d5bf032cabb5bcec35c4685548c841a2df483f3cf23b8dd3";
+        $this->apiSecret = "7a2100a2d807bc0bcd1b48067b9d72321a57b49041de35be24a670abf3775649";
+        $this->templateId = 1389131;
     }
 
     private function generateJWT(): string

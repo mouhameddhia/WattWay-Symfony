@@ -116,6 +116,7 @@ class FrontController extends AbstractController
             $car->setStatusCar('sold');
             $entityManager->persist($bill);
             $entityManager->flush();
+            $this->addFlash('success','A '.$car->getBrandCar().' '.$car->getModelCar().' was purchased for '.$bill->getTotalAmountBill().'DT by the client '.$user->getFirstNameUser().' '.$user->getLastNameUser());
             $pdfUrl = $pdfService->generatePDF($idBill, $bill->getDateBill()->format('Y-m-d'), $car->getBrandCar()." ".$car->getModelCar(), $bill->getTotalAmountBill(), $user->getFirstNameUser(), $user->getAddress(), $user->getPhoneNumber());
 
             if ($pdfUrl) {
