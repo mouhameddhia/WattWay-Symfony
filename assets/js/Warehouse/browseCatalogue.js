@@ -115,107 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
 });
 
-document.querySelectorAll('.view-specs-btn').forEach(button => {
-    button.addEventListener('click', async () => {
-      const brand = button.dataset.brand.toLowerCase();
-      const model = button.dataset.model.toLowerCase();
-      const summary = await getGeminiSpecs(brand, model);
-      showSpecsModal(summary);
-  });
-});
-function showSpecsModal(summary) {
-    const modal = document.getElementById('specs-modal');
-    const body = document.getElementById('specs-modal-body');
-  
-    body.innerHTML = ''; 
-    modal.classList.remove('hidden');
-  
-    setTimeout(() => {
-      modal.classList.add('show');
-      typeTextEffect(body, summary);
-    }, 10);
-  }
-  
-  function closeSpecsModal() {
-    const modal = document.getElementById('specs-modal');
-    modal.classList.remove('show');
-    setTimeout(() => {
-      modal.classList.add('hidden');
-    }, 300);
-  }
-  function typeTextEffect(container, text, speed = 50) {
-    const words = text.split(' ');
-    let index = 0;
-    container.innerHTML = '';
-  
-    function type() {
-      if (index < words.length) {
-        const word = words[index];
-        container.innerHTML += word + ' ';
-        index++;
-        setTimeout(type, speed);
-      }
-    }
-  
-    type();
-  }
-  
-async function getGeminiSpecs(brand, model) {
-    const apiKey = 'AIzaSyC0socyIe4-vp1GmcJUhK_itlEdW_Xnnxk'; // store securely
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-  
-    const prompt = `Give a complete and clear specification summary for the car: ${brand} ${model}.***Important***, do not say anything other than the features. I want it in this format,
-        Brand: Toyota
-        Model: Camry
-        Engine: 2.5L 4-cylinder Dynamic Force,
-        Horsepower: 203,
-        Torque: 184,
-        Transmission: 8-speed automatic,
-        Dimensions: 
-            Length: 489.458 cm
-            Width: 183.896 cm
-            Height: 144.526 cm
-        Fuel Economy: 
-            City: 28 mpg,
-            Highway: 39 mpg
-        Features: 
-            Toyota Safety Sense 2.5+,
-            8-inch touchscreen,
-            Apple CarPlay/Android Auto
-        {add some other specifications of your own, don't make this too long}
-    `;
-  
-    const body = {
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: prompt }]
-        }
-      ]
-    };
-  
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Gemini API error: ${response.status}`);
-      }
-  
-      const data = await response.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response';
-      return text;
-  
-    } catch (error) {
-      console.error('Gemini fetch error:', error);
-      return 'Failed to fetch specifications.';
-    }
-  }
+
   
 
 //REBINDING
@@ -287,9 +187,9 @@ function rebindCardFunctions() {
             overlay.classList.add('active');
         }
     });
-    overlay.addEventListener('click', closeModals);
-    cancelBtnRent.addEventListener('click', closeModals);
-    cancelBtnPurchase.addEventListener('click', closeModals);
+    //overlay.addEventListener('click', closeModals);
+    //cancelBtnRent.addEventListener('click', closeModals);
+    //cancelBtnPurchase.addEventListener('click', closeModals);
 
     function closeModals() {
         overlay.classList.remove('active');
@@ -411,6 +311,107 @@ document.querySelectorAll('.ajax-canceling-btn').forEach(button => {
         }
     });
 });
+document.querySelectorAll('.view-specs-btn').forEach(button => {
+    button.addEventListener('click', async () => {
+      const brand = button.dataset.brand.toLowerCase();
+      const model = button.dataset.model.toLowerCase();
+      const summary = await getGeminiSpecs(brand, model);
+      showSpecsModal(summary);
+  });
+});
+function showSpecsModal(summary) {
+    const modal = document.getElementById('specs-modal');
+    const body = document.getElementById('specs-modal-body');
+  
+    body.innerHTML = ''; 
+    modal.classList.remove('hidden');
+  
+    setTimeout(() => {
+      modal.classList.add('show');
+      typeTextEffect(body, summary);
+    }, 10);
+  }
+  
+  function closeSpecsModal() {
+    const modal = document.getElementById('specs-modal');
+    modal.classList.remove('show');
+    setTimeout(() => {
+      modal.classList.add('hidden');
+    }, 300);
+  }
+  function typeTextEffect(container, text, speed = 50) {
+    const words = text.split(' ');
+    let index = 0;
+    container.innerHTML = '';
+  
+    function type() {
+      if (index < words.length) {
+        const word = words[index];
+        container.innerHTML += word + ' ';
+        index++;
+        setTimeout(type, speed);
+      }
+    }
+  
+    type();
+  }
+  
+async function getGeminiSpecs(brand, model) {
+    const apiKey = 'AIzaSyC0socyIe4-vp1GmcJUhK_itlEdW_Xnnxk'; // store securely
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  
+    const prompt = `Give a complete and clear specification summary for the car: ${brand} ${model}.***Important***, do not say anything other than the features. I want it in this format,
+        Brand: Toyota
+        Model: Camry
+        Engine: 2.5L 4-cylinder Dynamic Force,
+        Horsepower: 203,
+        Torque: 184,
+        Transmission: 8-speed automatic,
+        Dimensions: 
+            Length: 489.458 cm
+            Width: 183.896 cm
+            Height: 144.526 cm
+        Fuel Economy: 
+            City: 28 mpg,
+            Highway: 39 mpg
+        Features: 
+            Toyota Safety Sense 2.5+,
+            8-inch touchscreen,
+            Apple CarPlay/Android Auto
+        {add some other specifications of your own, don't make this too long}
+    `;
+  
+    const body = {
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: prompt }]
+        }
+      ]
+    };
+  
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Gemini API error: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response';
+      return text;
+  
+    } catch (error) {
+      console.error('Gemini fetch error:', error);
+      return 'Failed to fetch specifications.';
+    }
+  }
 }
 
 // AJAX for Buy Button

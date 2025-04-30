@@ -24,6 +24,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use SendGrid;
+use SendGrid\Mail\Mail;
 
 class FrontController extends AbstractController
 {
@@ -120,6 +122,10 @@ class FrontController extends AbstractController
             $pdfUrl = $pdfService->generatePDF($idBill, $bill->getDateBill()->format('Y-m-d'), $car->getBrandCar()." ".$car->getModelCar(), $bill->getTotalAmountBill(), $user->getFirstNameUser(), $user->getAddress(), $user->getPhoneNumber());
 
             if ($pdfUrl) {
+                $templateData=['brand_car'=> $car->getBrandCar(),
+                'model_car' => $car->getModelCar(),
+                'car_url' => $pdfUrl];
+                $this->sendCarNotification($user->getEmailUser(),$user->getLastNameUser(),$templateData);
                 return $this->redirect($pdfUrl);
             }
             return new Response('Failed to generate PDF.', Response::HTTP_INTERNAL_SERVER_ERROR);          
@@ -214,6 +220,27 @@ class FrontController extends AbstractController
             'feedbacks' => $feedbacks,
         ]);
     }
+    private function sendCarNotification(string $toEmail, string $toName, array $templateData): void
+{
+    $email = new Mail();
+    $email->setFrom("haroun.zriba@esprit.tn", "Wattway Bill Services");
+    $email->addTo($toEmail, $toName);
+    $email->setTemplateId($_ENV['SENDGRID_TEMPLATE_ID']); // or use parameter
+    $email->addDynamicTemplateDatas($templateData);
+
+    $sendgrid = new SendGrid($_ENV['SENDGRID_API_KEY']);
+
+    try {
+        $response = $sendgrid->send($email);
+        if ($response->statusCode() >= 400) {
+            throw new \Exception("SendGrid failed: " . $response->body());
+        }
+
+    } catch (\Exception $e) {
+        // Handle logging or rethrow
+        throw $e;
+    }
+}
     
 }
 ?>

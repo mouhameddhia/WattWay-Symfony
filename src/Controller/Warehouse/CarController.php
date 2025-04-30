@@ -21,6 +21,7 @@ use App\Repository\WarehouseRepository;
 use App\Repository\BillRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpClient\HttpClient;
 
 class CarController extends AbstractController
 {
@@ -343,5 +344,7 @@ class CarController extends AbstractController
             ['Content-Type' => 'text/vnd.turbo-stream.html'] // Force Turbo Stream format
         ));
     }
-
+    
 }
+
+
