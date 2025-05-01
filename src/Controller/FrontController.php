@@ -137,6 +137,7 @@ class FrontController extends AbstractController
 
         return $quantities;
     }
+    
     #[Route('/update-cart', name: 'update_cart', methods: ['POST'])]
     public function updateCart(Request $request): JsonResponse
     {

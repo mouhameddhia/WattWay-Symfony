@@ -19,8 +19,7 @@ class ImageWatermarkService
     {
         $original = $this->imageManager->read($originalPath);
         $watermark = $this->imageManager->read($watermarkPath)
-            ->resize($original->width(), $original->height())
-            ->opacity(15); // Subtle transparency
+            ->resize($original->width(), $original->height());
 
         // Create a blank canvas and apply watermark first
         $canvas = $this->imageManager->create($original->width(), $original->height());
