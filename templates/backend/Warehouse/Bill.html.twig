@@ -1,6 +1,7 @@
 {% extends 'backend/baseBack.html.twig' %}
 
 {% block content %}
+{{ importmap() }}
 <link rel="stylesheet" href="{{ asset('css/Warehouse/floatingContainer.css') }}">
 <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -55,9 +56,9 @@
                             <td>{{ bill.dateBill|date('Y-m-d') }}</td>
                             <td>
                                 {% if bill.statusBill == 1 %}
-                                    Paid
+                                    <span class="paidBill">Paid</span>
                                 {% else %}
-                                    Pending
+                                    <span class="pendingBill">Pending</span>
                                 {% endif %}
                             </td>
                             <td class="action-column">
@@ -99,6 +100,30 @@
     {% endif %}
 </div>
 </div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Statistical Analysis of the Income</h6>
+    </div>
+    <div class="card-body charts-container" id="billLineChart" style="height:400px;">
+        <div class="chart-box">
+            {{ render_chart(chart) }}
+        </div>
+
+        <div class="chart-box">
+            {{ render_chart(pieChart) }}
+        </div>
+    </div>
+    <div class="card-header py-3">
+        <div class="dropdown">
+        <button class="dropdown-button" id="yearSelected" onclick="toggleDropdownStats()">{{ year }}</button>
+        <div class="dropdown-content" id="dropdownStatMenu">
+            {% for statYear in allYears %}
+                <a href="#" class="year-option" data-year="{{ statYear }}">{{ statYear }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    </div>
+</div>
 <script>
   // Dropdown toggle
   function toggleDropdownFilter() {
@@ -107,6 +132,10 @@
   }
     function toggleDropdownSort() {
         const dropdown = document.getElementById("dropdownSortMenu");
+        dropdown.classList.toggle("show");
+    }
+    function toggleDropdownStats() {
+        const dropdown = document.getElementById("dropdownStatMenu");
         dropdown.classList.toggle("show");
     }
 
@@ -252,5 +281,31 @@ function updateBillTable(bills) {
         triggerAjax(document.getElementById("searchInput").value);
     });
     }
+    document.querySelectorAll('.year-option').forEach(option => {
+    option.addEventListener('click', async function (e) { // Add async here
+        try {
+            const response = await fetch('{{ path("bill") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: new URLSearchParams({ 'statYear': this.dataset.year }) 
+            });
+            const data = await response.json();
+
+            if (data.success && data.chart) {
+                const billLineChart = document.querySelector('#billLineChart');
+                billLineChart.innerHTML = data.chart; 
+                document.querySelector('#yearSelected').innerText = `${this.dataset.year}`;
+            } else {
+                console.error("Fetch failed:", data.message || 'Unexpected error');
+            }
+        } catch (error) {
+            console.error('AJAX error:', error);
+        }
+    });
+});
 </script>
 {% endblock %}
+

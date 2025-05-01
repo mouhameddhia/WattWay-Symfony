@@ -21,6 +21,7 @@ use App\Repository\WarehouseRepository;
 use App\Repository\BillRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpClient\HttpClient;
 
 class CarController extends AbstractController
 {
@@ -59,7 +60,7 @@ class CarController extends AbstractController
 
         return $this->redirectToRoute('car', [
             'error' => false,
-            'errorMessage' => 'Warehouse capacity exceeded',
+            'errorMessage' => '',
         ]);
         }
         else if ($form->isSubmitted() && $form->isValid()) {
@@ -328,5 +329,22 @@ class CarController extends AbstractController
         }
         return $this->json($cars, Response::HTTP_OK, [], ['groups' => 'car:read']);
     }
+    #[Route('/notify/new-car', name: 'notify_new_car', methods: ['POST'])]
+    public function notifyNewCar(Request $request): Response
+    {
+        $brand = $request->request->get('brand');
+        $model = $request->request->get('model');
 
+        return $this->render('components/car_snackbar.stream.html.twig', [
+            'brand' => $brand,
+            'model' => $model,
+        ], new Response(
+            null,
+            200,
+            ['Content-Type' => 'text/vnd.turbo-stream.html'] // Force Turbo Stream format
+        ));
+    }
+    
 }
+
+

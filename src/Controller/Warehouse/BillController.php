@@ -13,11 +13,13 @@ use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
+use Symfony\UX\Chartjs\Model\Chart;
 
 class BillController extends AbstractController
 {
     #[Route('/dashboard/bill', name: 'bill')]
-public function listBills(Request $request, EntityManagerInterface $em): Response
+public function listBills(Request $request, ChartBuilderInterface $chartBuilder, BillRepository $billRepository, EntityManagerInterface $em): Response
 {
     $page = max(1, $request->query->getInt('page', 1));
     $limit = 5;
@@ -31,10 +33,46 @@ public function listBills(Request $request, EntityManagerInterface $em): Respons
     $totalBills = count($paginator);
     $totalPages = ceil($totalBills / $limit);
 
+    //Statistical parameters
+    $year = 2025;
+    $associativeBillArray=$billRepository->getMonthlySumForYear($year);
+    $income=array_fill(1,12,0);
+    foreach($associativeBillArray as $row){
+        $income[$row['month']]=$row['total'];
+    }
+    $chart = $this->createIncomeChart($chartBuilder, $year, $income);
+    $associativeRentedSoldArray=$billRepository->getTotalRentedTotalSoldByYear($year);
+    $incomeSold = (float) $associativeRentedSoldArray[0]['soldCars'];
+    $incomeRented = (float) $associativeRentedSoldArray[0]['rentedCars'];
+    $pieChart=$this->createRentedSoldPieChart($chartBuilder,$year,$incomeSold,$incomeRented);
+    if($request->isMethod("POST") && $request->request->has('statYear')){
+        $statYear=$request->request->get('statYear');
+        $associativeBillArray=$billRepository->getMonthlySumForYear($statYear);
+        $income=array_fill(1,12,0);
+        foreach($associativeBillArray as $row){
+            $income[$row['month']]=$row['total'];
+        }
+        $chart= $this->createIncomeChart($chartBuilder,$statYear,$income);
+        $associativeRentedSoldArray=$billRepository->getTotalRentedTotalSoldByYear($statYear);
+        $incomeSold = (float) $associativeRentedSoldArray[0]['soldCars'];
+        $incomeRented = (float) $associativeRentedSoldArray[0]['rentedCars'];
+        $pieChart=$this->createRentedSoldPieChart($chartBuilder,$statYear,$incomeSold,$incomeRented);
+        $renderedChart = $this->renderView('backend/Warehouse/billChartLoader.html.twig', [
+            'chart' => $chart,
+            'pieChart'=>$pieChart,
+        ]);
+        return new JsonResponse([
+            'success' => true,
+            'chart'=>$renderedChart]);
+    }
     return $this->render('backend/Warehouse/Bill.html.twig', [
         'bills' => $paginator,
         'currentPage' => $page,
         'totalPages' => $totalPages,
+        'chart' =>$chart,
+        'pieChart'=>$pieChart,
+        'year' =>$year,
+        'allYears'=> $billRepository->getAllYearsBill(),
     ]);
 }
     #[Route('/dashboard/bill/delete{id}', name: 'deleteBill')]
@@ -152,5 +190,83 @@ public function listBills(Request $request, EntityManagerInterface $em): Respons
             return new JsonResponse(['error' => 'No bills found.'], Response::HTTP_NOT_FOUND);
         }
         return $this->json($bills, Response::HTTP_OK, [], ['groups' => 'bill:read']);
+    }
+    private function createIncomeChart($chartBuilder, $year, $income){
+        $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
+
+        $chart->setData([
+            'labels' => [
+                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+            ],
+            'datasets' => [
+                [
+                    'label' => 'Income (DT)',
+                    'backgroundColor' => 'rgba(78, 115, 223, 0.05)',
+                    'borderColor' => 'rgba(78, 115, 223, 1)',
+                    'pointRadius' => 3,
+                    'pointBackgroundColor' => 'rgba(78, 115, 223, 1)',
+                    'pointBorderColor' => 'rgba(78, 115, 223, 1)',
+                    'pointHoverRadius' => 5,
+                    'pointHoverBackgroundColor' => 'rgb(255, 0, 0)',
+                    'pointHoverBorderColor' => 'rgb(255, 0, 0)',
+                    'data' => array_values($income),
+                    'fill' => false,
+                    'tension' => 0.3,
+                ]
+            ]
+        ]);
+
+        $chart->setOptions([
+            'maintainAspectRatio' => false, 
+            'responsive' => true,  
+            'scales' => [
+                'y' => [
+                    'beginAtZero' => true,
+                    'ticks' => [
+                        'stepSize' => 50000,
+                    ],
+                ],
+            ],
+            'plugins' => [
+                'legend' => [
+                    'position' => 'top',
+                ],
+                'title' => [
+                    'display' => true,
+                    'text' => 'Monthly Income for '.$year,
+                ],
+            ],
+        ]);
+    return $chart;
+    }
+    private function createRentedSoldPieChart($chartBuilder, $year, $incomeSold, $incomeRented){
+        $pieChart = $chartBuilder->createChart(Chart::TYPE_PIE);
+
+        $pieChart->setData([
+            'labels' => ['Sold Cars', 'Rented Cars'],
+            'datasets' => [[
+                'label' => 'Income Distribution',
+                'backgroundColor' => ['#4e73df', '#1cc88a'],
+                'hoverBackgroundColor' => ['#2e59d9', '#17a673'],
+                'borderColor' => '#ffffff',
+                'data' => [$incomeSold, $incomeRented],
+            ]]
+        ]);
+
+        $pieChart->setOptions([
+            'maintainAspectRatio' => false, 
+            'responsive' => true,  
+            'plugins' => [
+                'legend' => [
+                    'position' => 'bottom',
+                ],
+                'title' => [
+                    'display' => true,
+                    'text' => 'Income: Sold vs Rented Cars ('.$year.')',
+                ],
+            ],
+        ]);
+        return $pieChart;
     }
 }

@@ -2,8 +2,11 @@ parameters:
   profile_pictures_directory: '%kernel.project_dir%/public/uploads/profile_pictures'
   warehouse_images_directory: '%kernel.project_dir%/public/images/Warehouse'
   avatar_directory: '%kernel.project_dir%/public/uploads/avatars'
-  
-
+  sendgrid.api_key: '%env(SENDGRID_API_KEY)%'
+  sendgrid.template_id: '%env(SENDGRID_TEMPLATE_ID)%'
+  pdfgeneratorapi.api_key: '%env(PDFGENERATORAPI_API_KEY)%'
+  pdfgeneratorapi.api_secret: '%env(PDFGENERATORAPI_API_SECRET)%'
+  pdfgeneratorapi.template_id: '%env(PDFGENERATORAPI_TEMPLATE_ID)%'
 
 services:
     App\Security\UserChecker:

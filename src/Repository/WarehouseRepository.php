@@ -86,6 +86,13 @@ class WarehouseRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();	
     }
+    public function getCarCities(){
+        return $this->createQueryBuilder('w')
+        ->select('DISTINCT w.city')
+        ->join('w.cars','c')
+        ->getQuery()
+        ->getResult();
+    }
     //    /**
     //     * @return Warehouse[] Returns an array of Warehouse objects
     //     */

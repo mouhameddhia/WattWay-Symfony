@@ -169,6 +169,51 @@ class CarRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();	
     }
+    public function maxPriceCar()
+    {
+        return $this->createQueryBuilder('c')
+        ->select('MAX(c.priceCar) as max_price')
+        ->getQuery()
+        ->getSingleScalarResult();   
+    }
+    public function minPriceCar()
+    {
+        return $this->createQueryBuilder('c')
+        ->select('MIN(c.priceCar) as min_price')
+        ->andWhere('c.statusCar = :status')
+        ->setParameter('status',"available")
+        ->getQuery()
+        ->getSingleScalarResult();   
+    }
+    public function getSliderCars($brand, $city, $sliderValue, $direction)
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->andWhere('c.statusCar = :status')
+            ->setParameter("status","available")
+            ->andWhere('c.priceCar <= :slider')
+            ->setParameter('slider', $sliderValue);
+        $direction = strtoupper($direction) === 'DESC' ? 'DESC' : 'ASC';
+        if ($brand !== 'all') {
+            $qb->andWhere('c.brandCar = :brand')
+            ->setParameter('brand', $brand);
+        }
+        if($city !== 'all'){
+            $qb->join('c.warehouse','w')
+            ->andWhere('w.city=:city')
+            ->setParameter('city',$city);
+        }  
+        return $qb->orderBy('c.priceCar', $direction)
+                ->getQuery()
+                ->getResult();
+        }
+    public function getAllBrands(){
+        return $this->createQueryBuilder('c')
+        ->select('DISTINCT c.brandCar')
+        ->andWhere('c.statusCar = :status')
+        ->setParameter('status',"available")
+        ->getQuery()
+        ->getSingleColumnResult();
+    }
 
     //    /**
     //     * @return Car[] Returns an array of Car objects

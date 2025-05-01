@@ -24,14 +24,40 @@ class BillRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
-    public function getBillIdByUserId($idUser)
+    public function getBillIdByUserId($emailUser)
+        {
+            return $this->createQueryBuilder('b')
+                ->select('DISTINCT b.idBill')
+                ->join('b.user', 'u')
+                ->where('u.emailUser = :emailUser')
+                ->setParameter('emailUser', $emailUser)
+                ->getQuery()
+                ->getSingleScalarResult();
+        }
+
+    public function getBillIdByCarUserId($idCar, $emailUser)
     {
         return $this->createQueryBuilder('b')
             ->select('DISTINCT b.idBill')
-            ->andWhere('b.user = :idUser')
-            ->setParameter('idUser', $idUser)
+            ->join('b.user', 'u')
+            ->where('u.emailUser = :emailUser')
+            ->andWhere('b.car = :idCar')
+            ->setParameter('emailUser', $emailUser)
+            ->setParameter('idCar', $idCar)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function deleteAllPendingBillsForCarIdExcept($idCar,$emailUser){
+        return $this->createQueryBuilder('b')
+            ->delete('App\Entity\Bill', 'b')
+            ->where('b.user NOT IN (
+            SELECT u.idUser FROM App\Entity\User u 
+            WHERE u.emailUser = :emailUser) AND b.car = :idCar AND b.statusBill=0')
+            ->setParameter('emailUser',$emailUser)
+            ->setParameter('idCar',$idCar)
+            ->getQuery()
+            ->execute();
     }
     public function filterByPaidBills(){
         return $this->createQueryBuilder('b')
@@ -101,6 +127,65 @@ class BillRepository extends ServiceEntityRepository
         ->setParameter('emailUser', $emailUser)
         ->getQuery()
         ->execute();
+    }
+    public function getTotalByYear($year){
+        $connection = $this->getEntityManager()->getConnection();
+        $sql = '
+            SELECT SUM(totalAmountBill)
+            FROM bill
+            WHERE YEAR(dateBill) = :year
+        ';
+
+        $stmt = $connection->prepare($sql);
+        $resultSet = $stmt->executeQuery(['year' => $year]);
+
+        return $resultSet->fetchFirstColumn();
+    }
+    public function getMonthlySumForYear($year)
+    {
+        $connection = $this->getEntityManager()->getConnection();
+        $sql = '
+            SELECT MONTH(dateBill) AS month, SUM(totalAmountBill) AS total
+            FROM bill
+            WHERE YEAR(dateBill) = :year AND statusBill=1
+            GROUP BY month
+            ORDER BY month ASC
+        ';
+
+        $stmt = $connection->prepare($sql);
+        $resultSet = $stmt->executeQuery(['year' => $year]);
+
+        return $resultSet->fetchAllAssociative();
+    }
+    public function getAllYearsBill(){
+        $connection = $this->getEntityManager()->getConnection();
+        $sql = '
+            SELECT DISTINCT YEAR(dateBill) AS year
+            FROM bill
+            ORDER BY year DESC
+        ';
+
+        $stmt = $connection->prepare($sql);
+        $resultSet = $stmt->executeQuery();
+
+        return $resultSet->fetchFirstColumn();
+
+    }
+    public function getTotalRentedTotalSoldByYear($year){
+        $connection = $this->getEntityManager()->getConnection();
+        $sql = "
+            SELECT 
+                SUM(CASE WHEN c.statusCar = 'sold' THEN b.totalAmountBill ELSE 0 END) AS soldCars,
+                SUM(CASE WHEN c.statusCar = 'rented' THEN b.totalAmountBill ELSE 0 END) AS rentedCars
+            FROM bill b
+            JOIN car c ON b.idCar = c.idCar
+            WHERE YEAR(b.dateBill) = :year
+            AND c.statusCar IN ('sold', 'rented')";
+        
+        $stmt = $connection->prepare($sql);
+        $resultSet = $stmt->executeQuery(['year' => $year]);
+    
+        return $resultSet->fetchAllAssociative();
     }
     //    /**
     //     * @return Bill[] Returns an array of Bill objects

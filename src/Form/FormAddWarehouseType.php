@@ -45,7 +45,7 @@ class FormAddWarehouseType extends AbstractType
                     'Beja' => 'Beja',
                     'Jendouba' => 'Jendouba',
                     'Siliana' => 'Siliana',
-                    'Kef' => 'Kef',
+                    'Al-Kaf' => 'Al-Kaf',
                     'Gafsa' => 'Gafsa',
                     'Tozeur' => 'Tozeur',
                     'Kebili' => 'Kebili',

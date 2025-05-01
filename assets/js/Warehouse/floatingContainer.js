@@ -62,4 +62,88 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 300); 
         });
     }
+    document.querySelectorAll('.ajax-buy-btn').forEach(button => {
+        button.addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            try {
+                const response = await fetch('{{ path("Front") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Accept': 'application/json', 
+                        'X-Requested-With': 'XMLHttpRequest' 
+                    },
+                    body: new URLSearchParams({
+                        car_id: this.dataset.carId
+                    })
+                });
+    
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    throw new Error(`Server returned HTML: ${text.substring(0, 100)}...`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.message);
+                }
+                this.disabled = true;
+                const slidingButtons = this.closest('.car-card').querySelector('.sliding-buttons');
+                slidingButtons.classList.add('active');
+                slidingButtons.querySelector('.proceed-btn').classList.remove('hidden');
+                slidingButtons.querySelector('.canceling-btn').classList.remove('hidden');
+    
+            } catch (error) {
+                console.error('Error:', error);
+                alert(error.message);
+            }
+        });
+    });
+    document.querySelectorAll('.ajax-canceling-btn').forEach(button => {
+        button.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const card = this.closest('.car-card');
+            const slidingButtons = card.querySelector('.sliding-buttons');
+            
+            try {
+                const response = await fetch('{{ path("Front") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest' // Crucial for detecting AJAX
+                    },
+                    body: new URLSearchParams({
+                        deleteBill: this.dataset.deleteBill
+                    })
+                });
+    
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+    
+             
+                const data = await response.json();
+                
+                if (data.success) {
+                   
+                    slidingButtons.classList.remove('active');
+                    card.querySelector('.buy-btn').disabled = false;
+                    
+                  
+                    console.log('Bill deleted successfully');
+                } else {
+                    throw new Error(data.message || 'Operation failed');
+                }
+    
+            } catch (error) {
+                console.error('Error:', error);
+                // Show error to user without reloading
+                alert('Error: ' + error.message);
+            }
+        });
+    });
 });

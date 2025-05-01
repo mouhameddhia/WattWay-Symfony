@@ -1,7 +1,6 @@
 {% extends 'backend/baseBack.html.twig' %}
 {% block content %}
 <link rel="stylesheet" href="{{ asset('css/Warehouse/floatingContainer.css') }}">
-
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">List of Cars</h6>
@@ -130,7 +129,7 @@
 <div id="floatingContainer" class="hidden">
     <div class="modal-content">
         <span class="close-btn" id="closeModal">&times;</span>
-        {{ form_start(carform) }}
+        {{ form_start(carform, {'attr': {'id': 'car-form'}}) }}
             {{ form_row(carform.brandCar) }}
             {{ form_row(carform.modelCar) }}
             {{ form_row(carform.yearCar) }}
@@ -138,13 +137,15 @@
             {{ form_row(carform.kilometrageCar) }}
             {{ form_row(carform.warehouse) }}
             {{ form_row(carform.imgCar) }}
-            <button type="submit" class="btn btn-success">Submit</button>
+            <img id="preview" src="#" alt="Image Preview" style="display:none; max-width: 300px;"/>
+            <button type="submit" class="btn btn-success" id="carSubmit">Submit</button>
         {{ form_end(carform) }}
     </div>
 </div>
-
+<div id="turbo-stream-buffer" hidden></div>
 <script src="{{ asset('js/Warehouse/floatingContainer.js') }}"></script>
 <script>
+    
     function toggleDropdownFilter() {
         const dropdown = document.getElementById("dropdownFilterMenu");
         dropdown.classList.toggle("show");
@@ -324,10 +325,10 @@
                     </td>
                     <td class="action-column">
                         <div class="btn-group btn-group-sm">
-                            <a href="/dashboard/car/update/${car.idCar}" class="btn btn-warning btn-sm" title="Update">
+                            <a href="/dashboard/car/update${car.idCar}" class="btn btn-warning btn-sm" title="Update">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a href="/dashboard/car/delete/${car.idCar}" class="btn btn-danger btn-sm" title="Delete">
+                            <a href="/dashboard/car/delete${car.idCar}" class="btn btn-danger btn-sm" title="Delete">
                                 <i class="fas fa-trash-alt"></i>
                             </a>
                         </div>
