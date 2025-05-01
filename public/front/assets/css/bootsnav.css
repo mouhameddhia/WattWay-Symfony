@@ -474,7 +474,10 @@ nav.navbar.bootsnav.no-background{
 /* Navbar Sticky
 =================================*/
 .wrap-sticky{
+<<<<<<< HEAD
     
+=======
+>>>>>>> 27aa58f7e5cf36f10a7596d3e8c3eb011cdb9dc2
     position: relative;
     -webkit-transition: all 0.3s ease-in-out;
 	-moz-transition: all 0.3s ease-in-out;
@@ -488,7 +491,10 @@ nav.navbar.bootsnav.no-background{
     width: 100%;
     left: 0;
     top: 0;
+<<<<<<< HEAD
     
+=======
+>>>>>>> 27aa58f7e5cf36f10a7596d3e8c3eb011cdb9dc2
 }
 
 .wrap-sticky nav.navbar.bootsnav.sticked{
@@ -498,7 +504,10 @@ nav.navbar.bootsnav.no-background{
 	-o-transition: all 0.2s ease-in-out;
 	-ms-transition: all 0.2s ease-in-out;
 	transition: all 0.2s ease-in-out;
+<<<<<<< HEAD
     
+=======
+>>>>>>> 27aa58f7e5cf36f10a7596d3e8c3eb011cdb9dc2
 }
 
 body.on-side .wrap-sticky nav.navbar.bootsnav.sticked{

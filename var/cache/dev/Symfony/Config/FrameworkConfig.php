@@ -1013,18 +1013,7 @@ class FrameworkConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
     */
     public function uid(array $value = []): \Symfony\Config\Framework\UidConfig
     {
-<<<<<<< HEAD
-        if (!\is_array($value)) {
-            $this->_usedProperties['uid'] = true;
-            $this->uid = $value;
-
-            return $this;
-        }
-
-        if (!$this->uid instanceof \Symfony\Config\Framework\UidConfig) {
-=======
         if (null === $this->uid) {
->>>>>>> WarehouseManagement
             $this->_usedProperties['uid'] = true;
             $this->uid = new \Symfony\Config\Framework\UidConfig($value);
         } elseif (0 < \func_num_args()) {

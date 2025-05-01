@@ -1,0 +1,1055 @@
+
+<h1 style="font-size: 4rem; font-weight: 700; color: #132ec2; text-align: center; text-transform: uppercase; margin-bottom: 20px; animation: fadeIn 1.5s ease-in-out;">
+						How'd you like the cars</h1>
+
+{% block stylesheets %}
+    <!-- Add SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        .carousel-wrapper {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 50px;
+        }
+        .card {
+            width: 300px;
+            min-height: 400px;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            box-shadow: 8px 8px 16px #d1d1d1,
+                       -8px -8px 16px #ffffff;
+            padding: 25px;
+            margin: 15px;
+            transition: height 0.3s ease;
+            flex: 0 0 auto;
+            overflow: hidden;
+        }
+        .card.expanded {
+            height: auto;
+            min-height: 400px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-container-sub {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            gap: 25px;
+            padding: 30px 0;
+        }
+        .card-container-sub::-webkit-scrollbar {
+            display: none;
+        }
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ffffff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+        .carousel-button:hover {
+            background: #f0f0f0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .carousel-button.prev {
+            left: 0;
+        }
+        .carousel-button.next {
+            right: 0;
+        }
+        .card-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .card-field {
+            color: #4a5568;
+            line-height: 1.5;
+            font-size: 0.95em;
+        }
+        .card-field strong {
+            color: #2d3748;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        .card-title {
+            font-size: 1.25em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        .container.mt-4 h1 {
+            color: #2d3748;
+            font-size: 2.25em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-right: 8px;
+            color: white;
+            margin-bottom: 11px;
+
+        }
+        .status-pending { background-color: #f59e0b; }
+        .status-approved { background-color: #3b82f6; }
+        .status-responded { background-color: #10b981; }
+        
+        .urgency-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .urgency-low { background-color: #e5e7eb; color: #374151; }
+        .urgency-medium { background-color: #fde68a; color: #92400e; }
+        .urgency-high { background-color: #fecaca; color: #991b1b; }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .status-badge, .urgency-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 1px 3px;
+            border-radius: 3px;
+            font-size: 0.55em;
+            font-weight: 500;
+        }
+        .status-badge::before {
+            content: "Status: ";
+            opacity: 0.8;
+            margin-right: 2px;
+        }
+        .urgency-badge::before {
+            content: "Urgency: ";
+            opacity: 0.8;
+            margin-right: 2px;
+        }
+        .card-meta {
+            margin-top: auto;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.8em;
+        }
+        .card-field {
+            color: #64748b;
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+        .card-field strong {
+            color: #475569;
+            font-weight: 500;
+        }
+        .responses-section {
+            margin-top: 12px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 12px;
+        }
+        .responses-container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        .responses-title {
+            font-size: 1.1em;
+            color: #374151;
+            margin: 0;
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+        .responses-wrapper {
+            padding: 15px;
+        }
+        .response-card {
+            transition: transform 0.2s ease;
+        }
+        .response-card:hover {
+            transform: translateY(-2px);
+        }
+        .response-type-email { border-left: 4px solid #3b82f6; }
+        .response-type-phone { border-left: 4px solid #10b981; }
+        .response-type-message { border-left: 4px solid #f59e0b; }
+        .empty-response {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+        }
+        .toggle-responses {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            transition: all 0.3s ease;
+            gap: 8px;
+        }
+        .toggle-responses:hover {
+            background: rgba(249, 143, 21, 0.1);
+            border-radius: 8px;
+        }
+        .toggle-text {
+            font-size: 0.9em;
+            color: #f98f15;
+            font-weight: 500;
+        }
+        .card {
+            width: 300px;
+            min-height: 280px;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            box-shadow: 8px 8px 16px #d1d1d1,
+                       -8px -8px 16px #ffffff;
+            padding: 25px;
+            margin: 15px;
+            transition: transform 0.2s ease;
+            flex: 0 0 auto;
+            height: fit-content;
+        }
+        .icon-closed, .icon-opened {
+            transition: transform 0.3s ease;
+        }
+        [aria-expanded="true"] .icon-closed {
+            display: none;
+        }
+        [aria-expanded="false"] .icon-opened {
+            display: none;
+        }
+    </style>
+    <style>
+    .progress-bar {
+        width: 100%;
+        height: 4px;
+        background: rgba(255, 140, 0, 0.1);
+        margin-bottom: 20px;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, #ff8c00, #ffa500);
+        transition: width 0.3s ease;
+    }
+
+    .form-field {
+        opacity: 0.7;
+        transform: translateY(10px);
+        transition: all 0.4s ease;
+    }
+
+    .form-field.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .form-section {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2.5rem;
+        background: linear-gradient(135deg, rgba(100, 116, 139, 0.05) 0%, rgba(255, 255, 255, 0.95) 100%);
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(100, 116, 139, 0.15),
+                    inset 0 -2px 10px rgba(255, 255, 255, 0.5),
+                    inset 0 2px 10px rgba(100, 116, 139, 0.1);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        transform-style: preserve-3d;
+        perspective: 1000px;
+    }
+
+    .form-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #3b82f6, #64748b);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s ease;
+    }
+
+    .form-section:hover {
+        transform: translateY(-5px) rotateX(2deg);
+        box-shadow: 0 20px 40px rgba(100, 116, 139, 0.2),
+                    inset 0 -2px 10px rgba(255, 255, 255, 0.7),
+                    inset 0 2px 10px rgba(100, 116, 139, 0.2);
+    }
+
+    .btn-primary {
+        width: auto;
+        min-width: 200px;
+        margin: 2rem auto;
+        padding: 1rem 2rem;
+        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+        display: block;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(90deg,rgb(4, 93, 157) 0%,rgb(8, 81, 198) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-primary:active {
+        transform: translateY(1px);
+    }
+
+    .btn-primary::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: -100%;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+        transition: all 0.6s ease;
+    }
+
+    .btn-primary:hover::after {
+        left: 100%;
+    }
+
+    .form-row {
+        margin-bottom: 1.75rem;
+        position: relative;
+    }
+
+    .form-row label {
+        display: block;
+        margin-bottom: 0.75rem;
+        color: #4a5568;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-row input,
+    .form-row select,
+    .form-row textarea {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        background-color: rgba(255, 255, 255, 0.9);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 1rem;
+        color: #2d3748;
+        box-shadow: 0 4px 6px rgba(255, 165, 0, 0.05);
+    }
+
+    .form-row input:focus,
+    .form-row select:focus,
+    .form-row textarea:focus {
+        border-color: #ff8c00;
+        box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .form-row input:focus,
+    .form-row select:focus,
+    .form-row textarea:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    .form-row textarea {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    @media (max-width: 768px) {
+        .form-section {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+        
+        .form-section h2 {
+            font-size: 1.75rem;
+        }
+    }
+    </style>
+    <style>
+        .card-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+        }
+        .edit-icon, .delete-icon {
+            cursor: pointer;
+            padding: 4px;
+            color: #6b7280;
+            transition: all 0.2s ease;
+        }
+        .edit-icon:hover {
+            color: #3b82f6;
+        }
+        .delete-icon:hover {
+            color: #ef4444;
+        }
+
+
+        /* Guide Styles */
+        .guide-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1040;
+            backdrop-filter: blur(3px);
+        }
+
+        .guide-popup {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1050;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .highlighted-element {
+            position: relative;
+            z-index: 1050;
+            animation: highlight-pulse 2s infinite;
+        }
+        
+
+        @keyframes highlight-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
+            100% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+        }
+
+        .guide-button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guide-launcher {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            min-width: 100px;
+            height: 40px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 9999;
+            margin: 0;
+            padding: 0 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .guide-launcher:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+
+        .guide-launcher:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        .guide-launcher::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .guide-launcher:hover::after {
+            opacity: 1;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .guide-launcher::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            animation: pulse 2s infinite;
+            z-index: -1;
+        }
+
+    </style>
+<!-- Add the Google Translate API script -->
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script>
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+            { pageLanguage: 'en', autoDisplay: false },
+            'google_translate_element'
+        );
+    }
+</script>
+
+{% endblock %}
+
+{% block listSubmission %}
+    <div class="form-section" style="margin-bottom: 40px;">
+        <div class="progress-bar" id="formProgress">
+            <div class="progress-fill"></div>
+        </div>
+        <h2>Create New Submission</h2>
+        {{ form_start(formSubmission, {
+            'attr': {
+                'id': 'submissionForm',
+                'novalidate': 'novalidate'
+            }
+        }) }}
+            <div class="form-row" data-step="1">
+                {{ form_row(formSubmission.description, {
+                    'label': 'Description',
+                    'attr': {'class': 'form-field'}
+                }) }}
+            </div>
+            <div class="form-row" data-step="2">
+                {{ form_row(formSubmission.vinCode, {
+                    'label': 'VIN Code',
+                    'attr': {'class': 'form-field'}
+                }) }}
+            </div>
+            <div class="form-row" data-step="3">
+                {{ form_row(formSubmission.idUser, {
+                    'label': 'User',
+                    'attr': {'class': 'form-field'}
+                }) }}
+            </div>
+            <div class="form-row" data-step="4">
+                {{ form_row(formSubmission.preferredContactMethod, {
+                    'label': 'Contact Method',
+                    'attr': {'class': 'form-field'}
+                }) }}
+            </div>
+            <div class="form-row" data-step="5">
+                {{ form_row(formSubmission.preferredAppointmentDate, {
+                    'label': 'Preferred Appointment Date',
+                    'attr': {'class': 'form-field'}
+                }) }}
+            </div>
+            <button type="submit" class="btn btn-primary" id="submitBtn">Submit</button>
+        {{ form_end(formSubmission) }}
+    </div>
+
+    <div class="container mt-4">
+        <h1 style="font-size: 4rem; font-weight: 700; color: #132ec2; text-align: center; text-transform: uppercase; margin-bottom: 20px; animation: fadeIn 1.5s ease-in-out;">
+						What others think of our collection</h1>
+        <div class="carousel-wrapper">
+            <button class="carousel-button prev" onclick="scrollCarousel('left')">←</button>
+            <button class="carousel-button next" onclick="scrollCarousel('right')">→</button>
+            <div class="card-container-sub">
+            {% for submission in submissions %}
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-header">
+                        <span class="status-badge status-{{ submission.status|lower }}">{{ submission.status }}</span>
+                        <span class="urgency-badge urgency-{{ submission.urgencyLevel|lower }}">{{ submission.urgencyLevel }}</span>
+                        <div class="card-actions">
+                            <a href="{{ path('Front_Submission_edit', {'idSubmission': submission.idSubmission}) }}" 
+                               class="edit-icon"
+                               title="Edit submission">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </a>
+                            <form action="{{ path('Front_Submission_delete', {'idSubmission': submission.idSubmission}) }}" method="POST" 
+                                  onsubmit="return confirm('Are you sure you want to delete this submission?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ submission.idSubmission) }}">
+                                <button type="submit" class="delete-icon" title="Delete submission">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card-title">{{ submission.description }}</div>
+                    <div class="card-meta">
+                        <div class="card-field">
+                            <strong>Submitted:</strong> {{ submission.dateSubmission|date('Y-m-d') }}
+                        </div>
+                        <div class="card-field">
+                            <strong>Contact Method:</strong> {{ submission.preferredContactMethod }}
+                        </div>
+                        <div class="card-field">
+                            <strong>Preferred Date:</strong> {{ submission.preferredAppointmentDate|date('Y-m-d') }}
+                        </div>
+                        <div class="responses-section">
+                            <div class="responses-container" id="responses-{{ submission.idSubmission }}" style="display: none;">
+                                <h4 class="responses-title"><i class="fas fa-comments"></i> Responses</h4>
+                                <div class="responses-wrapper">
+                                    {% for response in submission.responses %}
+                                    <div class="response-card response-item response-type-{{ response.typeResponse|lower }} shadow-sm p-3 mb-3 bg-light rounded">
+                                        <div class="response-header">
+                                            <span class="response-type">{{ response.typeResponse }}</span>
+                                            <span class="response-date">{{ response.dateResponse ? response.dateResponse|date('Y-m-d') : 'N/A' }}</span>
+                                        </div>
+                                        <div class="response-content">
+                                            <p>{{ response.message }}</p>
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <div class="response-card response-item empty-response">
+                                        <p class="text-muted"><i class="fas fa-info-circle"></i> No responses found for this submission.</p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="toggle-responses" onclick="toggleResponses({{ submission.idSubmission }})" style="cursor: pointer;">
+                                <svg class="icon-closed" xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 512 512">
+                                    <path fill="#f98f15" d="M256 464a208 208 0 1 1 0-416 208 208 0 1 1 0 416zM256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM376.9 294.6c4.5-4.2 7.1-10.1 7.1-16.3c0-12.3-10-22.3-22.3-22.3L304 256l0-96c0-17.7-14.3-32-32-32l-32 0c-17.7 0-32 14.3-32 32l0 96-57.7 0C138 256 128 266 128 278.3c0 6.2 2.6 12.1 7.1 16.3l107.1 99.9c3.8 3.5 8.7 5.5 13.8 5.5s10.1-2 13.8-5.5l107.1-99.9z"/>
+                                </svg>
+                                <span class="toggle-text">See responses</span>
+                                <svg class="icon-opened" xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 512 512" style="display: none;">
+                                    <path fill="#f98f15" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm11.3-395.3l112 112c4.6 4.6 5.9 11.5 3.5 17.4s-8.3 9.9-14.8 9.9l-64 0 0 96c0 17.7-14.3 32-32 32l-32 0c-17.7 0-32-14.3-32-32l0-96-64 0c-6.5 0-12.3-3.9-14.8-9.9s-1.1-12.9 3.5-17.4l112-112c6.2-6.2 16.4-6.2 22.6 0z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+function scrollCarousel(direction) {
+    const container = document.querySelector('.card-container-sub');
+    const scrollAmount = 330; // card width + gap
+    if (direction === 'left') {
+        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else {
+        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+}
+
+// Optional: Add touch swipe support
+let touchStartX = 0;
+let touchEndX = 0;
+const container = document.querySelector('.card-container-sub');
+
+container.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+});
+
+container.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    if (touchStartX - touchEndX > 50) {
+        scrollCarousel('right');
+    } else if (touchEndX - touchStartX > 50) {
+        scrollCarousel('left');
+    }
+});
+function toggleResponses(submissionId) {
+    const responsesContainer = document.getElementById(`responses-${submissionId}`);
+    const toggleButton = responsesContainer.nextElementSibling;
+    const card = responsesContainer.closest('.card');
+    const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+    
+    responsesContainer.style.display = isExpanded ? 'none' : 'block';
+    toggleButton.setAttribute('aria-expanded', !isExpanded);
+    card.classList.toggle('expanded');
+    
+    const iconClosed = toggleButton.querySelector('.icon-closed');
+    const iconOpened = toggleButton.querySelector('.icon-opened');
+    iconClosed.style.display = isExpanded ? 'block' : 'none';
+    iconOpened.style.display = isExpanded ? 'none' : 'block';
+}
+function handleEdit(submissionId) {
+    // Implement edit functionality
+    console.log('Edit submission:', submissionId);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('deleteConfirmationModal');
+    const deleteButtons = document.querySelectorAll('.delete-icon');
+    let currentForm = null;
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            currentForm = this.closest('form');
+            modal.style.display = 'flex';
+        });
+    });
+
+    document.querySelector('.close-modal').addEventListener('click', closeModal);
+    document.querySelector('.cancel-btn').addEventListener('click', closeModal);
+    document.querySelector('.confirm-btn').addEventListener('click', function() {
+        if (currentForm) {
+            currentForm.submit();
+        }
+        closeModal();
+    });
+
+    function closeModal() {
+        modal.style.display = 'none';
+        currentForm = null;
+    }
+
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const steps = [
+        {
+            title: 'New Submission Form',
+            content: `Complete this form to create a new service request.`,
+            element: '.form-section'
+        },
+        {
+            title: 'Progress Tracker',
+            content: `This bar shows your completion progress.`,
+            element: '#formProgress'
+        },
+        {
+            title: 'Submissions Carousel',
+            content: `Browse through existing submissions.`,
+            element: '.card-container-sub'
+        },
+        {
+            title: 'Submission Actions',
+            content: `Edit or delete submissions.`,
+            element: '.card-actions'
+        }
+    ];
+
+    const guidePopup = document.createElement('div');
+    const guideOverlay = document.createElement('div');
+    let currentStep = 0;
+
+    // Configuration du popup
+    guidePopup.className = 'guide-popup';
+    guideOverlay.className = 'guide-overlay';
+
+    // Fonction pour mettre à jour le popup
+    function updatePopup() {
+        const step = steps[currentStep];
+        const targetElement = document.querySelector(step.element);
+        
+        if (!targetElement) {
+            console.error('Element not found:', step.element);
+            return;
+        }
+
+        // Reset highlights
+        document.querySelectorAll('.highlighted-element').forEach(el => {
+            el.classList.remove('highlighted-element');
+        });
+
+        // Ajouter highlight
+        targetElement.classList.add('highlighted-element');
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Contenu du popup
+        guidePopup.innerHTML = `
+            <h3>${step.title}</h3>
+            <p>${step.content}</p>
+            <div class="guide-navigation">
+                ${currentStep > 0 ? 
+                    '<button class="guide-prev">← Previous</button>' : ''}
+                ${currentStep < steps.length - 1 ? 
+                    '<button class="guide-next">Next →</button>' : 
+                    '<button class="guide-finish">Finish</button>'}
+            </div>
+        `;
+
+        // Gestionnaires d'événements
+        guidePopup.querySelector('.guide-prev')?.addEventListener('click', () => {
+            currentStep--;
+            updatePopup();
+        });
+
+        guidePopup.querySelector('.guide-next')?.addEventListener('click', () => {
+            currentStep++;
+            updatePopup();
+        });
+
+        guidePopup.querySelector('.guide-finish')?.addEventListener('click', closeGuide);
+    }
+
+    function closeGuide() {
+        guidePopup.remove();
+        guideOverlay.remove();
+        document.querySelectorAll('.highlighted-element').forEach(el => {
+            el.classList.remove('highlighted-element');
+        });
+    }
+
+    // Bouton de lancement
+    const guideLauncher = document.createElement('button');
+    guideLauncher.textContent = 'Guide';
+    guideLauncher.className = 'guide-launcher';
+    guideLauncher.title = 'Show Guide';
+    guideLauncher.style.position = 'fixed';
+    guideLauncher.style.left = '30px';
+    guideLauncher.style.bottom = '30px';
+    guideLauncher.style.zIndex = '9999';
+    guideLauncher.onclick = () => {
+        currentStep = 0;
+        document.body.appendChild(guideOverlay);
+        document.body.appendChild(guidePopup);
+        updatePopup();
+    };
+
+    // Ensure the button is added to the body
+    document.body.appendChild(guideLauncher);
+
+    // Navigation clavier
+    document.addEventListener('keydown', (e) => {
+        if (!guidePopup.isConnected) return;
+
+        if (e.key === 'Escape') closeGuide();
+        if (e.key === 'ArrowLeft' && currentStep > 0) {
+            currentStep--;
+            updatePopup();
+        }
+        if (e.key === 'ArrowRight' && currentStep < steps.length - 1) {
+            currentStep++;
+            updatePopup();
+        }
+    });
+});
+</script>
+
+{% endblock %}
+
+{% block javascript %}
+    <!-- Add SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to refresh submissions list
+        function refreshSubmissionsList() {
+            fetch('{{ path('Front') }}')
+                .then(response => response.text())
+                .then(html => {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = html;
+                    const newContainer = tempDiv.querySelector('.card-container-sub');
+                    if (newContainer) {
+                        const currentContainer = document.querySelector('.card-container-sub');
+                        currentContainer.innerHTML = newContainer.innerHTML;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error refreshing submissions:', error);
+                });
+        }
+
+        const form = document.getElementById('submissionForm');
+        const submitBtn = document.getElementById('submitBtn');
+        let isSubmitting = false;
+
+        if (form) {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Prevent multiple submissions
+                if (isSubmitting) {
+                    return;
+                }
+                
+                isSubmitting = true;
+                submitBtn.disabled = true;
+                
+                try {
+                    const formData = new FormData(form);
+                    
+                    const response = await fetch('{{ path('Front_Submission_create') }}', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Reset form
+                        form.reset();
+                        
+                        // Refresh the submissions list
+                        refreshSubmissionsList();
+
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: result.message || 'Your submission has been created successfully.',
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        // Show error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: result.message || 'An error occurred while creating your submission.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'An unexpected error occurred. Please try again.',
+                        confirmButtonText: 'OK'
+                    });
+                } finally {
+                    // Reset submission state
+                    isSubmitting = false;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+
+        // Add event listeners for delete buttons
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.delete-icon')) {
+                e.preventDefault();
+                const form = e.target.closest('form');
+                if (form) {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(form.action, {
+                                method: 'POST',
+                                body: new FormData(form)
+                            })
+                            .then(response => response.json())
+                            .then(result => {
+                                if (result.success) {
+                                    const card = form.closest('.card');
+                                    if (card) {
+                                        card.remove();
+                                    }
+                                    Swal.fire(
+                                        'Deleted!',
+                                        'Your submission has been deleted.',
+                                        'success'
+                                    );
+                                } else {
+                                    Swal.fire(
+                                        'Error!',
+                                        result.message || 'Failed to delete submission',
+                                        'error'
+                                    );
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                Swal.fire(
+                                    'Error!',
+                                    'An error occurred while deleting the submission',
+                                    'error'
+                                );
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    });
+    </script>
+
+        <!-- Add the Google Translate API script -->
+
+
+{% endblock %}

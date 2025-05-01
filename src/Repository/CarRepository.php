@@ -214,6 +214,14 @@ class CarRepository extends ServiceEntityRepository
         ->getQuery()
         ->getSingleColumnResult();
     }
+    public function findOneByVinCode(string $vinCode): ?Car
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.vinCode = :vinCode')
+            ->setParameter('vinCode', $vinCode)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
     //    /**
     //     * @return Car[] Returns an array of Car objects

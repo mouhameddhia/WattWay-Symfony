@@ -59,18 +59,7 @@ class TwigExtraConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
     */
     public function html(array $value = []): \Symfony\Config\TwigExtra\HtmlConfig
     {
-<<<<<<< HEAD
-        if (!\is_array($value)) {
-            $this->_usedProperties['html'] = true;
-            $this->html = $value;
-
-            return $this;
-        }
-
-        if (!$this->html instanceof \Symfony\Config\TwigExtra\HtmlConfig) {
-=======
         if (null === $this->html) {
->>>>>>> WarehouseManagement
             $this->_usedProperties['html'] = true;
             $this->html = new \Symfony\Config\TwigExtra\HtmlConfig($value);
         } elseif (0 < \func_num_args()) {

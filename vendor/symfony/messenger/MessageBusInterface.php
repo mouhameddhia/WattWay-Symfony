@@ -11,7 +11,6 @@
 
 namespace Symfony\Component\Messenger;
 
-use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\Stamp\StampInterface;
 
 /**
@@ -24,8 +23,6 @@ interface MessageBusInterface
      *
      * @param object|Envelope  $message The message or the message pre-wrapped in an envelope
      * @param StampInterface[] $stamps
-     *
-     * @throws ExceptionInterface
      */
     public function dispatch(object $message, array $stamps = []): Envelope;
 }

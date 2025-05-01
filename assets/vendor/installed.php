@@ -9,12 +9,11 @@
     array (
     ),
   ),
-  'chart.js' => 
+  '@hotwired/turbo' => 
   array (
-    'version' => '4.4.9',
+    'version' => '8.0.13',
     'dependencies' => 
     array (
-      0 => '@kurkle/color',
     ),
     'extraFiles' => 
     array (
@@ -30,9 +29,9 @@
     array (
     ),
   ),
-  '@hotwired/turbo' => 
+  'chart.js' => 
   array (
-    'version' => '8.0.13',
+    'version' => '3.9.1',
     'dependencies' => 
     array (
     ),

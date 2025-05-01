@@ -1,0 +1,21 @@
+{% extends 'backend/baseBack.html.twig' %}
+
+{% block title %}Edit Submission{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Edit Submission</h1>
+
+        {{ form_start(form) }}
+            {{ form_label(form.status) }}
+            {{ form_widget(form.status, {'attr': {'class': 'form-control mb-3'}}) }}
+
+            {{ form_label(form.urgencyLevel) }}
+            {{ form_widget(form.urgencyLevel, {'attr': {'class': 'form-control mb-3'}}) }}
+
+            <button type="submit" class="btn btn-primary">Update</button>
+        {{ form_end(form) }}
+
+        <a href="{{ path('app_submission_index') }}" class="btn btn-secondary mt-3">Back to list</a>
+    </div>
+{% endblock %}

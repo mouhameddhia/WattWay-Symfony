@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\FormAddCarType;
 use App\Entity\Car;
 use App\Entity\Bill;
+use App\Entity\Submission;
 use App\Form\FormUpdateBillType;
 use App\Repository\BillRepository;
 use App\Repository\UserRepository;
@@ -18,7 +19,10 @@ use App\Repository\WarehouseRepository;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use App\Form\AddCarFormType;
+use App\Form\FrontSubmissionType;
 use App\Repository\FeedbackRepository;
+use App\Repository\ResponseRepository;
+use App\Repository\SubmissionRepository;
 use App\Service\PDFService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -30,7 +34,7 @@ use SendGrid\Mail\Mail;
 class FrontController extends AbstractController
 {
     #[Route('/Front', name: 'Front')]
-    public function index(PDFService $pdfService, HttpClientInterface $client, FeedbackRepository $feedbackRepository, SluggerInterface $slugger, CarRepository $carRepository, BillRepository $billRepository, UserRepository $userRepository , WarehouseRepository $warehouseRepository, ManagerRegistry $doctrine, Request $request): Response
+    public function index(SubmissionRepository $submissionRepository, ResponseRepository $responseRepository,PDFService $pdfService, HttpClientInterface $client, FeedbackRepository $feedbackRepository, SluggerInterface $slugger, CarRepository $carRepository, BillRepository $billRepository, UserRepository $userRepository , WarehouseRepository $warehouseRepository, ManagerRegistry $doctrine, Request $request): Response
     {
         // CAR CONTROLLER
         $car = new Car();
@@ -211,7 +215,30 @@ class FrontController extends AbstractController
         }
         // FEEDBACK CONTROLLER
         $feedbacks = $feedbackRepository->findLatestFeedbacks(5); // Get 5 latest feedbacks
+        //SUBMISSION CONTROLLER
+        $submissions = $submissionRepository->findAll();
+        $submissionsWithResponses = [];
+        
+        foreach ($submissions as $submission) {
+            $responses = $responseRepository->findBySubmissionId($submission->getIdSubmission());
+            $submissionsWithResponses[] = [
+                'idSubmission' => $submission->getIdSubmission(),
+                'status' => $submission->getStatus(),
+                'urgencyLevel' => $submission->getUrgencyLevel(),
+                'description' => $submission->getDescription(),
+                'dateSubmission' => $submission->getDateSubmission(),
+                'preferredContactMethod' => $submission->getPreferredContactMethod(),
+                'preferredAppointmentDate' => $submission->getPreferredAppointmentDate(),
+                'responses' => $responses
+            ];
+        }
+
+        $submission = new Submission();
+        $formSubmission = $this->createForm(FrontSubmissionType::class, $submission);
+
         return $this->render('frontend/baseFront.html.twig', [
+            'submissions' => $submissionsWithResponses,
+            'formSubmission' => $formSubmission->createView(),
             'cars' =>$cars,
             'maximumCarPrice'=>$carRepository->maxPriceCar(),
             'minimumCarPrice'=>$carRepository->minPriceCar(),

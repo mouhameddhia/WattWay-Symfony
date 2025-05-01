@@ -3,3 +3,10 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+submission_controller:
+    resource: ../src/Controller/submission/
+    type: attribute
+    prefix: /dashboard/submission
+    name_prefix: app_submission_
+    exclude: ../src/Controller/submission/FrontController.php

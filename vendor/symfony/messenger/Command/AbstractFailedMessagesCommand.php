@@ -45,11 +45,17 @@ abstract class AbstractFailedMessagesCommand extends Command
 {
     protected const DEFAULT_TRANSPORT_OPTION = 'choose';
 
-    public function __construct(
-        private ?string $globalFailureReceiverName,
-        protected ServiceProviderInterface $failureTransports,
-        protected ?PhpSerializer $phpSerializer = null,
-    ) {
+    protected ServiceProviderInterface $failureTransports;
+    protected ?PhpSerializer $phpSerializer;
+
+    private ?string $globalFailureReceiverName;
+
+    public function __construct(?string $globalFailureReceiverName, ServiceProviderInterface $failureTransports, ?PhpSerializer $phpSerializer = null)
+    {
+        $this->failureTransports = $failureTransports;
+        $this->globalFailureReceiverName = $globalFailureReceiverName;
+        $this->phpSerializer = $phpSerializer;
+
         parent::__construct();
     }
 

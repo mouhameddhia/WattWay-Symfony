@@ -28,17 +28,18 @@ use Symfony\Contracts\Service\ResetInterface;
 class RouteProcessor implements EventSubscriberInterface, ResetInterface
 {
     private array $routeData = [];
+    private bool $includeParams;
 
-    public function __construct(
-        private bool $includeParams = true,
-    ) {
+    public function __construct(bool $includeParams = true)
+    {
+        $this->includeParams = $includeParams;
         $this->reset();
     }
 
-    public function __invoke(LogRecord $record): LogRecord
+    public function __invoke(array|LogRecord $record): array|LogRecord
     {
-        if ($this->routeData && !isset($record->extra['requests'])) {
-            $record->extra['requests'] = array_values($this->routeData);
+        if ($this->routeData && !isset($record['extra']['requests'])) {
+            $record['extra']['requests'] = array_values($this->routeData);
         }
 
         return $record;

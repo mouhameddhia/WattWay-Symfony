@@ -1,0 +1,59 @@
+{% extends 'backend/baseBack.html.twig' %}
+
+
+{% block title %}Submission{% endblock %}
+
+{% block content %}
+    <h1>Submission</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>IdSubmission</th>
+                <td>{{ submission.idSubmission }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ submission.description }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ submission.status }}</td>
+            </tr>
+            <tr>
+                <th>UrgencyLevel</th>
+                <td>{{ submission.urgencyLevel }}</td>
+            </tr>
+            <tr>
+                <th>DateSubmission</th>
+                <td>{{ submission.dateSubmission ? submission.dateSubmission|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>IdCar</th>
+                <td>{{ submission.idCar }}</td>
+            </tr>
+            <tr>
+                <th>IdUser</th>
+                <td>{{ submission.idUser }}</td>
+            </tr>
+            <tr>
+                <th>Last_modified</th>
+                <td>{{ submission.lastModified ? submission.lastModified|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>PreferredContactMethod</th>
+                <td>{{ submission.preferredContactMethod }}</td>
+            </tr>
+            <tr>
+                <th>PreferredAppointmentDate</th>
+                <td>{{ submission.preferredAppointmentDate ? submission.preferredAppointmentDate|date('Y-m-d') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_submission_index') }}">back to list</a>
+
+    <a href="{{ path('app_submission_edit', {'idSubmission': submission.idSubmission}) }}">edit</a>
+
+    {{ include('backend/submission/_delete_form.html.twig') }}
+{% endblock %}
