@@ -17,9 +17,9 @@ class PDFService
     public function __construct(HttpClientInterface $client)
     {
         $this->client = $client;
-        $this->apiKey = "2f2641bd9ee356b6d5bf032cabb5bcec35c4685548c841a2df483f3cf23b8dd3";
-        $this->apiSecret = "7a2100a2d807bc0bcd1b48067b9d72321a57b49041de35be24a670abf3775649";
-        $this->templateId = 1389131;
+        $this->apiKey = $_ENV['PDFGENERATORAPI_API_KEY'];
+        $this->apiSecret = $_ENV['PDFGENERATORAPI_API_SECRET'];
+        $this->templateId = $_ENV['PDFGENERATORAPI_TEMPLATE_ID'];
     }
 
     private function generateJWT(): string

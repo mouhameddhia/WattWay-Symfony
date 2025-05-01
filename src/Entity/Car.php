@@ -137,6 +137,22 @@ class Car
         return $this;
     }
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'cars')]
+    #[ORM\JoinColumn(name: 'idUser', referencedColumnName: 'idUser')]
+    #[Groups(['car:read'])]
+    private ?User $user = null;
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+
     #[ORM\Column(type: 'string', nullable: true , name: 'imgCar')]
     #[Groups(['car:read'])]
     private ?string $imgCar = null;

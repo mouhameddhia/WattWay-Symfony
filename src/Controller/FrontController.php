@@ -154,6 +154,7 @@ class FrontController extends AbstractController
             $car->setStatusCar('under repair');
             $car->setPriceCar(0);
             $car->setWarehouse($warehouseRepository->find(69));
+            $car->setUser($userRepository->getLoggedInUser($this->getUser()->getUserIdentifier()));
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);

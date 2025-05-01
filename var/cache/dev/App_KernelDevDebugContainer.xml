@@ -107,6 +107,9 @@
     <parameter key="warehouse_images_directory">C:\Users\harou\WarehouseManagement/public/images/Warehouse</parameter>
     <parameter key="sendgrid.api_key">%env(SENDGRID_API_KEY)%</parameter>
     <parameter key="sendgrid.template_id">%env(SENDGRID_TEMPLATE_ID)%</parameter>
+    <parameter key="pdfgeneratorapi.api_key">%env(PDFGENERATORAPI_API_KEY)%</parameter>
+    <parameter key="pdfgeneratorapi.api_secret">%env(PDFGENERATORAPI_API_SECRET)%</parameter>
+    <parameter key="pdfgeneratorapi.template_id">%env(PDFGENERATORAPI_TEMPLATE_ID)%</parameter>
     <parameter key="event_dispatcher.event_aliases" type="collection">
       <parameter key="Symfony\Component\Console\Event\ConsoleCommandEvent">console.command</parameter>
       <parameter key="Symfony\Component\Console\Event\ConsoleErrorEvent">console.error</parameter>
