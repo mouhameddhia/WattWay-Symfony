@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Electrolize&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #132EC2;
+            --dark-blue: #0A1F44;
+            --light-blue: #3A4FE4;
+            --white: #FFFFFF;
+            --electric-blue: #00C8FF;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark-blue) 0%, #001a33 100%);
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--white);
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .email-card {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(10, 31, 68, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            text-align: center;
+        }
+        
+        .email-icon {
+            font-size: 60px;
+            color: var(--electric-blue);
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
+        }
+        
+        .email-content {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        
+        .email-link {
+            color: var(--electric-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .email-link:hover {
+            color: var(--white);
+            text-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--electric-blue);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="email-card">
+    <div class="email-icon">
+        <i class="fas fa-envelope-open-text"></i>
+    </div>
+    
+    <div class="email-content">
+        <p>If an account matching your email exists, we've sent a password reset link.</p>
+        <p>This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+    </div>
+    
+    <p>Didn't receive the email? Check your spam folder or <a href="{{ path('app_forgot_password_request') }}" class="email-link">try again</a>.</p>
+    
+    <a href="{{ path('app_login') }}" class="email-link back-link">
+        <i class="fas fa-arrow-left"></i> Back to login
+    </a>
+</div>
+{% endblock %}

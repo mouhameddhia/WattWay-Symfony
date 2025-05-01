@@ -450,6 +450,13 @@ select.ev-form-control::-ms-expand {
         background-color: var(--dark-blue);
     }
 }
+
+.header-generated-avatar,
+.ev-generated-avatar {
+    background-color: #f0f8ff; /* Light blue fallback */
+    padding: 2px; /* Adds breathing room */
+}
+
     </style>
 {% endblock %}
 
@@ -534,6 +541,18 @@ select.ev-form-control::-ms-expand {
             <button type="submit" class="ev-btn">
                 <i class="fas fa-save"></i> Save Changes
             </button>
+            <button id="enrollFaceBtn" class="btn btn-secondary">
+    <i class="fas fa-user-circle"></i> Enroll Face
+</button>
+
+
+
+
+
+
+
+
+
             
             <div class="ev-form-footer">
                 <a href="{{ path('Front') }}" class="text-link">
@@ -544,18 +563,19 @@ select.ev-form-control::-ms-expand {
     </div>
 
     <div class="ev-image-side">
-        <div class="ev-profile-pic-container">
-            {% if app.user.profilePicture %}
-                <img src="{{ asset(app.user.profilePicture) }}" class="ev-profile-pic" id="profile_pic_preview" alt="Profile Picture">
-            {% else %}
-                <div class="default-profile-pic">
-                    <i class="fas fa-user"></i>
-                </div>
-            {% endif %}
-            <label for="profile_picture_upload" class="ev-profile-upload">
-                <i class="fas fa-camera"></i>
-            </label>
-        </div>
+       <div class="ev-profile-pic-container">
+    {% if app.user.profilePicture %}
+        <img src="{{ asset(app.user.profilePicture) }}" class="ev-profile-pic" id="profile_pic_preview" alt="Profile Picture">
+    {% else %}
+        <img src="{{ defaultAvatar }}" 
+             class="ev-profile-pic ev-generated-avatar" 
+             id="profile_pic_preview" 
+             alt="Generated Avatar">
+    {% endif %}
+    <label for="profile_picture_upload" class="ev-profile-upload">
+        <i class="fas fa-camera"></i>
+    </label>
+</div>
 
         <div class="ev-feature-text"><i class="fas fa-user-shield"></i> Your information is secure</div>
         <div class="ev-feature-text"><i class="fas fa-credit-card"></i> Update payment methods</div>
@@ -571,36 +591,162 @@ select.ev-form-control::-ms-expand {
 
 {% block javascripts %}
     {{ parent() }}
+    
+    <!-- External scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
+     <style>
+        /* Add these new styles for the face enrollment modal */
+        .ev-face-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 31, 68, 0.95);
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+            color: var(--white);
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .ev-face-modal-content {
+            background: rgba(10, 31, 68, 0.9);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        .ev-face-modal h2 {
+            font-family: 'Electrolize', sans-serif;
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: var(--electric-blue);
+        }
+        
+        .ev-face-modal p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .ev-face-video-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 30px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border: 2px solid var(--primary-blue);
+        }
+        
+        .ev-face-video-container video {
+            width: 100%;
+            display: block;
+            background: #000;
+        }
+        
+        .ev-face-video-container canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .ev-face-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+        
+        .ev-face-message {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            font-size: 15px;
+        }
+        
+        .ev-face-message.success {
+            color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 3px solid #4CAF50;
+        }
+        
+        .ev-face-message.error {
+            color: var(--accent-orange);
+            background: rgba(255, 107, 53, 0.1);
+            border-left: 3px solid var(--accent-orange);
+        }
+        
+        .ev-face-message.loading {
+            color: var(--electric-blue);
+        }
+        
+        /* Style for the enroll face button */
+        #enrollFaceBtn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #4a00e0 0%, #8e2de2 100%);
+            border: none;
+            border-radius: 8px;
+            color: var(--white);
+            font-family: 'Electrolize', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(74, 0, 224, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        #enrollFaceBtn:hover {
+            background: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 0, 224, 0.4);
+        }
+        
+        #enrollFaceBtn i {
+            font-size: 18px;
+        }
+    </style>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Enhanced form interactions
+        document.addEventListener('DOMContentLoaded', async function() {
+            // ----------- FORM INTERACTIONS ------------
             const formGroups = document.querySelectorAll('.ev-form-group');
-            
             formGroups.forEach(group => {
                 const input = group.querySelector('.ev-form-control');
                 const label = group.querySelector('label');
-                
                 if (input && label) {
-                    // Add focus class to parent group
-                    input.addEventListener('focus', function() {
-                        group.classList.add('focused');
+                    input.addEventListener('focus', () => group.classList.add('focused'));
+                    input.addEventListener('blur', () => {
+                        if (!input.value) group.classList.remove('focused');
                     });
-                    
-                    input.addEventListener('blur', function() {
-                        if (!this.value) {
-                            group.classList.remove('focused');
-                        }
-                    });
-                    
-                    // Initialize focused state if input has value
-                    if (input.value) {
-                        group.classList.add('focused');
-                    }
+                    if (input.value) group.classList.add('focused');
                 }
             });
-            
-            // Profile picture preview
+
+            // ----------- PROFILE PICTURE PREVIEW ------------
             const profilePicUpload = document.getElementById('profile_picture_upload');
             if (profilePicUpload) {
                 profilePicUpload.addEventListener('change', function(event) {
@@ -624,13 +770,12 @@ select.ev-form-control::-ms-expand {
                     }
                 });
             }
-            
-            // Delete account button
+
+            // ----------- DELETE ACCOUNT ------------
             const deleteAccountBtn = document.getElementById('deleteAccountBtn');
             if (deleteAccountBtn) {
                 deleteAccountBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    
                     Swal.fire({
                         title: 'Are you sure?',
                         text: "You won't be able to revert this!",
@@ -677,6 +822,152 @@ select.ev-form-control::-ms-expand {
                             });
                         }
                     });
+                });
+            }
+
+            // ----------- FACE ENROLLMENT ------------
+            // Load face-api.js models
+            await faceapi.nets.tinyFaceDetector.loadFromUri('{{ asset('models') }}');
+            await faceapi.nets.faceLandmark68Net.loadFromUri('{{ asset('models') }}');
+            await faceapi.nets.faceRecognitionNet.loadFromUri('{{ asset('models') }}');
+
+            const enrollFaceBtn = document.getElementById('enrollFaceBtn');
+            if (enrollFaceBtn) {
+                enrollFaceBtn.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    
+                    try {
+                        // Create modal for face enrollment with new design
+                        const modalHtml = `
+                            <div class="ev-face-modal">
+                                <div class="ev-face-modal-content">
+                                    <h2><i class="fas fa-user-circle"></i> Face Enrollment</h2>
+                                    <p>Please position your face in the center of the frame under good lighting</p>
+                                    
+                                    <div class="ev-face-video-container">
+                                        <video id="video" autoplay muted playsinline></video>
+                                        <canvas id="canvas" style="display: none;"></canvas>
+                                    </div>
+                                    
+                                    <div class="ev-face-buttons">
+                                        <button id="captureBtn" class="ev-btn" style="width: auto; padding: 12px 30px;">
+                                            <i class="fas fa-camera"></i> Capture
+                                        </button>
+                                        <button id="cancelBtn" class="ev-btn" style="width: auto; padding: 12px 30px; background: var(--dark-blue);">
+                                            <i class="fas fa-times"></i> Cancel
+                                        </button>
+                                    </div>
+                                    
+                                    <div id="resultMessage" class="ev-face-message"></div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        document.body.insertAdjacentHTML('beforeend', modalHtml);
+                        
+                        const video = document.getElementById('video');
+                        const canvas = document.getElementById('canvas');
+                        const resultMessage = document.getElementById('resultMessage');
+                        
+                        // Start video stream with better constraints
+                        const stream = await navigator.mediaDevices.getUserMedia({ 
+                            video: {
+                                facingMode: 'user', // Front camera
+                                width: { ideal: 1280 },
+                                height: { ideal: 720 }
+                            },
+                            audio: false
+                        });
+                        
+                        video.srcObject = stream;
+                        await video.play();
+                        
+                        // Capture button handler
+                        document.getElementById('captureBtn').addEventListener('click', async function() {
+                            // Pause video for capture
+                            video.pause();
+                            resultMessage.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing face detection...';
+                            resultMessage.className = 'ev-face-message loading';
+                            
+                            // Draw video frame to canvas
+                            canvas.width = video.videoWidth;
+                            canvas.height = video.videoHeight;
+                            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                            
+                            try {
+                                // Detect face with better options
+                                const detections = await faceapi.detectSingleFace(
+                                    canvas,
+                                    new faceapi.TinyFaceDetectorOptions({
+                                        inputSize: 512, // Higher for better detection
+                                        scoreThreshold: 0.5
+                                    })
+                                )
+                                .withFaceLandmarks()
+                                .withFaceDescriptor();
+                                
+                                if (!detections) {
+                                    throw new Error('No face detected. Please ensure your face is clearly visible.');
+                                }
+                                
+                                // Show detection area for user feedback
+                                faceapi.draw.drawDetections(canvas, [detections]);
+                                faceapi.draw.drawFaceLandmarks(canvas, [detections]);
+                                canvas.style.display = 'block';
+                                
+                                // Convert descriptor
+                                const descriptorArray = Array.from(detections.descriptor);
+                                
+                                // Send to server
+                                const response = await fetch('{{ path('app_save_face_descriptor') }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    },
+                                    body: JSON.stringify({ 
+                                        descriptor: descriptorArray,
+                                        imageData: canvas.toDataURL('image/jpeg', 0.8) // For debugging
+                                    })
+                                });
+                                
+                                if (!response.ok) {
+                                    const error = await response.json();
+                                    throw new Error(error.message || 'Failed to save face data');
+                                }
+                                
+                                resultMessage.innerHTML = '<i class="fas fa-check-circle"></i> Face enrolled successfully! You can now use face recognition to login.';
+                                resultMessage.className = 'ev-face-message success';
+                                
+                                setTimeout(() => {
+                                    document.querySelector('.ev-face-modal').remove();
+                                    stream.getTracks().forEach(track => track.stop());
+                                }, 3000);
+                                
+                            } catch (error) {
+                                console.error('Face enrollment error:', error);
+                                resultMessage.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${error.message}`;
+                                resultMessage.className = 'ev-face-message error';
+                                video.play(); // Resume video
+                            }
+                        });
+                        
+                        // Cancel button handler
+                        document.getElementById('cancelBtn').addEventListener('click', function() {
+                            document.querySelector('.ev-face-modal').remove();
+                            stream.getTracks().forEach(track => track.stop());
+                        });
+                        
+                    } catch (error) {
+                        console.error('Camera access error:', error);
+                        Swal.fire({
+                            title: 'Camera Error',
+                            text: `Could not access camera: ${error.message}`,
+                            icon: 'error',
+                            background: '#0A1F44',
+                            color: '#FFFFFF'
+                        });
+                    }
                 });
             }
         });

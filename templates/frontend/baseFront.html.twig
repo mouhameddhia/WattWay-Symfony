@@ -77,14 +77,14 @@
     <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" style="padding-top: 0; padding-bottom: 0;">
         <span class="nav-username">{{ app.user.firstNameUser }} {{ app.user.lastNameUser }}</span>
         <div class="header-profile-container">
-            {% if app.user.profilePicture %}
-                <img src="{{ asset(app.user.profilePicture) }}" class="header-profile-pic" alt="Profile Picture">
-            {% else %}
-                <div class="header-default-profile">
-                    <i class="fa fa-user"></i>
-                </div>
-            {% endif %}
-        </div>
+    {% if app.user.profilePicture %}
+        <img src="{{ asset(app.user.profilePicture) }}" class="header-profile-pic" alt="Profile Picture">
+    {% else %}
+        <img src="{{ generate_avatar(app.user.emailUser, 80) }}" 
+             class="header-profile-pic header-generated-avatar" 
+             alt="Generated Avatar">
+    {% endif %}
+</div>
     </a>
     <ul class="dropdown-menu">
         <li><a href="{{ path('app_profile_edit') }}"><i class="fa fa-edit"></i> Edit Profile</a></li>
@@ -180,7 +180,19 @@
             width: 22px !important;
             height: 22px !important;
         }
+
+        
     }
+
+    .header-profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+}
 </style>
 {% endblock %}
 <!-- ************************************************************************************************************* -->

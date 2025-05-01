@@ -1,0 +1,52 @@
+{% extends 'backend/baseBack.html.twig' %}
+
+{% block content %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Ban User: {{ user.emailUser }}</h6>
+    </div>
+    <div class="card-body">
+        {{ form_start(form) }}
+            <div class="form-group">
+                {{ form_label(form.duration) }}
+                {{ form_widget(form.duration) }}
+            </div>
+            
+            <div class="form-group" id="customDateGroup">
+                {{ form_label(form.customDate) }}
+                {{ form_widget(form.customDate) }}
+            </div>
+            
+            <div class="form-group">
+                {{ form_label(form.reason) }}
+                {{ form_widget(form.reason) }}
+            </div>
+            
+            <button type="submit" class="btn btn-danger">Confirm Ban</button>
+            <a href="{{ path('user_list') }}" class="btn btn-secondary">Cancel</a>
+        {{ form_end(form) }}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function toggleCustomDate(value) {
+        const customDateGroup = document.getElementById('customDateGroup');
+        if (value === 'custom') {
+            customDateGroup.style.display = 'block';
+        } else {
+            customDateGroup.style.display = 'none';
+        }
+    }
+    
+    // Initialize on load
+    const durationSelect = document.querySelector('#form_duration');
+    toggleCustomDate(durationSelect.value);
+    
+    // Add event listener
+    durationSelect.addEventListener('change', function() {
+        toggleCustomDate(this.value);
+    });
+});
+</script>
+{% endblock %}

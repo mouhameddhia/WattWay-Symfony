@@ -11,6 +11,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\User\UserCheckerInterface;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'user')]
@@ -18,12 +20,14 @@ use Doctrine\Common\Collections\ArrayCollection;
     fields: ['emailUser'],
     message: 'This email is already in use.'
 )]
-class User implements UserInterface, PasswordAuthenticatedUserInterface 
+class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name:"idUser",type: 'integer')]
     private ?int $idUser = null;
+
+
 
     public function getIdUser(): ?int
     {
@@ -265,4 +269,124 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
         return $this;
     }
+
+    #[ORM\Column(name: "face_descriptor", type: 'json', nullable: true)]
+private ?array $faceDescriptor = null;
+
+public function getFaceDescriptor(): ?array
+{
+    return $this->faceDescriptor;
+}
+
+public function setFaceDescriptor(?array $faceDescriptor): self
+{
+    $this->faceDescriptor = $faceDescriptor;
+    return $this;
+}
+
+
+#[ORM\Column(name: "is_banned", type: "boolean", nullable: false, options: ["default" => false])]
+private bool $isBanned = false;
+
+#[ORM\Column(name: "ban_reason", type: "string", nullable: true)]
+private ?string $banReason = null;
+
+#[ORM\Column(name: "ban_until", type: "datetime", nullable: true)]
+private ?\DateTimeInterface $banUntil = null;
+
+
+
+public function isBanned(): bool
+{
+    // If not banned at all
+    if (!$this->isBanned) {
+        return false;
+    }
+
+    // If permanent ban
+    if (null === $this->banUntil) {
+        return true;
+    }
+
+    // Check if ban has expired
+    $now = new \DateTime();
+    if ($this->banUntil <= $now) {
+        $this->isBanned = false;
+        $this->banUntil = null;
+        $this->banReason = null;
+        return false;
+    }
+
+    return true;
+}
+public function setIsBanned(bool $isBanned): self
+{
+    $this->isBanned = $isBanned;
+    return $this;
+}
+
+public function getBanReason(): ?string
+{
+    return $this->banReason;
+}
+
+public function setBanReason(?string $banReason): self
+{
+    $this->banReason = $banReason;
+    return $this;
+}
+
+public function getBanUntil(): ?\DateTimeInterface
+{
+    return $this->banUntil;
+}
+
+public function setBanUntil(?\DateTimeInterface $banUntil): self
+{
+    $this->banUntil = $banUntil;
+    return $this;
+}
+
+
+public function getRemainingBanTime(): string
+{
+    if (!$this->isBanned() || null === $this->banUntil) {
+        return '';
+    }
+
+    $now = new \DateTime();
+    $interval = $now->diff($this->banUntil);
+    
+    return sprintf('%d days %d hours %d minutes', 
+        $interval->d, 
+        $interval->h, 
+        $interval->i
+    );
+}
+
+
+public function serialize()
+{
+    return serialize([
+        $this->idUser,
+        $this->emailUser,
+        $this->passwordUser,
+      
+    ]);
+}
+
+public function unserialize($serialized)
+{
+    $data = unserialize($serialized);
+    list(
+        $this->idUser,
+        $this->emailUser,
+        $this->passwordUser,
+        
+    ) = $data;
+}
+  
+
+    
+  
 }

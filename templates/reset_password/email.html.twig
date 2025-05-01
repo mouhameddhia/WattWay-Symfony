@@ -1,0 +1,23 @@
+<h1 style="color: #00C8FF; font-family: 'Electrolize', sans-serif; text-align: center;">Password Reset Request</h1>
+
+<div style="background: rgba(10, 31, 68, 0.1); padding: 20px; border-radius: 10px; border-left: 4px solid #00C8FF; margin: 20px 0;">
+    <p style="color: #333; line-height: 1.6;">To reset your password, please click the button below:</p>
+    
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="{{ url('app_reset_password', {token: resetToken.token}) }}" 
+           style="display: inline-block; padding: 12px 30px; background: linear-gradient(135deg, #132EC2 0%, #3A4FE4 100%); 
+                  color: white; text-decoration: none; border-radius: 8px; font-weight: 600; 
+                  box-shadow: 0 4px 15px rgba(19, 46, 194, 0.3);">
+            Reset Password
+        </a>
+    </div>
+    
+    <p style="color: #666; font-size: 14px; text-align: center;">
+        This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+    </p>
+</div>
+
+<div style="text-align: center; margin-top: 30px; color: #999; font-size: 14px;">
+    <p>If you didn't request a password reset, please ignore this email.</p>
+    <p>© {{ "now"|date("Y") }} WattWay. All rights reserved.</p>
+</div>

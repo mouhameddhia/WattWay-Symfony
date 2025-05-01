@@ -2,8 +2,8 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css?v={{ date().timestamp }}">
-    <link href="https://fonts.googleapis.com/css2?family=Electrolize&family=Montserrat:wght@300;400;500;600;700&display=swap&v={{ date().timestamp }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Electrolize&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-blue: #132EC2;
@@ -13,6 +13,9 @@
             --light-gray: #F5F7FA;
             --accent-orange: #FF6B35;
             --electric-blue: #00C8FF;
+            --neon-blue: #00F0FF;
+            --dark-gradient: linear-gradient(135deg, var(--dark-blue) 0%, #001a33 100%);
+            --button-gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 100%);
         }
         
         * {
@@ -22,30 +25,49 @@
         }
         
         body {
-            background: linear-gradient(135deg, var(--dark-blue) 0%, #001a33 100%);
+            background: var(--dark-gradient);
             font-family: 'Montserrat', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             color: var(--white);
-            background-image: url('https://images.unsplash.com/photo-1593941707882-a5bbbfd8b57a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
-            background-size: cover;
-            background-position: center;
-            background-blend-mode: multiply;
+            overflow: hidden;
+            position: relative;
+            line-height: 1.6;
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.7;
         }
         
         .ev-login-container {
             width: 100%;
-            max-width: 900px;
-            background: rgba(10, 31, 68, 0.9);
+            max-width: 1200px;
+            background: rgba(10, 31, 68, 0.92);
             backdrop-filter: blur(12px);
             border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
             overflow: hidden;
             display: flex;
+            height: 85vh;
+            max-height: 800px;
             min-height: 650px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(58, 79, 228, 0.2);
+            position: relative;
+            z-index: 10;
+            transition: all 0.4s ease;
+        }
+        
+        .ev-login-container:hover {
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            border-color: rgba(58, 79, 228, 0.3);
         }
         
         .ev-form-side {
@@ -53,67 +75,108 @@
             padding: 50px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             position: relative;
             z-index: 2;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--electric-blue) rgba(255, 255, 255, 0.1);
         }
         
-        .ev-image-side {
+        .ev-form-side::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .ev-form-side::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .ev-form-side::-webkit-scrollbar-thumb {
+            background-color: var(--electric-blue);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+        
+        .ev-form-side::-webkit-scrollbar-thumb:hover {
+            background-color: var(--neon-blue);
+        }
+        
+        .ev-3d-side {
             flex: 1;
-            background: url('https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80') center/cover;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .spline-container {
+            width: 100%;
+            height: 100%;
             position: relative;
         }
         
-        .ev-image-overlay {
+        spline-viewer {
+            width: 100%;
+            height: 100%;
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, rgba(19, 46, 194, 0.3), rgba(10, 31, 68, 0.9));
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 40px;
         }
         
         .ev-form-header {
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             text-align: center;
+            position: relative;
+            flex-shrink: 0;
         }
         
         .ev-form-header h2 {
-            font-family: 'Electrolize', sans-serif;
-            font-size: 32px;
+            font-family: sans-serif;
+            font-size: 34px;
             color: var(--white);
-            margin-bottom: 15px;
-            letter-spacing: 1px;
+            margin-bottom: 12px;
+            letter-spacing: 1.5px;
             font-weight: 600;
             position: relative;
             display: inline-block;
+            text-shadow: 0 2px 10px rgba(0, 200, 255, 0.3);
         }
         
         .ev-form-header h2::after {
             content: '';
             position: absolute;
-            bottom: -8px;
+            bottom: -10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 60px;
+            width: 70px;
             height: 3px;
             background: var(--electric-blue);
             border-radius: 3px;
+            box-shadow: 0 0 15px var(--electric-blue);
+            transition: all 0.3s ease;
+        }
+        
+        .ev-form-header:hover h2::after {
+            width: 80px;
+            box-shadow: 0 0 20px var(--electric-blue);
         }
         
         .ev-form-header p {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 15px;
-            margin-top: 10px;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 16px;
+            margin-top: 12px;
+            line-height: 1.6;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .ev-form-group {
-            margin-bottom: 25px;
+            margin-bottom: 22px;
             position: relative;
+            transition: all 0.3s ease;
         }
         
         .ev-form-group label {
@@ -122,62 +185,67 @@
             font-size: 14px;
             color: rgba(255, 255, 255, 0.9);
             font-weight: 500;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
         }
         
         .ev-form-control {
             width: 100%;
-            padding: 14px 18px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
+            padding: 15px 18px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
             color: var(--white);
             font-family: 'Montserrat', sans-serif;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             font-size: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         
         .ev-form-control::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 300;
         }
         
         .ev-form-control:focus {
             outline: none;
-            border-color: var(--primary-blue);
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 0 0 3px rgba(19, 46, 194, 0.2);
+            border-color: var(--electric-blue);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(0, 200, 255, 0.2), 0 6px 20px rgba(0, 0, 0, 0.15);
         }
         
         .ev-btn {
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 100%);
+            padding: 17px;
+            background: var(--button-gradient);
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             color: var(--white);
-            font-family: 'Electrolize', sans-serif;
+            font-family: sans-serif;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             text-transform: uppercase;
             letter-spacing: 1.5px;
             margin-top: 25px;
-            box-shadow: 0 4px 15px rgba(19, 46, 194, 0.3);
+            box-shadow: 0 8px 25px rgba(19, 46, 194, 0.5);
             position: relative;
             overflow: hidden;
+            z-index: 1;
         }
         
         .ev-btn:hover {
             background: linear-gradient(135deg, var(--light-blue) 0%, var(--primary-blue) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(19, 46, 194, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(19, 46, 194, 0.7);
         }
         
         .ev-btn:active {
             transform: translateY(0);
         }
         
-        .ev-btn::after {
+        .ev-btn::before {
             content: '';
             position: absolute;
             top: 0;
@@ -186,21 +254,126 @@
             height: 100%;
             background: linear-gradient(90deg, 
                       rgba(255,255,255,0) 0%, 
-                      rgba(255,255,255,0.2) 50%, 
+                      rgba(255,255,255,0.3) 50%, 
+                      rgba(255,255,255,0) 100%);
+            transform: translateX(-100%);
+            transition: transform 0.7s ease;
+            z-index: -1;
+        }
+        
+        .ev-btn:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .form-divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+        
+        .form-divider::before,
+        .form-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-divider::before {
+            margin-right: 15px;
+        }
+        
+        .form-divider::after {
+            margin-left: 15px;
+        }
+        
+        .social-login {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .btn-social {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 0 5px;
+        }
+        
+        .btn-social:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .btn-social i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .btn-google {
+            background: white;
+            color: #5F6368;
+            border: 1px solid #DADCE0;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-google:hover {
+            background: #F8F9FA;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .btn-google i {
+            background: conic-gradient(
+                from -45deg, 
+                #EA4335 110deg, 
+                #FBBC05 110deg 180deg, 
+                #34A853 180deg 270deg, 
+                #4285F4 270deg
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .btn-google::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                      rgba(255,255,255,0) 0%, 
+                      rgba(255,255,255,0.3) 50%, 
                       rgba(255,255,255,0) 100%);
             transform: translateX(-100%);
             transition: transform 0.6s ease;
         }
         
-        .ev-btn:hover::after {
+        .btn-google:hover::before {
             transform: translateX(100%);
         }
         
         .ev-form-footer {
-            margin-top: 25px;
+            margin-top: 20px;
             text-align: center;
             font-size: 15px;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.75);
+            flex-shrink: 0;
         }
         
         .ev-form-footer a {
@@ -208,35 +381,29 @@
             text-decoration: none;
             font-weight: 600;
             transition: all 0.2s ease;
+            position: relative;
         }
         
         .ev-form-footer a:hover {
             color: var(--white);
-            text-decoration: underline;
         }
         
-        .ev-feature-text {
-            font-size: 18px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            transition: all 0.3s ease;
+        .ev-form-footer a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--electric-blue);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
         }
         
-        .ev-feature-text:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(5px);
-        }
-        
-        .ev-feature-text i {
-            margin-right: 15px;
-            color: var(--electric-blue);
-            font-size: 20px;
-            min-width: 25px;
-            text-align: center;
+        .ev-form-footer a:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
         }
         
         .ev-logo {
@@ -244,16 +411,22 @@
             height: auto;
             margin: 0 auto 25px;
             display: block;
-            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+            filter: drop-shadow(0 2px 10px rgba(0, 200, 255, 0.6));
+            transition: all 0.4s ease;
+        }
+        
+        .ev-logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 2px 15px rgba(0, 200, 255, 0.8));
         }
         
         .alert-danger {
             color: var(--accent-orange);
-            font-size: 0.9rem;
-            padding: 15px;
+            font-size: 0.85rem;
+            padding: 12px 15px;
             background: rgba(255, 107, 53, 0.1);
             border-left: 3px solid var(--accent-orange);
-            border-radius: 0 6px 6px 0;
+            border-radius: 0 8px 8px 0;
             margin-bottom: 25px;
             display: flex;
             align-items: center;
@@ -262,7 +435,7 @@
         .alert-danger:before {
             content: "⚠";
             margin-right: 10px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
         
         .checkbox {
@@ -285,118 +458,634 @@
             accent-color: var(--primary-blue);
         }
         
-        @media (max-width: 768px) {
+        .forgot-password {
+            display: block;
+            text-align: right;
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--electric-blue);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .forgot-password:hover {
+            color: var(--white);
+            text-decoration: underline;
+        }
+        
+        /* Floating label effect */
+        .ev-form-group.focused label {
+            color: var(--electric-blue);
+            text-shadow: 0 0 8px rgba(0, 200, 255, 0.3);
+        }
+        
+        /* Face Login Button */
+        .face-login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--electric-blue) 0%, var(--neon-blue) 100%);
+            border: none;
+            border-radius: 10px;
+            color: var(--white);
+            font-family: sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(0, 200, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .face-login-btn:hover {
+            background: linear-gradient(135deg, var(--neon-blue) 0%, var(--electric-blue) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 200, 255, 0.4);
+        }
+        
+        .face-login-btn i {
+            font-size: 18px;
+        }
+        
+        /* Ban Notification Styles */
+        .ev-ban-notification {
+            background: rgba(255, 107, 53, 0.15);
+            border-left: 4px solid var(--accent-orange);
+            border-radius: 0 8px 8px 0;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.1);
+        }
+        
+        .ev-ban-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: var(--accent-orange);
+        }
+        
+        .ev-ban-header i {
+            font-size: 24px;
+            margin-right: 12px;
+        }
+        
+        .ev-ban-header h3 {
+            font-size: 20px;
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .ev-ban-content {
+            padding-left: 36px;
+        }
+        
+        .ev-ban-reason, .ev-ban-time-left, .ev-ban-expires {
+            margin-bottom: 12px;
+        }
+        
+        .ev-ban-reason strong, .ev-ban-time-left strong, .ev-ban-expires strong {
+            display: block;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+        
+        .ev-ban-reason p, .ev-ban-time-left p, .ev-ban-expires p {
+            margin: 0;
+            font-size: 15px;
+        }
+        
+        .ev-ban-timer {
+            display: flex;
+            gap: 30px;
+            margin-top: 15px;
+        }
+        
+        .ev-ban-permanent {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            color: var(--accent-orange);
+        }
+        
+        .ev-ban-permanent i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .ev-ban-footer {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 107, 53, 0.3);
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
             .ev-login-container {
                 flex-direction: column;
                 max-width: 95%;
+                height: auto;
                 min-height: auto;
+                max-height: 90vh;
+                margin: 30px 0;
+            }
+            
+            .ev-3d-side {
+                height: 300px;
+                order: -1;
             }
             
             .ev-form-side {
                 padding: 40px 30px;
             }
             
-            .ev-image-side {
-                display: none;
+            .social-login {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn-social {
+                width: 100%;
+                margin: 5px 0;
             }
         }
+        
+        @media (max-width: 576px) {
+            .ev-form-side {
+                padding: 30px 25px;
+            }
+            
+            .ev-form-header h2 {
+                font-size: 28px;
+            }
+            
+            .ev-form-control {
+                padding: 14px 16px;
+            }
+            
+            .ev-logo {
+                max-width: 180px;
+            }
+        }
+
+        /* Face Login Modal Styles */
+        .ev-face-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 31, 68, 0.95);
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+            color: var(--white);
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .ev-face-modal-content {
+            background: rgba(10, 31, 68, 0.9);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        .ev-face-modal h2 {
+            font-family:rsans-serif;
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: var(--electric-blue);
+            text-shadow: 0 2px 10px rgba(0, 200, 255, 0.3);
+        }
+        
+        .ev-face-modal p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .ev-face-video-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 30px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border: 2px solid var(--primary-blue);
+        }
+        
+        .ev-face-video {
+            width: 100%;
+            display: block;
+            background: #000;
+        }
+        
+        .ev-face-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .ev-face-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+        
+        .ev-face-message {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            font-size: 15px;
+        }
+        
+        .ev-face-message.success {
+            color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 3px solid #4CAF50;
+        }
+        
+        .ev-face-message.error {
+            color: var(--accent-orange);
+            background: rgba(255, 107, 53, 0.1);
+            border-left: 3px solid var(--accent-orange);
+        }
+        
+        .ev-face-message.loading {
+            color: var(--electric-blue);
+        }
+
+
+
+        
     </style>
 {% endblock %}
 
 {% block body %}
+<!-- Floating particles background -->
+<div class="particles" id="particles-js"></div>
+
 <div class="ev-login-container">
+    <div class="ev-3d-side">
+        <div class="spline-container">
+            <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
+            <spline-viewer url="https://prod.spline.design/FXGvulwJKqkeZsfv/scene.splinecode"></spline-viewer>
+        </div>
+        <div class="model-overlay"></div>
+    </div>
+
     <div class="ev-form-side">
         <div class="ev-form-header">
             <img src="{{ asset('back/img/img.png') }}" alt="Wattway" class="ev-logo">
             <h2>Welcome Back</h2>
-            <p>Sign in to your EV account</p>
+            <p>Sign in to your EV account to continue your sustainable journey</p>
         </div>
-        
-        {% if error %}
-            <div class="alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+
+        {% if banned_user is defined and banned_user %}
+            <div class="ev-ban-notification">
+                <div class="ev-ban-header">
+                    <i class="fas fa-ban"></i>
+                    <h3>Account Restricted</h3>
+                </div>
+                <div class="ev-ban-content">
+                    <div class="ev-ban-reason">
+                        <strong>Reason:</strong>
+                        <p>{{ banned_user.banReason }}</p>
+                    </div>
+                    
+                    {% if banned_user.banUntil %}
+                        <div class="ev-ban-timer">
+                            <div class="ev-ban-time-left">
+                                <strong>Time remaining:</strong>
+                                <p>{{ banned_user.getRemainingBanTime() }}</p>
+                            </div>
+                            <div class="ev-ban-expires">
+                                <strong>Ban will be lifted:</strong>
+                                <p>{{ banned_user.banUntil|date('F j, Y \\a\\t g:i A') }}</p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="ev-ban-permanent">
+                            <i class="fas fa-lock"></i>
+                            <p>This restriction is permanent.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="ev-ban-footer">
+                    <p>If you believe this is a mistake, please contact support.</p>
+                </div>
+            </div>
+        {% elseif error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
         {% endif %}
-        
+
         <form method="post" class="ev-login-form">
             <div class="ev-form-group">
                 <label for="username">Email Address</label>
                 <input type="email" value="{{ last_username }}" name="_username" id="username" 
-                       class="ev-form-control" placeholder="Enter your email" autocomplete="email" required autofocus>
+                       class="ev-form-control" placeholder="your.email@example.com" autocomplete="email" required autofocus>
             </div>
-            
+
             <div class="ev-form-group">
                 <label for="password">Password</label>
-                <input type="password" name="_password" id="password" 
-                       class="ev-form-control" placeholder="Enter your password" autocomplete="current-password" required>
-            </div>
-            
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-            
-            <div class="ev-form-group">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="_remember_me"> Remember me
-                    </label>
+                <div style="position: relative;">
+                    <input type="password" name="_password" id="password" 
+                           class="ev-form-control" placeholder="Enter your password" autocomplete="current-password" required>
+                    <i class="fas fa-eye password-toggle" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: rgba(255,255,255,0.6);"></i>
                 </div>
+                <a href="{{ path('app_forgot_password_request') }}" class="forgot-password">Forgot your password?</a>
             </div>
-            
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <div class="ev-form-group">
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" name="_remember_me" checked> Remember me
+        </label>
+    </div>
+</div>
+
             <button type="submit" class="ev-btn">
                 Sign In <i class="fas fa-arrow-right"></i>
             </button>
+
+            <div class="form-divider">OR</div>
+
+            <div class="social-login">
+                <a href="{{ path('connect_google_start') }}" class="btn-social btn-google">
+                    <i class="fab fa-google"></i> Continue with Google
+                </a>
+            </div>
+
+            <button type="button" id="faceLoginBtn" class="face-login-btn">
+                <i class="fas fa-user-circle"></i> Login with Face Recognition
+            </button>
         </form>
-        
+
         <div class="ev-form-footer">
             Don't have an account? <a href="{{ path('app_register') }}">Create one now</a>
         </div>
     </div>
-    
-    <div class="ev-image-side">
-        <div class="ev-image-overlay">
-            <div class="ev-feature-text"><i class="fas fa-car"></i> Access your EV rentals</div>
-            <div class="ev-feature-text"><i class="fas fa-calendar-check"></i> Manage bookings</div>
-            <div class="ev-feature-text"><i class="fas fa-charging-station"></i> View charging history</div>
-            <div class="ev-feature-text"><i class="fas fa-user-shield"></i> Secure account</div>
-        </div>
-    </div>
 </div>
+
+<script>
+// Password toggle functionality
+document.querySelectorAll('.password-toggle').forEach(icon => {
+    icon.addEventListener('click', function() {
+        const input = this.previousElementSibling;
+        if (input.type === 'password') {
+            input.type = 'text';
+            this.classList.remove('fa-eye');
+            this.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            this.classList.remove('fa-eye-slash');
+            this.classList.add('fa-eye');
+        }
+    });
+});
+</script>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Enhanced form interactions
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Initialize particles.js
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": { "value": 70, "density": { "enable": true, "value_area": 1000 }},
+                    "color": { "value": "#00C8FF" },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.3, "random": true, "anim": { "enable": true, "speed": 1 }},
+                    "size": { "value": 3, "random": true, "anim": { "enable": true, "speed": 2 }},
+                    "line_linked": { "enable": true, "distance": 150, "color": "#00C8FF", "opacity": 0.2, "width": 1 },
+                    "move": { "enable": true, "speed": 1.5, "random": true, "out_mode": "out", "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 }}
+                },
+                "interactivity": {
+                    "events": {
+                        "onhover": { "enable": true, "mode": "grab" },
+                        "onclick": { "enable": true, "mode": "push" }
+                    },
+                    "modes": {
+                        "grab": { "distance": 150, "line_linked": { "opacity": 0.3 }},
+                        "push": { "particles_nb": 4 }
+                    }
+                },
+                "retina_detect": true
+            });
+
+            // Form interactions
             const formGroups = document.querySelectorAll('.ev-form-group');
-            
             formGroups.forEach(group => {
                 const input = group.querySelector('.ev-form-control');
                 const label = group.querySelector('label');
-                
                 if (input && label) {
-                    // Add focus class to parent group
-                    input.addEventListener('focus', function() {
-                        group.classList.add('focused');
-                    });
+                    input.addEventListener('focus', () => group.classList.add('focused'));
+                    input.addEventListener('blur', () => { if (!input.value) group.classList.remove('focused'); });
+                    if (input.value) group.classList.add('focused');
+                }
+            });
+
+            // Load face-api.js models first
+            try {
+                await faceapi.nets.tinyFaceDetector.loadFromUri('{{ asset('models') }}');
+                await faceapi.nets.faceLandmark68Net.loadFromUri('{{ asset('models') }}');
+                await faceapi.nets.faceRecognitionNet.loadFromUri('{{ asset('models') }}');
+                console.log('FaceAPI models loaded successfully');
+            } catch (error) {
+                console.error('Failed to load face recognition models:', error);
+                showError('Face recognition system failed to load. Please refresh the page.');
+                return;
+            }
+
+            // Face login button handler with enhanced design
+            document.getElementById('faceLoginBtn')?.addEventListener('click', async function(e) {
+                e.preventDefault();
+                
+                // Create modal with new design
+                const modalHtml = `
+                <div class="ev-face-modal">
+                    <div class="ev-face-modal-content">
+                        <h2><i class="fas fa-user-circle"></i> Face Recognition Login</h2>
+                        <p>Position your face in the center of the frame under good lighting</p>
+                        
+                        <div class="ev-face-video-container">
+                            <video id="loginVideo" class="ev-face-video" autoplay muted playsinline></video>
+                            <canvas id="loginCanvas" class="ev-face-canvas" style="display: none;"></canvas>
+                        </div>
+                        
+                        <div class="ev-face-buttons">
+                            <button id="captureFaceBtn" class="ev-btn" style="width: auto; padding: 12px 30px;">
+                                <i class="fas fa-camera"></i> Capture
+                            </button>
+                            <button id="cancelFaceLoginBtn" class="ev-btn" style="width: auto; padding: 12px 30px; background: var(--dark-blue);">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                        
+                        <div id="faceLoginMessage" class="ev-face-message"></div>
+                    </div>
+                </div>`;
+                
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                const modal = document.querySelector('.ev-face-modal');
+                const video = document.getElementById('loginVideo');
+                const canvas = document.getElementById('loginCanvas');
+                const message = document.getElementById('faceLoginMessage');
+                const captureBtn = document.getElementById('captureFaceBtn');
+                const cancelBtn = document.getElementById('cancelFaceLoginBtn');
+
+                let stream = null;
+
+                try {
+                    // Start camera
+                    message.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting camera...';
+                    message.className = 'ev-face-message loading';
                     
-                    input.addEventListener('blur', function() {
-                        if (!this.value) {
-                            group.classList.remove('focused');
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: {
+                            facingMode: 'user',
+                            width: { ideal: 640 },
+                            height: { ideal: 480 }
                         }
                     });
                     
-                    // Initialize focused state if input has value
-                    if (input.value) {
-                        group.classList.add('focused');
-                    }
+                    video.srcObject = stream;
+                    await video.play();
+                    
+                    message.innerHTML = '<i class="fas fa-check-circle"></i> Ready - Center your face in the frame';
+                    message.className = 'ev-face-message';
+
+                    // Capture button handler
+                    captureBtn.addEventListener('click', async function() {
+                        try {
+                            message.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing face recognition...';
+                            message.className = 'ev-face-message loading';
+                            captureBtn.disabled = true;
+                            
+                            // Capture image
+                            canvas.width = video.videoWidth;
+                            canvas.height = video.videoHeight;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                            
+                            // Detect face
+                            const detections = await faceapi.detectSingleFace(
+                                canvas,
+                                new faceapi.TinyFaceDetectorOptions({
+                                    inputSize: 512,
+                                    scoreThreshold: 0.3
+                                })
+                            )
+                            .withFaceLandmarks()
+                            .withFaceDescriptor();
+
+                            if (!detections) {
+                                throw new Error('No face detected. Please ensure your face is clearly visible.');
+                            }
+
+                            // Show detection area for user feedback
+                            faceapi.draw.drawDetections(canvas, [detections]);
+                            faceapi.draw.drawFaceLandmarks(canvas, [detections]);
+                            canvas.style.display = 'block';
+                            
+                            // Send descriptor for authentication
+                            const response = await fetch('{{ path("api_face_login") }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                },
+                                credentials: 'include',
+                                body: JSON.stringify({
+                                    descriptor: Array.from(detections.descriptor),
+                                    imageData: canvas.toDataURL('image/jpeg', 0.8) // For debugging
+                                })
+                            });
+
+                            const data = await response.json();
+                            
+                            if (!response.ok || !data.success) {
+                                throw new Error(data.error || 'Authentication failed. Please try again or use another login method.');
+                            }
+
+                            // Success message
+                            message.innerHTML = '<i class="fas fa-check-circle"></i> Face recognized! Logging you in...';
+                            message.className = 'ev-face-message success';
+                            
+                            // Redirect on success
+                            setTimeout(() => {
+                                window.location.href = data.redirect || '{{ path("Front") }}';
+                            }, 1500);
+                            
+                        } catch (error) {
+                            console.error('Face login error:', error);
+                            message.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${error.message}`;
+                            message.className = 'ev-face-message error';
+                            setTimeout(() => {
+                                message.innerHTML = '<i class="fas fa-user-circle"></i> Please try again';
+                                message.className = 'ev-face-message';
+                            }, 3000);
+                        } finally {
+                            captureBtn.disabled = false;
+                        }
+                    });
+
+                } catch (error) {
+                    console.error('Camera error:', error);
+                    message.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${error.message || 'Could not access camera'}`;
+                    message.className = 'ev-face-message error';
                 }
+
+                // Cancel button
+                cancelBtn.addEventListener('click', () => {
+                    if (stream) stream.getTracks().forEach(track => track.stop());
+                    modal.remove();
+                });
             });
-            
-            // Animate the button on load
-            const loginBtn = document.querySelector('.ev-btn');
-            if (loginBtn) {
-                setTimeout(() => {
-                    loginBtn.style.opacity = '1';
-                    loginBtn.style.transform = 'translateY(0)';
-                }, 300);
+
+            // Helper functions
+            function showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.style.position = 'fixed';
+                errorDiv.style.top = '20px';
+                errorDiv.style.left = '50%';
+                errorDiv.style.transform = 'translateX(-50%)';
+                errorDiv.style.backgroundColor = '#FF5555';
+                errorDiv.style.color = 'white';
+                errorDiv.style.padding = '15px';
+                errorDiv.style.borderRadius = '5px';
+                errorDiv.style.zIndex = '10000';
+                errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+                document.body.appendChild(errorDiv);
+                setTimeout(() => errorDiv.remove(), 5000);
             }
         });
     </script>

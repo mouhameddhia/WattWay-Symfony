@@ -8,10 +8,21 @@
         {% endblock %}
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
+  
+
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        {% block body %}
+        <div class="ev-loading-screen" id="loadingScreen">
+    <div class="ev-loading-content">
+        <img src="{{ asset('back/img/img.png') }}" alt="Wattway" class="ev-loading-logo">
+        <div class="ev-loading-spinner"></div>
+        <div class="ev-loading-text">Loading your experience...</div>
+    </div>
+</div>
+        
+        {% endblock %}
     </body>
     
 </html>
