@@ -1,165 +1,106 @@
-{% block title %}{{ 'submission.edit'|trans }}{% endblock %}
+{% block title %}{{ 'Edit Submission' }}{% endblock %}
 
 {% block stylesheets %}
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
 <style>
-    .language-switcher {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: white;
-        padding: 10px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        z-index: 1000;
-    }
-
-    .language-switcher a {
-        display: inline-block;
-        padding: 5px 10px;
-        margin: 0 5px;
-        text-decoration: none;
-        color: #333;
-        border-radius: 4px;
-        transition: all 0.3s ease;
-    }
-
-    .language-switcher a:hover {
-        background: #f0f0f0;
-    }
-
-    .language-switcher a.active {
-        background: #3b82f6;
-        color: white;
-    }
-
-    .edit-submission-container {
+    .edit-container {
         max-width: 800px;
-        margin: 2rem auto;
-        padding: 2rem;
-        background: linear-gradient(135deg, #ffffff, #f8f9fa);
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        margin: 4rem auto;
+        padding: 2.5rem;
+        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(245,245,245,0.95) 100%);
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(100, 116, 139, 0.15),
+                    inset 0 -2px 10px rgba(255, 255, 255, 0.5),
+                    inset 0 2px 10px rgba(100, 116, 139, 0.1);
         position: relative;
+        overflow: hidden;
+        transform-style: preserve-3d;
     }
 
     .progress-bar {
-        position: fixed;
-        top: 0;
-        left: 0;
         width: 100%;
         height: 4px;
-        background: #e2e8f0;
-        z-index: 1000;
+        background: rgba(59, 130, 246, 0.1);
+        margin-bottom: 2rem;
+        border-radius: 2px;
+        overflow: hidden;
     }
 
-    .progress-bar-fill {
+    .progress-fill {
         height: 100%;
         width: 0;
         background: linear-gradient(90deg, #3b82f6, #2563eb);
         transition: width 0.3s ease;
-        animation: pulse 2s infinite;
     }
 
-    @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.7; }
-        100% { opacity: 1; }
-    }
-
-    .edit-submission-title {
-        color: #2563eb;
-        font-size: 2.25rem;
-        margin-bottom: 2rem;
-        text-align: center;
+    .form-title {
+        color: #1e293b;
+        font-size: 2rem;
         font-weight: 700;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-        animation: slideDown 0.5s ease-out;
-    }
-
-    @keyframes slideDown {
-        from { transform: translateY(-20px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-    }
-
-    .form-section {
-        padding: 1.5rem;
-        background: rgba(255, 255, 255, 0.8);
-        border-radius: 8px;
-        animation: fadeIn 0.5s ease-out;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+        text-align: center;
+        margin-bottom: 2.5rem;
+        position: relative;
     }
 
     .form-row {
         margin-bottom: 1.75rem;
-        transform-origin: left;
-        animation: scaleIn 0.3s ease-out;
+        position: relative;
+        opacity: 0.7;
+        transform: translateY(10px);
+        transition: all 0.4s ease;
     }
 
-    @keyframes scaleIn {
-        from { transform: scaleX(0.9); opacity: 0; }
-        to { transform: scaleX(1); opacity: 1; }
+    .form-row.active {
+        opacity: 1;
+        transform: translateY(0);
     }
 
     .form-row label {
         display: block;
         margin-bottom: 0.75rem;
-        color: #1e40af;
+        color: #475569;
         font-weight: 600;
-        font-size: 1.1rem;
-        transition: color 0.3s ease;
+        font-size: 0.95rem;
     }
 
     .form-row input,
     .form-row select,
     .form-row textarea {
         width: 100%;
-        padding: 1rem;
+        padding: 1rem 1.25rem;
         border: 2px solid #e2e8f0;
-        border-radius: 8px;
+        border-radius: 12px;
+        background-color: rgba(255, 255, 255, 0.9);
         transition: all 0.3s ease;
         font-size: 1rem;
-        background: white;
+        color: #1e293b;
+        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.05);
     }
 
     .form-row input:focus,
     .form-row select:focus,
     .form-row textarea:focus {
         border-color: #3b82f6;
-        outline: none;
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        transform: translateY(-2px);
+        outline: none;
     }
 
-    .alert {
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 1rem;
-        animation: slideDown 0.3s ease-out;
-    }
-
-    .alert-success {
-        background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-        border: 1px solid #4ade80;
-        color: #166534;
-    }
-
-    .alert-danger {
-        background: linear-gradient(135deg, #fee2e2, #fecaca);
-        border: 1px solid #f87171;
-        color: #991b1b;
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2.5rem;
+        justify-content: center;
     }
 
     .btn {
         padding: 1rem 2rem;
-        border-radius: 8px;
+        border: none;
+        border-radius: 12px;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
-        font-size: 1.1rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         position: relative;
@@ -167,171 +108,139 @@
     }
 
     .btn-primary {
-        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
         color: white;
-        border: none;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
     }
 
     .btn-primary:hover {
-        background: linear-gradient(135deg, #2563eb, #1d4ed8);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
     }
 
     .btn-secondary {
-        background: linear-gradient(135deg, #64748b, #475569);
+        background: linear-gradient(90deg, #64748b 0%, #475569 100%);
         color: white;
         text-decoration: none;
     }
 
     .btn-secondary:hover {
-        background: linear-gradient(135deg, #475569, #334155);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(71, 85, 105, 0.2);
+        box-shadow: 0 6px 20px rgba(100, 116, 139, 0.3);
     }
 </style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const progressBar = document.querySelector('.progress-bar-fill');
-    const formInputs = document.querySelectorAll('input, select, textarea');
-    const totalFields = formInputs.length;
-    let filledFields = 0;
-
-    function updateProgress() {
-        filledFields = Array.from(formInputs).filter(input => input.value.trim() !== '').length;
-        const progress = (filledFields / totalFields) * 100;
-        progressBar.style.width = `${progress}%`;
-    }
-
-    formInputs.forEach(input => {
-        input.addEventListener('input', updateProgress);
-    });
-
-    // Initial progress calculation
-    updateProgress();
-
-    const form = document.getElementById('editSubmissionForm');
-    
-    if (form) {
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            // Clear any existing messages
-            const existingMessages = form.querySelectorAll('.alert');
-            existingMessages.forEach(msg => msg.remove());
-
-            try {
-                const formData = new FormData(form);
-                
-                const response = await fetch('{{ path('Front_Submission_edit', {'idSubmission': submission.idSubmission}) }}', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    // Show success message
-                    const successMessage = document.createElement('div');
-                    successMessage.className = 'alert alert-success';
-                    successMessage.textContent = '{{ 'submission.success.updated'|trans }}';
-                    form.prepend(successMessage);
-
-                    // Redirect back to submissions list after a delay
-                    setTimeout(() => {
-                        window.location.href = '{{ path('Front_Submission') }}';
-                    }, 1500);
-                } else {
-                    // Show error message
-                    const errorMessage = document.createElement('div');
-                    errorMessage.className = 'alert alert-danger';
-                    
-                    if (result.messages && result.messages.length > 0) {
-                        const errorList = document.createElement('ul');
-                        result.messages.forEach(msg => {
-                            const li = document.createElement('li');
-                            li.textContent = msg;
-                            errorList.appendChild(li);
-                        });
-                        errorMessage.appendChild(errorList);
-                    } else {
-                        errorMessage.textContent = '{{ 'submission.error.validation'|trans }}';
-                    }
-                    
-                    form.prepend(errorMessage);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                const errorMessage = document.createElement('div');
-                errorMessage.className = 'alert alert-danger';
-                errorMessage.textContent = '{{ 'submission.error.validation'|trans }}';
-                form.prepend(errorMessage);
-            }
-        });
-    }
-});
-</script>
 {% endblock %}
 
 {% block body %}
-<div class="language-switcher">
-    <a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({'_locale': 'en'})) }}" 
-       class="{{ app.request.locale == 'en' ? 'active' : '' }}">English</a>
-    <a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({'_locale': 'fr'})) }}"
-       class="{{ app.request.locale == 'fr' ? 'active' : '' }}">Français</a>
-</div>
-
-<div class="edit-submission-container">
-    <h1 class="edit-submission-title">{{ 'submission.edit'|trans }}</h1>
+<div class="edit-container">
+    <h1 class="form-title">{{ 'Edit Submission' }}</h1>
 
     <div class="progress-bar">
-        <div class="progress-bar-fill"></div>
+        <div class="progress-fill"></div>
     </div>
 
-    <div class="form-section">
-        {{ form_start(formSubmission, {
-            'attr': {
-                'id': 'editSubmissionForm',
-                'novalidate': 'novalidate'
-            }
-        }) }}
-            <div class="form-row">
-                {{ form_row(formSubmission.description, {
-                    'label': 'submission.description'|trans,
-                    'attr': {'class': 'form-field'}
-                }) }}
-            </div>
-            <div class="form-row">
-                {{ form_row(formSubmission.vinCode, {
-                    'label': 'submission.vin_code'|trans,
-                    'attr': {'class': 'form-field'}
-                }) }}
-            </div>
-            <div class="form-row">
-                {{ form_row(formSubmission.idUser, {
-                    'label': 'submission.user'|trans,
-                    'attr': {'class': 'form-field'}
-                }) }}
-            </div>
-            <div class="form-row">
-                {{ form_row(formSubmission.preferredContactMethod, {
-                    'label': 'submission.contact_method'|trans,
-                    'attr': {'class': 'form-field'}
-                }) }}
-            </div>
-            <div class="form-row">
-                {{ form_row(formSubmission.preferredAppointmentDate, {
-                    'label': 'submission.appointment_date'|trans,
-                    'attr': {'class': 'form-field'}
-                }) }}
-            </div>
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">{{ 'submission.edit'|trans }}</button>
-                <a href="{{ path('Front_Submission') }}" class="btn btn-secondary">{{ 'submission.actions'|trans }}</a>
-            </div>
-        {{ form_end(formSubmission) }}
-    </div>
+    {{ form_start(formSubmission, {'attr': {'id': 'editSubmissionForm', 'class': 'form-section'}}) }}
+        <div class="form-row">
+            {{ form_row(formSubmission.description, {
+                'label': 'Description',
+                'attr': {'class': 'form-field'}
+            }) }}
+        </div>
+
+        <div class="form-row">
+            {{ form_row(formSubmission.vinCode, {
+                'label': 'VIN Code',
+                'attr': {'class': 'form-field'}
+            }) }}
+        </div>
+
+        <div class="form-row">
+            {{ form_row(formSubmission.idUser, {
+                'label': 'User',
+                'attr': {'class': 'form-field'}
+            }) }}
+        </div>
+
+        <div class="form-row">
+            {{ form_row(formSubmission.preferredContactMethod, {
+                'label': 'Contact Method',
+                'attr': {'class': 'form-field'}
+            }) }}
+        </div>
+
+        <div class="form-row">
+            {{ form_row(formSubmission.preferredAppointmentDate, {
+                'label': 'Appointment Date',
+                'attr': {'class': 'form-field'}
+            }) }}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">{{ 'Save Changes' }}</button>
+            <a href="{{ path('Front_Submission') }}" class="btn btn-secondary">{{ 'Cancel' }}</a>
+        </div>
+    {{ form_end(formSubmission) }}
 </div>
-{% endblock %}
 
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const progressFill = document.querySelector('.progress-fill');
+    const formInputs = document.querySelectorAll('input, select, textarea');
+    const formRows = document.querySelectorAll('.form-row');
+    const form = document.getElementById('editSubmissionForm');
+
+    // Progress bar update function
+    function updateProgress() {
+        const filled = Array.from(formInputs).filter(input => input.value.trim() !== '').length;
+        const progress = (filled / formInputs.length) * 100;
+        progressFill.style.width = `${progress}%`;
+
+        formRows.forEach(row => {
+            const inputs = row.querySelectorAll('input, select, textarea');
+            const hasValue = Array.from(inputs).some(input => input.value.trim() !== '');
+            row.classList.toggle('active', hasValue);
+        });
+    }
+
+    // Form submission handler
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        Swal.fire({
+            title: 'Confirm Changes',
+            text: "Are you sure you want to update this submission?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3b82f6',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, save changes!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Create a new form element to bypass AJAX issues
+                const newForm = document.createElement('form');
+                newForm.method = 'POST';
+                newForm.action = form.action;
+                
+                // Clone all form elements
+                Array.from(form.elements).forEach(element => {
+                    newForm.appendChild(element.cloneNode(true));
+                });
+
+                // Submit the new form
+                document.body.appendChild(newForm);
+                newForm.submit();
+            }
+        });
+    });
+
+    // Initialize progress bar
+    formInputs.forEach(input => {
+        input.addEventListener('input', updateProgress);
+        if (input.value.trim() !== '') input.dispatchEvent(new Event('input'));
+    });
+});
+</script>
+{% endblock %}

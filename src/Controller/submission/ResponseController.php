@@ -40,7 +40,7 @@ final class ResponseController extends AbstractController
         $knp_pagination = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1), // Current page number
-            10 // Items per page
+            5 // Items per page
         );
 
         return $this->render('backend/response/index.html.twig', [

@@ -22,7 +22,6 @@ class FrontController extends AbstractController
 {
 
     public function __construct(
-        private FlashyNotifier $flashy,
         private GeminiService $geminiService
     ) {
     }
