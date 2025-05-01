@@ -1,210 +1,732 @@
 {% extends 'backend/baseBack.html.twig' %}
 
 {% block content %}
-<div class="container mt-4">
-    
-    
-    <!-- Create Item Button -->
-    <a href="{{ path('create_item') }}" class="btn btn-success btn-sm mb-3">Create New Item</a>
-    
-    <!-- Items Table Container -->
-    <div class="table-container" style="max-height: 400px; overflow-y: auto;">
-        <table class="table table-sm table-bordered mb-1">
-            <thead class="thead-dark" style="position: sticky; top: 0; z-index: 1;">
-                <tr>
-                    <th style="width: 5%; text-align: center;">ID</th>
-                    <th style="width: 20%; text-align: center;">Name</th>
-                    <th style="width: 10%; text-align: center;">Quantity Diff</th>
-                    <th style="width: 10%; text-align: center;">Price/Unit</th>
-                    <th style="width: 15%; text-align: center;">Category</th>
-                    <th style="width: 10%; text-align: center;">Order Count</th>
-                    <th style="width: 10%; text-align: center;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% set groupedItems = {} %}
-                {% set categoryColors = {} %}
-                {% set colorIndex = 0 %}
-                {% set colors = ['#e6f7ff', '#fff7e6', '#f9e6ff', '#e6ffe6', '#ffe6e6', '#e6e6ff'] %}
-                
-                {% for item in items %}
-                    {% if item.categoryItem not in categoryColors|keys %}
-                        {% set categoryColors = categoryColors|merge({(item.categoryItem): colors[colorIndex % colors|length]}) %}
-                        {% set colorIndex = colorIndex + 1 %}
-                    {% endif %}
-                    
-                    {% if item.nameItem not in groupedItems|keys %}
-                        {% set groupedItems = groupedItems|merge({
-                            (item.nameItem): {
-                                'id': item.idItem,
-                                'name': item.nameItem,
-                                'totalQuantity': item.quantityItem,
-                                'price': item.pricePerUnitItem,
-                                'category': item.categoryItem,
-                                'orderCount': 1,
-                                'ids': [item.idItem]
-                            }
-                        }) %}
-                    {% else %}
-                        {% set groupedItems = groupedItems|merge({
-                            (item.nameItem): groupedItems[item.nameItem]|merge({
-                                'totalQuantity': groupedItems[item.nameItem].totalQuantity + item.quantityItem,
-                                'orderCount': groupedItems[item.nameItem].orderCount + 1,
-                                'ids': groupedItems[item.nameItem].ids|merge([item.idItem])
-                            })
-                        }) %}
-                    {% endif %}
-                {% endfor %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+<link rel="stylesheet" href="{{ asset('back/css/ordersBack.css') }}">
+<link rel="stylesheet" href="{{ asset('back/css/newCss.css') }}">
 
-                {% for key, groupedItem in groupedItems %}
-                    {% set quantityData = itemQuantities[groupedItem.name] ?? null %}
-                    {% set adminQty = quantityData ? quantityData.adminQuantity : 0 %}
-                    {% set clientQty = quantityData ? quantityData.clientQuantity : 0 %}
-                    {% set difference = adminQty - clientQty %}
-                    
-                    <tr style="background-color: {{ categoryColors[groupedItem.category] }};">
-                        <td style="text-align: center;">{{ groupedItem.id }}</td>
-                        <td>{{ groupedItem.name }}</td>
-                        <td style="text-align: center;">
-                            {{ difference }}
-                        </td>
-                        <td style="text-align: center;">{{ groupedItem.price|number_format(2) }} TND</td>
-                        <td style="text-align: center;">{{ groupedItem.category }}</td>
-                        <td style="text-align: center;">{{ groupedItem.orderCount }}</td>
-                        <td style="text-align: center;" class="py-1">
-                            <div class="d-flex justify-content-center gap-1">
-                                <a href="{{ path('edit_item', { id: groupedItem.id }) }}" class="btn btn-primary btn-sm py-0 px-2 edit-item-btn" data-id="{{ groupedItem.id }}">
-                                Edit
-                             </a>
-                             <a href="{{ path('item_delete', {'idItem': groupedItem.id}) }}" class="btn btn-danger btn-sm py-0 px-2" 
-                             onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>                            </div>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="7" class="text-center py-2">No items found.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<!-- Items Management -->
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">List of Items</h6>
     </div>
 
-    <!-- Edit Modal -->
-<div class="modal fade" id="editItemModal" tabindex="-1" role="dialog" aria-labelledby="editItemModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header py-2">
-        <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
-        <button type="button" class="close btn btn-sm" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body py-2" id="editItemModalBody">
-        <!-- Form will be injected here via AJAX -->
-        <div class="text-center">
-            <div class="spinner-border text-primary" role="status"></div>
+    <div style="display: flex; align-self:center; gap: 20px;">
+        <!-- Refresh -->
+        <button class="refresh"><a href="{{ path('items') }}"><svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path d="M463.5 224l8.5 0c13.3 0 24-10.7 24-24l0-128c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8l119.5 0z"/>
+        </svg></a></button>
+        
+        <!-- Create Item Button -->
+        <a href="{{ path('create_item') }}" class="dropdown dropdown-button" style="padding-left:17px;"> Create New Item</a>
+    
+        <!-- Sort Orders -->
+        <div class="dropdown">
+            <button class="dropdown-button" onclick="toggleDropdownSort()">Sort by</button>
+            <div class="dropdown-content" id="dropdownSortMenu">
+                <a href="{{ path('items', { 'sort': 'asc', 'category': app.request.get('category') }) }}"
+                class="{{ app.request.get('sort') == 'asc' ? 'active' : '' }}">Quantity Diff ↑</a>
+
+                <a href="{{ path('items', { 'sort': 'desc', 'category': app.request.get('category') }) }}"
+                class="{{ app.request.get('sort') == 'desc' ? 'active' : '' }}">Quantity Diff ↓</a>
+
+                <a href="{{ path('items', { 'sort': 'ascc', 'category': app.request.get('category') }) }}"
+                class="{{ app.request.get('sort') == 'ascc' ? 'active' : '' }}">Order Count ↑</a>
+
+                <a href="{{ path('items', { 'sort': 'descc', 'category': app.request.get('category') }) }}"
+                class="{{ app.request.get('sort') == 'descc' ? 'active' : '' }}">Order Count ↓</a>
+            </div>
         </div>
+
+        <!-- Filter Items By Category -->
+        <div class="dropdown">
+            <button class="dropdown-button" onclick="toggleDropdownFilter()">Filter by</button>
+            <div class="dropdown-content" id="dropdownFilterMenu">
+                {% set selectedCategory = app.request.get('category') %}
+
+                <a href="{{ path('items', { 'category': 'Mechanics', 'sort': app.request.get('sort') }) }}"
+                class="{{ selectedCategory == 'Mechanics' ? 'active' : '' }}">Mechanics</a>
+
+                <a href="{{ path('items', { 'category': 'Electronics', 'sort': app.request.get('sort') }) }}"
+                class="{{ selectedCategory == 'Electronics' ? 'active' : '' }}">Electronics</a>
+
+                <a href="{{ path('items', { 'category': 'Electricity', 'sort': app.request.get('sort') }) }}"
+                class="{{ selectedCategory == 'Electricity' ? 'active' : '' }}">Electricity</a>
+
+                <a href="{{ path('items', { 'category': 'Interior', 'sort': app.request.get('sort') }) }}"
+                class="{{ selectedCategory == 'Interior' ? 'active' : '' }}">Interior</a>
+
+                <a href="{{ path('items', { 'category': 'Exterior', 'sort': app.request.get('sort') }) }}"
+                class="{{ selectedCategory == 'Exterior' ? 'active' : '' }}">Exterior</a>
+
+                <a href="{{ path('items', { 'category': 'Cooling & Heating', 'sort': app.request.get('sort') }) }}"
+                class="{{ selectedCategory == 'Cooling & Heating' ? 'active' : '' }}">Cooling & Heating</a>
+
+                <a href="{{ path('items', { 'category': 'Lubricants & Fluids', 'sort': app.request.get('sort') }) }}"
+                class="{{ selectedCategory == 'Lubricants & Fluids' ? 'active' : '' }}">Lubricants & Fluids</a>
+
+                <a href="{{ path('items', { 'category': 'Accessories', 'sort': app.request.get('sort') }) }}"
+                class="{{ selectedCategory == 'Accessories' ? 'active' : '' }}">Accessories</a>
+
+                <a href="{{ path('items', { 'category': 'Body Parts', 'sort': app.request.get('sort') }) }}"
+                class="{{ selectedCategory == 'Body Parts' ? 'active' : '' }}">Body Parts</a>
+
+                <a href="{{ path('items', { 'category': 'Performance Parts', 'sort': app.request.get('sort') }) }}"
+                class="{{ selectedCategory == 'Performance Parts' ? 'active' : '' }}">Performance Parts</a>
+            </div>
+        </div>
+
+      
+
+
+
+
+        <!-- Search by Item -->
+        <form method="get" action="{{ path('items') }}" class="alignSearchSVG" style="width:250px;height:40px; margin-top:10px;">
+            <input type="text" id="searchInput" name="search" placeholder="Search by item name..."
+                value="{{ app.request.get('search') }}" />
+
+            <input type="hidden" name="sort" value="{{ app.request.get('sort') }}">
+            <input type="hidden" name="category" value="{{ app.request.get('category') }}">
+
+            <button type="submit" style="background: none; border: none; cursor: pointer;">
+                <svg id="searchIconButton" xmlns="http://www.w3.org/2000/svg" style="margin-left:5px;" height="12" width="12" viewBox="0 0 512 512">
+                    <path fill="#ddd" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
+                </svg>
+            </button>
+        </form>
+
+
+    </div>
+
+    <!-- Items Table Container -->
+    <div class="card-body" style="max-height: 490px; overflow-y: auto; background-color:white;">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped shadow" id="dataTable">
+                <thead class="thead" style="position: sticky; top: 0; z-index: 1;">
+                    <tr>
+                        <th style="width: 5%; text-align: center;">ID</th>
+                        <th style="width: 20%; text-align: center;">Name</th>
+                        <th style="width: 10%; text-align: center;">Quantity Diff</th>
+                        <th style="width: 10%; text-align: center;">Price/Unit</th>
+                        <th style="width: 15%; text-align: center;">Category</th>
+                        <th style="width: 10%; text-align: center;">Order Count</th>
+                        <th style="width: 10%; text-align: center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, groupedItem in groupedItems %}
+                        {% set difference = groupedItem.difference %}
+                        <tr style="background-color: {{ categoryColors[groupedItem.category] }}">
+                            <td class="text-center">{{ groupedItem.id }}</td>
+                            <td class="text-center">{{ groupedItem.name }}</td>
+                            <td class="text-center">{{ difference }}</td>
+                            <td class="text-center">{{ groupedItem.price }}</td>
+                            <td class="text-center">{{ groupedItem.category }}</td>
+                            <td class="text-center">{{ groupedItem.orderCount }}</td>
+                            <td class="text-center" style="display:inline-block;width:150px;">
+                                <a href="{{ path('edit_item', {'id': groupedItem.id}) }}" class="btn btn-warning btn-sm edit-order-btn"><i class="fas fa-edit"></i></a>
+                                <a href="{{ path('delete_item', {'itemId': groupedItem.id}) }}" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination" style="display: flex; justify-content: center; gap: 8px;">
+            
+            <a href="#"
+               class="pagination-link"
+               style="padding: 8px 16px; border-radius: 6px; text-decoration: none;">
+                &laquo; Previous
+            </a>
+    
+    
+      
+            <a href="#"
+               class="pagination-link"
+               style="padding: 8px 12px; border-radius: 6px; text-decoration: none;">
+                1
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Items Stats -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary" id="chartTitle">Item Statistics</h6>
+    </div>
+  
+    <div class="card shadow-sm mt-4">
+      <div class="card-body position-relative" style="padding-bottom: 30px; height: 300px;">
+  
+        <!-- Left Arrow -->
+        <div id="arrowLeft" class="chart-arrow" style="position: absolute; left: -50px; top: 50%; transform: translateY(-50%);">
+            <i class="fas fa-chevron-left fa-2x"></i>
+        </div>
+  
+        <div class="row">
+            <div class="col-md-8">
+                    <div class="chart-container" style="position: relative; height: 280px;margin-bottom:-20px;background-color:transparent !important;">
+        
+                        <!-- First chart -->
+                        <canvas id="salesChart" width="400" height="130" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+        
+                        <!-- Second chart -->
+                        <canvas id="categoryChart" width="400" height="110" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none;"></canvas>
+        
+                    </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="d-flex flex-column h-100 justify-content-between">
+                    <div class="mb-3" id="statsSummary">
+                        <h6 class="text-muted mb-2">Summary</h6>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>Total Items</span>
+                            <span class="fw-bold">833 Item</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>Best Category</span>
+                            <span class="fw-bold text-primary">Electronics (195 Item)</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>Lowest Category</span>
+                            <span class="fw-bold text-info">Exterior (17 Item)</span>
+                        </div>
+                        
+                    </div>
+                    <div class="mt-auto" id="monthlyAverage">
+                        <h6 class="text-muted mb-2">Monthly Average</h6>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <small>Top Selling Category</small>
+                            <small class="fw-bold">35 Item/month</small>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <small>Least Selling Category</small>
+                            <small class="fw-bold">1 Item/month</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+  
+        <!-- Right Arrow -->
+        <div id="arrowRight" class="chart-arrow" style="position: absolute; right: -50px; top: 50%; transform: translateY(-50%);">
+            <i class="fas fa-chevron-right fa-2x"></i>
+        </div>
+  
       </div>
     </div>
-  </div>
 </div>
 
-</div>
-
-<style>
-.table-container {
-    scroll-behavior: smooth;
-    font-size: 0.9rem;
-}
-.table-sm th, .table-sm td {
-    padding: 0.4rem;
-}
-.btn-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.85rem;
-    line-height: 1.4;
-    border-radius: 0.25rem;
-    min-width: 55px;
-}
-.table-sm td {
-    vertical-align: middle;
-}
-.small {
-    font-size: 0.8rem;
-}
-.fw-bold {
-    font-weight: bold;
-}
-.text-success {
-    color: #28a745;
-}
-.text-danger {
-    color: #dc3545;
-}
-</style>
 
 <script>
-$(document).ready(function() {
-    // Auto-adjust height to show about 7-8 rows
-    const tableContainer = $('.table-container');
-    if (tableContainer.length) {
-        const firstRow = tableContainer.find('tbody tr:first');
-        if (firstRow.length) {
-            const rowHeight = firstRow.outerHeight();
-            tableContainer.css('max-height', (rowHeight * 8) + 'px');
+    function toggleDropdownFilter() {
+        var dropdownContent = document.getElementById('dropdownFilterMenu');
+        dropdownContent.classList.toggle('show');
+    }
+
+    function toggleDropdownSort() {
+        var dropdownContent = document.getElementById('dropdownSortMenu');
+        dropdownContent.classList.toggle('show');
+    }
+    
+    
+    // Manage chart switching (Sales <-> Revenue)
+    let currentChart = 'sales';
+    const salesChart = document.getElementById('salesChart');
+    const categoryChart = document.getElementById('categoryChart');
+    const chartTitle = document.getElementById('chartTitle');
+
+    document.getElementById('arrowLeft').addEventListener('click', toggleChart);
+    document.getElementById('arrowRight').addEventListener('click', toggleChart);
+
+    function toggleChart() {
+        const currentCanvas = currentChart === 'sales' ? salesChart : categoryChart;
+        const nextCanvas = currentChart === 'sales' ? categoryChart : salesChart;
+
+        currentCanvas.style.transition = nextCanvas.style.transition = 'opacity 0.5s';
+        currentCanvas.style.opacity = '0';
+
+        setTimeout(() => {
+            currentCanvas.style.display = 'none';
+            nextCanvas.style.display = 'block';
+            nextCanvas.style.opacity = '0';
+            setTimeout(() => nextCanvas.style.opacity = '1', 50);
+
+            if (currentChart === 'sales') {
+                chartTitle.innerText = "Revenue Statistics";
+                updateSummary('revenue');
+                currentChart = 'category';
+            } else {
+                chartTitle.innerText = "Item Statistics";
+                updateSummary('sales');
+                currentChart = 'sales';
+            }
+        }, 500);
+    }
+
+    // Update the stats summary section depending on chart type
+    function updateSummary(chartType) {
+        const statsSummary = document.getElementById('statsSummary');
+        const monthlyAverage = document.getElementById('monthlyAverage');
+
+        if (chartType === 'sales') {
+            statsSummary.innerHTML = `
+                <h6 class="text-muted mb-2">Summary</h6>
+                <div class="d-flex justify-content-between mb-2"><span>Total Items</span><span class="fw-bold">833 Item</span></div>
+                <div class="d-flex justify-content-between mb-2"><span>Best Category</span><span class="fw-bold text-primary">Electronics (195 Item)</span></div>
+                <div class="d-flex justify-content-between mb-2"><span>Lowest Category</span><span class="fw-bold text-info">Exterior (17 Item)</span></div>
+            `;
+            monthlyAverage.innerHTML = `
+                <h6 class="text-muted mb-2">Monthly Average</h6>
+                <div class="d-flex justify-content-between mb-1"><small>Top Selling Category</small><small class="fw-bold">35 Item/month</small></div>
+                <div class="d-flex justify-content-between mb-1"><small>Least Selling Category</small><small class="fw-bold">1 Item/month</small></div>
+            `;
+        } else {
+            statsSummary.innerHTML = `
+                <h6 class="text-muted mb-2">Summary</h6>
+                <div class="d-flex justify-content-between mb-2"><span>Total Revenue</span><span class="fw-bold">32,688 TND</span></div>
+                <div class="d-flex justify-content-between mb-2"><span>Top Category</span><span class="fw-bold text-success">Electronics (6,897 TND)</span></div>
+                <div class="d-flex justify-content-between mb-2"><span>Lowest Category</span><span class="fw-bold text-danger">Exterior (358.5 TND)</span></div>
+                <div class="d-flex justify-content-between"><span>Avg Revenue/Order</span><span class="fw-bold">$250</span></div>
+            `;
+            monthlyAverage.innerHTML = `
+                <h6 class="text-muted mb-2">Monthly Average</h6>
+                <div class="d-flex justify-content-between mb-1"><small>Revenue</small><small class="fw-bold">$2,000/month</small></div>
+            `;
         }
     }
-});
 
-$(document).on('click', '.edit-item-btn', function(e) {
-    e.preventDefault();
+    // Pagination Setup
+    document.addEventListener('DOMContentLoaded', function() {
+        const rows = document.querySelectorAll('#dataTable tbody tr');
+        const paginationContainer = document.querySelector('.pagination');
+        const rowsPerPage = 5;
+        let currentPage = 1;
+        let totalPages = Math.ceil(rows.length / rowsPerPage);
 
-    const url = $(this).attr('href');
-    const modal = $('#editItemModal');
-    const modalBody = $('#editItemModalBody');
-
-    modal.modal('show');
-    modalBody.html('<div class="text-center"><div class="spinner-border text-primary" role="status"></div></div>');
-
-    $.ajax({
-        url: url,
-        type: 'GET',
-        success: function(response) {
-            modalBody.html(response);
-        },
-        error: function() {
-            modalBody.html('<div class="alert alert-danger">Failed to load form.</div>');
-        }
-    });
-});
-
-$(document).ready(function () {
-    $('.delete-item-btn').on('click', function () {
-        const itemId = $(this).data('id');
-
-        if (confirm('Are you sure you want to delete this item?')) {
-            $.ajax({
-                url: `/item/delete/${itemId}`,
-                type: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                success: function (response) {
-                    if (response.success) {
-                        alert(response.message);
-                        location.reload(); // Refresh to remove the item row
-                    } else {
-                        alert('Failed to delete item: ' + response.message);
-                    }
-                },
-                error: function () {
-                    alert('An error occurred during the delete operation.');
-                }
+        function displayRows(page) {
+            const start = (page - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            rows.forEach((row, index) => {
+                row.style.display = (index >= start && index < end) ? '' : 'none';
             });
         }
+
+        function updatePagination() {
+            paginationContainer.innerHTML = '';
+
+            const prev = createPageLink('« Previous', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayRows(currentPage);
+                    updatePagination();
+                }
+            });
+            paginationContainer.appendChild(prev);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageLink = createPageLink(i, () => {
+                    currentPage = i;
+                    displayRows(currentPage);
+                    updatePagination();
+                }, currentPage === i);
+                paginationContainer.appendChild(pageLink);
+            }
+
+            const next = createPageLink('Next »', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayRows(currentPage);
+                    updatePagination();
+                }
+            });
+            paginationContainer.appendChild(next);
+        }
+
+        function createPageLink(text, onClick, active = false) {
+            const link = document.createElement('a');
+            link.href = '#';
+            link.className = 'pagination-link';
+            link.innerHTML = text;
+            link.style.padding = '8px 16px';
+            link.style.borderRadius = '6px';
+            link.style.textDecoration = 'none';
+            if (active) {
+                link.style.backgroundColor = '#007bff';
+                link.style.color = 'white';
+            }
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                onClick();
+            });
+            return link;
+        }
+
+        displayRows(currentPage);
+        updatePagination();
     });
-});
+
+    // Create the Sales and Revenue Charts
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    const categoriesCount = {{ categoriesCount|json_encode|raw }};
+    const categoryRevenueCtx = document.getElementById('categoryChart').getContext('2d');
+    const categoriesRevenue = {{ categoriesRevenue|json_encode|raw }};
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(categoriesCount),
+            datasets: [{
+                label: 'Available Items per Category',
+                data: Object.values(categoriesCount),
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+    });
+
+    new Chart(categoryRevenueCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(categoriesRevenue),
+            datasets: [{
+                label: 'Revenue by Category (TND)',
+                data: Object.values(categoriesRevenue),
+                backgroundColor: 'rgba(255, 159, 64, 0.5)'
+            }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { callback: value => value + ' TND' } } } }
+    });
 
     
+
+
 </script>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+<style>
+    a.active {
+        background-color: #007bff;
+        color: white;
+        font-weight: bold;
+        border-radius: 4px;
+        padding: 5px 10px;
+    }
+    
+    .active {
+        background-color: #1996af;
+        color: white;
+    }
+    .page-btn.active {
+        background-color: #1996af;
+        color: white;
+    }
+    .page-btn {
+        margin: 0 2px;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+    .analytics-dashboard {
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        background: #f8fafc;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+    
+    .dashboard-header h2 {
+        font-size: 22px;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0;
+    }
+    
+    .dashboard-controls {
+        display: flex;
+        gap: 12px;
+    }
+    
+    .time-selector {
+        padding: 8px 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        background: white;
+        font-size: 14px;
+        color: #475569;
+    }
+    
+    .export-btn {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.2s;
+    }
+    
+    .export-btn:hover {
+        background: #2563eb;
+    }
+    
+    /* KPI Cards */
+    .kpi-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    
+    .kpi-card {
+        background: white;
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    
+    .kpi-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+    
+    .kpi-title {
+        font-size: 14px;
+        color: #64748b;
+        font-weight: 500;
+    }
+    
+    .kpi-change {
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .kpi-change.positive {
+        color: #10b981;
+    }
+    
+    .kpi-change.negative {
+        color: #ef4444;
+    }
+    
+    .kpi-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 12px;
+    }
+    
+    /* Main Chart Container */
+    .chart-container {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 24px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    
+    .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+    
+    .chart-header h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0;
+    }
+    
+    .chart-legend {
+        display: flex;
+        gap: 16px;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        font-size: 12px;
+    }
+    
+    .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        margin-right: 6px;
+    }
+    
+    .chart-footer {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 16px;
+        font-size: 12px;
+        color: #64748b;
+    }
+    
+    .data-notes {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .chart-actions {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .chart-action-btn {
+        background: #f1f5f9;
+        border: none;
+        width: 28px;
+        height: 28px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #475569;
+    }
+    
+    .chart-action-btn:hover {
+        background: #e2e8f0;
+    }
+    
+    /* Secondary Charts */
+    .secondary-charts {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+    
+    .secondary-chart {
+        background: white;
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    
+    .secondary-chart h4 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0 0 16px 0;
+    }
+    
+    /* Tooltip Styles */
+    .chart-tooltip {
+        position: absolute;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 12px;
+        pointer-events: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        transition: opacity 0.2s;
+        z-index: 100;
+        min-width: 180px;
+    }
+    
+    .tooltip-header {
+        font-weight: 600;
+        font-size: 14px;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+    
+    .tooltip-body {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+    
+    .tooltip-item {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+    }
+    
+    .tooltip-color {
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+        margin-right: 6px;
+    }
+    
+    .tooltip-footer {
+        font-size: 11px;
+        color: #64748b;
+        border-top: 1px solid #f1f5f9;
+        padding-top: 6px;
+    }
+    .table-container {
+        scroll-behavior: smooth;
+        font-size: 0.9rem;
+    }
+    .table-sm th, .table-sm td {
+        padding: 0.4rem;
+    }
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        border-radius: 0.25rem;
+        min-width: 55px;
+    }
+    .table-sm td {
+        vertical-align: middle;
+    }
+    .small {
+        font-size: 0.8rem;
+    }
+    .fw-bold {
+        font-weight: bold;
+    }
+    .text-success {
+        color: #28a745;
+    }
+    .text-danger {
+        color: #dc3545;
+    }
+</style>
 {% endblock %}

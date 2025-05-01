@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Order;
 use Psr\Log\LoggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -150,6 +151,9 @@ class ItemsController extends AbstractController
         return $this->redirectToRoute('items');
     }
 
+    /**
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
 
     #[Route('/ai/suggest-price', name: 'ai_suggest_price', methods: ['POST'])]
     public function suggestPrice(Request $request): JsonResponse
@@ -179,7 +183,7 @@ class ItemsController extends AbstractController
 
         // Prompt 2: Get the category
         $categoryPrompt = "for this car item : $itemName, select the most appropriate category and return it. possible categories : Mechanics, Electronics, Electricity, Interior, Exterior, Cooling & Heating, Lubricants & Fluids, Accessories, Body Parts, Performance Parts. return one category";
-        $categoryResponse = $client->request('POST', 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=AIzaSyAjXOcC_j_o-XtpjSp8dzMUZpmJxy3usRU', [
+        $categoryResponse = $client->request('POST', 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=AIzaSyA1ZjFW8PkXB6HqhXO9WsWA1_3_GzXO1ks', [
             'json' => [
                 'contents' => [
                     ['parts' => [['text' => $categoryPrompt]]]
@@ -217,7 +221,7 @@ class ItemsController extends AbstractController
         $prompt = "Is the following product name related to cars, car maintenance, or car components? Only answer with 'yes' or 'no': \"$itemName\".";
 
         try {
-            $response = $client->request('POST', 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=AIzaSyAjXOcC_j_o-XtpjSp8dzMUZpmJxy3usRU', [
+            $response = $client->request('POST', 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=AIzaSyA1ZjFW8PkXB6HqhXO9WsWA1_3_GzXO1ks', [
                 'json' => [
                     'contents' => [
                         ['parts' => [['text' => $prompt]]]
@@ -256,7 +260,7 @@ class ItemsController extends AbstractController
             $imageBase64 = base64_encode($imageContent);
             $mimeType = $image->getMimeType();
 
-            $apiKey = 'AIzaSyDekMV2YjTBB5GTfwNjwVSxYB9EH9FKCIw';
+            $apiKey = 'AIzaSyA1ZjFW8PkXB6HqhXO9WsWA1_3_GzXO1ks';
 
             $response = $http->request('POST', 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=' . $apiKey, [
                 'json' => [
@@ -298,11 +302,7 @@ class ItemsController extends AbstractController
     }
 
     #[Route('/api/item/{id}/quantity', name: 'api_item_quantity', methods: ['GET'])]
-public function getQuantity(
-    int $id,
-    ItemRepository $itemRepository,
-    OrderRepository $orderRepository
-): JsonResponse {
+public function getQuantity(int $id,ItemRepository $itemRepository,OrderRepository $orderRepository): JsonResponse {
     $item = $itemRepository->find($id);
     if (!$item) {
         return new JsonResponse(['error' => 'Item not found'], 404);
@@ -327,7 +327,7 @@ public function getQuantity(
 }
 
 
-
+    
 
 }
 ?>

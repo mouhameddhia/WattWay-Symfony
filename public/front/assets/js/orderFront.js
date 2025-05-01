@@ -6,6 +6,7 @@ class ShopCart {
         this.initElements();
         this.bindEvents();
         this.initLoadMore();
+        
     }
 
     initElements() {
@@ -45,6 +46,7 @@ class ShopCart {
     }
 
     bindEvents() {
+        
         // Quantity controls
         this.minusBtn.addEventListener('click', () => this.adjustQuantity(-1));
         this.plusBtn.addEventListener('click', () => this.adjustQuantity(1));
@@ -75,6 +77,7 @@ class ShopCart {
                 if (e.target === dialog) this.closeDialog(dialog);
             });
         });
+        
 
         // AI Chat events
         this.suggestedItemsBtn.addEventListener('click', () => this.openAIChatDialog());
@@ -95,26 +98,7 @@ class ShopCart {
              });
          });
     }
-
-    initLoadMore() {
-        if (this.items.length > 10) {
-            Array.from(this.items).slice(this.visibleItems).forEach(item => {
-                item.style.display = 'none';
-            });
-
-            this.loadMoreBtn.addEventListener('click', () => {
-                const nextItems = Array.from(this.items).slice(this.visibleItems, this.visibleItems + 10);
-                nextItems.forEach(item => item.style.display = 'block');
-                this.visibleItems += nextItems.length;
-                if (this.visibleItems >= this.items.length) {
-                    this.loadMoreBtn.style.display = 'none';
-                }
-            });
-        } else {
-            this.loadMoreBtn.style.display = 'none';
-        }
-    }
-
+    
     adjustQuantity(change) {
         const currentValue = parseInt(this.quantityInput.value);
         const newValue = currentValue + change;
@@ -127,18 +111,36 @@ class ShopCart {
     async handleAddToCart(button) {
         const itemId = button.getAttribute('data-item-id');
         const availableQuantity = await this.getAvailableQuantityByItemId(itemId);
+        let productName, productPrice;
+
+        // Check if the button is inside the modal or product card
+        if (button.closest('#quickViewModal')) {
+            // If it's inside the modal, get the data from the modal
+            productName = document.getElementById('modal-product-name').textContent;
+            productPrice = parseFloat(document.getElementById('modal-product-price').textContent.replace('$', ''));
+        } else {
+            // If it's inside the product card, get the data from the product card
+            const productCard = button.closest('.product-card');
+            productName = productCard.querySelector('.product-title').textContent;
+            productPrice = parseFloat(productCard.querySelector('.product-price').textContent.replace('$', ''));
+        }
     
+        // Set up the current item
         this.currentItem = {
             id: itemId,
-            name: button.closest('.product-card').querySelector('.product-title').textContent,
-            price: parseFloat(button.closest('.product-card').querySelector('.product-price').textContent.replace('$', '')),
+            name: productName,
+            price: productPrice,
             quantity: 1, // ← Temporary, will be overwritten in confirmQuantity()
             maxQuantity: availableQuantity
         };
+        
     
         this.quantityInput.value = 1;
         this.quantityInput.max = availableQuantity;
         this.quantityDialog.style.display = 'flex';
+        // Close the modal after adding to cart
+        const modal = document.getElementById('quickViewModal');
+        modal.style.display = 'none';
     }
     
     
@@ -185,14 +187,27 @@ class ShopCart {
             const safeQuantity = Math.min(requestedQuantity, this.currentItem.maxQuantity);
             this.cart.push({ ...this.currentItem, quantity: safeQuantity });
         }
-    
+        const itemName = this.currentItem.name; // Capture before it gets cleared
+
         this.updateCartDisplay();
         this.closeQuantityDialog();
+        this.showSuccessAnimation(requestedQuantity, itemName);
+
+    }
+    showSuccessAnimation(quantity, itemName) {
+        const overlay = document.getElementById('successOverlay');
+        const message = document.getElementById('successMessage');
+    
+        message.textContent = `${quantity} ${itemName} added to cart.`;
+        overlay.style.display = 'flex';
+    
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 1500);
     }
     
     
-    
-
+   
     updateCartDisplay() {
         const totalItems = this.cart.reduce((total, item) => total + item.quantity, 0);
         this.cartCountElement.textContent = totalItems;
@@ -209,9 +224,12 @@ class ShopCart {
                 const cartItemElement = document.createElement('div');
                 cartItemElement.className = 'cart-item';
                 cartItemElement.innerHTML = `
-                    <div class="cart-item-info">
-                        <div class="cart-item-name">${item.name}</div>
-                        <div class="cart-item-price">$${item.price.toFixed(2)} each</div>
+                    <div class="cart-item-info" style="display:flex;gap:10px;">
+                        <img src="images/${item.name.toLowerCase()}.png" alt="${item.name}" loading="lazy" style="width:100px; height:90px;">
+                        <div style="display:grid;">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price" style="margin-top:5px;">$${item.price.toFixed(2)} each</div>
+                        </div>
                     </div>
                     <div class="cart-item-quantity">
                         <button class="decrease-quantity" data-item-id="${item.id}">-</button>
@@ -228,6 +246,28 @@ class ShopCart {
         const total = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         this.cartTotalElement.textContent = `$${total.toFixed(2)}`;
     }
+    
+    initLoadMore() {
+        if (this.items.length > 10) {
+            Array.from(this.items).slice(this.visibleItems).forEach(item => {
+                item.style.display = 'none';
+            });
+
+            this.loadMoreBtn.addEventListener('click', () => {
+                const nextItems = Array.from(this.items).slice(this.visibleItems, this.visibleItems + 10);
+                nextItems.forEach(item => item.style.display = 'block');
+                this.visibleItems += nextItems.length;
+                if (this.visibleItems >= this.items.length) {
+                    this.loadMoreBtn.style.display = 'none';
+                }
+            });
+        } else {
+            this.loadMoreBtn.style.display = 'none';
+        }
+    }
+
+    
+ 
     
     async syncCartWithServer() {
         // Sync the cart state with the server for persistence
@@ -298,7 +338,7 @@ class ShopCart {
             alert('Your cart is empty!');
             return;
         }
-
+    
         try {
             const response = await fetch('/checkout', {
                 method: 'POST',
@@ -310,14 +350,22 @@ class ShopCart {
                     totalAmount: this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
                 })
             });
-
+    
             if (response.ok) {
                 const result = await response.json();
-                alert('Order created successfully!');
+    
+                // Step 1: Clear cart and UI
                 this.cart = [];
                 this.updateCartDisplay();
                 this.closeCartDialog();
-                // Optionally redirect to order confirmation page
+    
+                // Step 2: Show Lottie animation
+                this.showProcessingAnimation(() => {
+                    // Step 3: After animation, show success message
+                    this.showFinalSuccessMessage();
+                });
+    
+                // Optionally redirect
                 // window.location.href = `/order/${result.orderId}`;
             } else {
                 throw new Error('Failed to create order');
@@ -327,6 +375,55 @@ class ShopCart {
             alert('There was an error processing your order. Please try again.');
         }
     }
+
+    showProcessingAnimation(callback) {
+        const overlay = document.getElementById('processingOverlay');
+        const container = document.getElementById('lottieProcessingContainer');
+        container.innerHTML = ''; // Clear any previous animation
+        overlay.style.display = 'flex';
+    
+        const animation = lottie.loadAnimation({
+            container: container,
+            renderer: 'svg',
+            loop: false,
+            autoplay: true,
+            path: '/animations/processing.json'
+        });
+    
+        animation.addEventListener('complete', () => {
+            animation.destroy(); // Clean up the animation
+            overlay.style.display = 'none';
+            if (callback) callback();
+        });
+    }
+    
+    showFinalSuccessMessage() {
+        const overlay = document.getElementById('orderOverlay');
+        const container = document.getElementById('lottieSuccessContainer');
+        container.innerHTML = ''; // Clear any previous animation
+        overlay.style.display = 'flex';
+    
+        const animation = lottie.loadAnimation({
+            container: container,
+            renderer: 'svg',
+            loop: false,
+            autoplay: true,
+            path: '/animations/success.json'
+        });
+    
+        animation.addEventListener('complete', () => {
+            animation.destroy(); // Clean up after animation
+    
+            // Keep the success overlay visible for a little longer
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 1000); // show for 2 seconds after animation ends
+        });
+    }
+    
+    
+    
+    
 
     handleSearch() {
         const searchTerm = this.searchInput.value.toLowerCase();
@@ -340,7 +437,7 @@ class ShopCart {
     handleCategoryFilter() {
         const selectedCategory = this.categoryFilter.value.toLowerCase();
         this.items.forEach(item => {
-            const itemCategory = item.getAttribute('data-category');
+            const itemCategory = item.querySelector('.product-category').textContent.toLowerCase();;
             item.style.display = (selectedCategory === '' || itemCategory.includes(selectedCategory)) ? 'block' : 'none';
         });
     }
@@ -475,11 +572,11 @@ class ShopCart {
             .replace(/\*(.*?)\*/g, '<em>$1</em>') // italic
             .replace(/\n/g, '<br>'); // line breaks
     }
-    
+
     async getAIResponse(prompt) {
 
         
-        const apiKey = 'AIzaSyDekMV2YjTBB5GTfwNjwVSxYB9EH9FKCIw'; // Consider moving this to a config
+        const apiKey = 'AIzaSyA1ZjFW8PkXB6HqhXO9WsWA1_3_GzXO1ks'; // Consider moving this to a config
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=${apiKey}`;
         
         const response = await fetch(apiUrl, {
@@ -558,7 +655,7 @@ class ShopCart {
             
             if (targetCard) {
                 // Get the add to cart button
-                const addButton = targetCard.querySelector('.add-to-cart-button');
+                const addButton = targetCard.querySelector('.quick-view-button');
                 if (addButton) {
                     // Create and dispatch a click event
                     const clickEvent = new MouseEvent('click', {
@@ -594,13 +691,11 @@ class ShopCart {
         const lowerPrompt = prompt.toLowerCase();
         return carKeywords.some(keyword => lowerPrompt.includes(keyword));
     }
-
-    
-
-    
 }
+
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new ShopCart();
+
+    window.shopCart = new ShopCart();
 });

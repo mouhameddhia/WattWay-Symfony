@@ -358,6 +358,60 @@ document.querySelectorAll('.edit-order-btn').forEach(button => {
         url.searchParams.set('year', year);
         window.location.href = url.toString(); // Triggers page reload with filters
     }
+
+    
 });
 
+
+// Dropdown toggle
+function toggleDropdownFilter() {
+    const dropdown = document.getElementById("dropdownFilterMenu");
+    dropdown.classList.toggle("show");
+}
+
+
+function toggleDropdownSort() {
+        const dropdown = document.getElementById("dropdownSortMenu");
+        dropdown.classList.toggle("show");
+    }
+
+window.onclick = function(event) {
+    if (!event.target.matches('.dropdown-button')) {
+      const dropdownFilter = document.getElementById("dropdownFilterMenu");
+      if (dropdownFilter && dropdownFilter.classList.contains("show")) {
+        dropdownFilter.classList.remove("show");
+      }
+      const dropdownSort = document.getElementById("dropdownSortMenu");
+      if (dropdownSort && dropdownSort.classList.contains("show")) {
+        dropdownSort.classList.remove("show");
+      }
+    }
+}
+document.addEventListener("DOMContentLoaded", function () {
+      const input = document.getElementById("searchInput");
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          triggerAjax(input.value);
+        }
+          });
+});
+function triggerAjax(query) {
+      console.log("AJAX triggered with:", query);
+}
+
+document.getElementById("searchIconButton").addEventListener("click", function() {
+    triggerAjax(document.getElementById("searchInput").value);
+});
+
+document.getElementById('monthFilter').addEventListener('change', function() {
+    const selectedMonth = this.value;
+    const currentURL = new URL(window.location.href); // Get the current URL
+
+    // Update the month query parameter
+    currentURL.searchParams.set('month', selectedMonth);
+
+    // Reload the page with the updated query parameter
+    window.location.href = currentURL.toString();
+});
 

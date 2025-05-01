@@ -7,6 +7,7 @@ use App\Entity\Item;
 use App\Repository\OrderRepository;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,62 +28,62 @@ class OrdersController extends AbstractController
     // Create An Order
     #[Route('/order/createOrder', name: 'order_create')]
     public function createOrder(Request $request, EntityManagerInterface $entityManager, ItemRepository $itemRepository): Response
-{
-    // Fetch all items from the database
-    $itemsList = $itemRepository->findAll();
+    {
+        // Fetch all items from the database
+        $itemsList = $itemRepository->findAll();
 
-    // Initialize the orderItems array
-    $orderItems = [];
+        // Initialize the orderItems array
+        $orderItems = [];
 
-    // Check if the form was submitted
-    if ($request->isMethod('POST')) {
-        // Create a new order entity
-        $order = new Order();
-        $order->setSupplierOrder($request->request->get('supplierOrder'));
-        $order->setDateOrder(new \DateTime());  // Set current date for order creation
-        $order->setStatusOrder('Pending');  // Set default status to Pending
-        $order->setAddressSupplierOrder($request->request->get('addressSupplierOrder'));
-        $order->setTotalAmountOrder((float) $request->request->get('totalAmountOrder'));
-        $order->setIdAdmin((int) $request->request->get('admin'));
+        // Check if the form was submitted
+        if ($request->isMethod('POST')) {
+            // Create a new order entity
+            $order = new Order();
+            $order->setSupplierOrder($request->request->get('supplierOrder'));
+            $order->setDateOrder(new \DateTime());  // Set current date for order creation
+            $order->setStatusOrder('Pending');  // Set default status to Pending
+            $order->setAddressSupplierOrder($request->request->get('addressSupplierOrder'));
+            $order->setTotalAmountOrder((float) $request->request->get('totalAmountOrder'));
+            $order->setIdAdmin((int) $request->request->get('admin'));
 
-        // Persist the order first
-        $entityManager->persist($order);
-        $entityManager->flush(); // Flush to generate order ID
+            // Persist the order first
+            $entityManager->persist($order);
+            $entityManager->flush(); // Flush to generate order ID
 
-        // Get the items data from the request
-        $itemsData = json_decode($request->request->get('orderItems'), true); // true to get an associative array
+            // Get the items data from the request
+            $itemsData = json_decode($request->request->get('orderItems'), true); // true to get an associative array
 
-        // Ensure $itemsData is an array before processing
-        if (is_array($itemsData)) {
-            foreach ($itemsData as $itemData) {
-                $item = new Item();
-                $item->setNameItem($itemData['name']);
-                $item->setCategoryItem($itemData['category']);
-                $item->setPricePerUnitItem($itemData['pricePerUnit']);
-                $item->setQuantityItem($itemData['quantity']);
-                $item->setOrderId($order->getIdOrder()); // Link item to the newly created order
+            // Ensure $itemsData is an array before processing
+            if (is_array($itemsData)) {
+                foreach ($itemsData as $itemData) {
+                    $item = new Item();
+                    $item->setNameItem($itemData['name']);
+                    $item->setCategoryItem($itemData['category']);
+                    $item->setPricePerUnitItem($itemData['pricePerUnit']);
+                    $item->setQuantityItem($itemData['quantity']);
+                    $item->setOrderId($order->getIdOrder()); // Link item to the newly created order
 
-                // Persist the item to the database
-                $entityManager->persist($item);
+                    // Persist the item to the database
+                    $entityManager->persist($item);
 
-                // Add the item to the orderItems array (if needed)
-                $orderItems[] = $item;
+                    // Add the item to the orderItems array (if needed)
+                    $orderItems[] = $item;
+                }
             }
+
+            // Flush all changes (order and items)
+            $entityManager->flush();
+            // ✅ Add success flash message
+            $this->addFlash('success', 'Order created successfully!');
+            // Redirect to orders list or order detail page
+            return $this->redirectToRoute('orders', ['highlight' => $order->getIdOrder()]);
         }
 
-        // Flush all changes (order and items)
-        $entityManager->flush();
-        // ✅ Add success flash message
-        $this->addFlash('success', 'Order created successfully!');
-        // Redirect to orders list or order detail page
-        return $this->redirectToRoute('orders', ['highlight' => $order->getIdOrder()]);
+        return $this->render('backend/order/createOrder.html.twig', [
+            'itemsList' => $itemsList,
+            'orderItems' => $orderItems,  // Pass the items array to the template
+        ]);
     }
-
-    return $this->render('backend/order/createOrder.html.twig', [
-        'itemsList' => $itemsList,
-        'orderItems' => $orderItems,  // Pass the items array to the template
-    ]);
-}
 
 
     // Fetch An Order's Items
@@ -166,7 +167,7 @@ class OrdersController extends AbstractController
         $order->setSupplierOrder($data['supplier']);
         $order->setDateOrder(new \DateTime($data['date']));
         $order->setStatusOrder($data['status']);
-        $order->setTotalAmountOrder((float)$data['total']);
+        $order->setTotalAmountOrder((float) $data['total']);
         $order->setAddressSupplierOrder($data['address']);
 
         $entityManager->persist($order);
@@ -183,54 +184,57 @@ class OrdersController extends AbstractController
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         $newQuantity = $data['quantity'] ?? null;
-    
+
         if (!is_numeric($newQuantity) || $newQuantity < 0) {
             return $this->json(['success' => false, 'message' => 'Invalid quantity'], 400);
         }
-    
+
         $query = $em->createQuery('UPDATE App\Entity\Item i SET i.quantityItem = :qty WHERE i.idItem = :id')
-            ->setParameter('qty', (int)$newQuantity)
+            ->setParameter('qty', (int) $newQuantity)
             ->setParameter('id', $itemId);
-    
+
         $rowsAffected = $query->execute();
-    
+
         if ($rowsAffected === 0) {
             return $this->json(['success' => false, 'message' => 'Item not found'], 404);
         }
-    
-        return $this->json(['success' => true, 'newQuantity' => (int)$newQuantity]);
-    }
-    
-    
 
-#[Route('/order/item/delete/{itemId}', name: 'delete_item', methods: ['DELETE'])]
-public function deleteItem(
-    int $itemId,
-    EntityManagerInterface $entityManager
-): JsonResponse {
-    $item = $entityManager->getRepository(Item::class)->find($itemId);
-
-    if (!$item) {
-        return $this->json(['success' => false, 'message' => 'Item not found'], 404);
+        return $this->json(['success' => true, 'newQuantity' => (int) $newQuantity]);
     }
 
-    try {
-        $entityManager->remove($item);
-        $entityManager->flush();
 
-        return $this->json(['success' => true, 'message' => 'Item deleted successfully']);
-    } catch (\Exception $e) {
-        return $this->json([
-            'success' => false,
-            'message' => 'Error deleting item: ' . $e->getMessage()
-        ], 500);
+
+    #[Route('/order/item/delete/{itemId}', name: 'delete_item', methods: ['DELETE'])]
+    public function deleteItem(
+        int $itemId,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $item = $entityManager->getRepository(Item::class)->find($itemId);
+
+        if (!$item) {
+            return $this->json(['success' => false, 'message' => 'Item not found'], 404);
+        }
+
+        try {
+            $entityManager->remove($item);
+            $entityManager->flush();
+
+            return $this->json(['success' => true, 'message' => 'Item deleted successfully']);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Error deleting item: ' . $e->getMessage()
+            ], 500);
+        }
     }
-}
-
-
-
- 
 
     
-    
+
+  
+
+
+
+
+
+
 }

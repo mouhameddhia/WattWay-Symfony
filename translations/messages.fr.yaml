@@ -1,0 +1,6 @@
+list_of_orders: "Liste des commandes"
+create_new_order: "Créer une commande"
+sort_by: "Trier par"
+status: "Statut"
+total_amount_asc: "Montant total ↑"
+total_amount_desc: "Montant total ↓"
