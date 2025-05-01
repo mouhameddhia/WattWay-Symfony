@@ -300,4 +300,3 @@ final class SubmissionController extends AbstractController
         ]);
     }
 }
-

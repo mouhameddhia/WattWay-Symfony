@@ -195,7 +195,7 @@ class FrontSubmissionController extends AbstractController
         EntityManagerInterface $entityManager,
         CarRepository $carRepository,
         ValidatorInterface $validator
-    ): Response|JsonResponse {
+    ): Response {
         // Set the locale
         $locale = $request->getLocale();
         $request->setLocale($locale);
@@ -224,10 +224,8 @@ class FrontSubmissionController extends AbstractController
                 $car = $carRepository->findOneBy(['vinCode' => $vinCode]);
                 
                 if (!$car) {
-                    return $this->json([
-                        'success' => false,
-                        'error' => 'No car found with this VIN'
-                    ], 404);
+                    $this->addFlash('error', 'No car found with this VIN');
+                    return $this->redirectToRoute('Front_Submission_edit', ['idSubmission' => $submission->getIdSubmission()]);
                 }
                 
                 // Link Car to Submission
@@ -235,48 +233,25 @@ class FrontSubmissionController extends AbstractController
                 
                 try {
                     $entityManager->flush();
-
-                    return $this->json([
-                        'success' => true,
-                        'message' => 'Submission updated successfully',
-                        'submission' => [
-                            'idSubmission' => $submission->getIdSubmission(),
-                            'status' => $submission->getStatus(),
-                            'description' => $submission->getDescription(),
-                            'dateSubmission' => $submission->getDateSubmission()->format('Y-m-d'),
-                            'preferredContactMethod' => $submission->getPreferredContactMethod(),
-                            'preferredAppointmentDate' => $submission->getPreferredAppointmentDate()->format('Y-m-d')
-                        ]
-                    ]);
+                    $this->addFlash('success', 'Submission updated successfully');
+                    return $this->redirectToRoute('Front');
                 } catch (\Exception $e) {
                     error_log('Database error: ' . $e->getMessage());
-                    return $this->json([
-                        'success' => false,
-                        'error' => 'Database error',
-                        'message' => $e->getMessage()
-                    ], 500);
+                    $this->addFlash('error', 'Failed to update submission. Please try again.');
+                    return $this->redirectToRoute('Front_Submission_edit', ['idSubmission' => $submission->getIdSubmission()]);
                 }
             } else {
                 // Get form errors
-                $errors = [];
                 foreach ($formSubmission->getErrors(true) as $error) {
-                    $errors[] = $error->getMessage();
+                    $this->addFlash('error', $error->getMessage());
                 }
-                
-                return $this->json([
-                    'success' => false,
-                    'error' => 'Form validation failed',
-                    'messages' => $errors
-                ], 400);
+                return $this->redirectToRoute('Front_Submission_edit', ['idSubmission' => $submission->getIdSubmission()]);
             }
         } catch (\Exception $e) {
             error_log('Server error: ' . $e->getMessage());
             error_log('Stack trace: ' . $e->getTraceAsString());
-            return $this->json([
-                'success' => false,
-                'error' => 'Server error',
-                'message' => $e->getMessage()
-            ], 500);
+            $this->addFlash('error', 'An error occurred. Please try again.');
+            return $this->redirectToRoute('Front_Submission_edit', ['idSubmission' => $submission->getIdSubmission()]);
         }
     }
 }

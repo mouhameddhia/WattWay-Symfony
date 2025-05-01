@@ -491,4 +491,56 @@ class SubmissionRepository extends ServiceEntityRepository
 
         return $data;
     }
+
+    public function searchAndSort(string $searchTerm = '', string $sortBy = 'dateSubmission', string $sortOrder = 'DESC', string $status = 'ALL'): array
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        if ($searchTerm) {
+            $qb->andWhere('s.description LIKE :searchTerm')
+               ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+        if ($status !== 'ALL') {
+            $qb->andWhere('s.status = :status')
+               ->setParameter('status', $status);
+        }
+
+        // Validate and set sort field
+        $validSortFields = ['dateSubmission', 'preferredAppointmentDate', 'status', 'urgencyLevel'];
+        $sortField = in_array($sortBy, $validSortFields) ? $sortBy : 'dateSubmission';
+        
+        // Validate sort order
+        $sortOrder = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
+
+        $qb->orderBy('s.' . $sortField, $sortOrder);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function createSearchQuery(string $searchTerm = '', string $sortBy = 'dateSubmission', string $sortOrder = 'DESC', string $status = 'ALL')
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        if ($searchTerm) {
+            $qb->andWhere('s.description LIKE :searchTerm')
+               ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+        if ($status !== 'ALL') {
+            $qb->andWhere('s.status = :status')
+               ->setParameter('status', $status);
+        }
+
+        // Validate and set sort field
+        $validSortFields = ['dateSubmission', 'preferredAppointmentDate', 'status', 'urgencyLevel'];
+        $sortField = in_array($sortBy, $validSortFields) ? $sortBy : 'dateSubmission';
+        
+        // Validate sort order
+        $sortOrder = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
+
+        $qb->orderBy('s.' . $sortField, $sortOrder);
+
+        return $qb->getQuery();
+    }
 }
