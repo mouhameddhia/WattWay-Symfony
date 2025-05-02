@@ -58,8 +58,9 @@
 
         /* Table header - restore blue style */
         #submissionsTable thead tr {
-            background: linear-gradient(180deg, #4e73df 0%, #224abe 100%);
+            background-color: #4A79D9;
             color: white;
+            font-weight: bold;
         }
 
         #submissionsTable thead th {
@@ -272,8 +273,8 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table" id="submissionsTable">
-                        <thead>
+                    <table class="table table-hover table-striped shadow" id="submissionsTable">
+                        <thead class="thead">
                             <tr>
                                 <th>Id</th>
                                 <th>Description</th>
@@ -485,6 +486,7 @@
 
 {% block javascript %}
     {{ parent() }}
+   
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>

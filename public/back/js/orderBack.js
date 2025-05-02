@@ -1,4 +1,5 @@
 // Wait for the DOM to fully load before executing any scripts
+
 document.addEventListener('DOMContentLoaded', function () {
 
 
@@ -400,18 +401,4 @@ function triggerAjax(query) {
       console.log("AJAX triggered with:", query);
 }
 
-document.getElementById("searchIconButton").addEventListener("click", function() {
-    triggerAjax(document.getElementById("searchInput").value);
-});
-
-document.getElementById('monthFilter').addEventListener('change', function() {
-    const selectedMonth = this.value;
-    const currentURL = new URL(window.location.href); // Get the current URL
-
-    // Update the month query parameter
-    currentURL.searchParams.set('month', selectedMonth);
-
-    // Reload the page with the updated query parameter
-    window.location.href = currentURL.toString();
-});
 

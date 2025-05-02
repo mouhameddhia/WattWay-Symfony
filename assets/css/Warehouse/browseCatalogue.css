@@ -7,7 +7,7 @@ body {
 }
 
 /* Card Container */
-.card-container {
+.card-container-browse {
     display: flex;
     flex-wrap: wrap;
     gap: 50px;
@@ -106,7 +106,7 @@ body {
 }
 
 .buy-btn:disabled,
-.modal-content button#confirmBtn:disabled {
+.modal-content-browse button#confirmBtn:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
     transform: none !important;
@@ -244,7 +244,7 @@ input:checked + .slider:before {
     animation: fadeIn 0.5s ease-out forwards;
 }
 
-.floating-container .modal-content {
+.floating-container-browse .modal-content-browse {
     position: relative;
     background: #ffffff;
     padding: 20px;
@@ -257,13 +257,13 @@ input:checked + .slider:before {
     overflow-y: auto;
 }
 
-.modal-content {
+.modal-content-browse {
     font-family: 'Poppins', sans-serif;
     color: #333;
     text-align: left;
 }
 
-.modal-content img {
+.modal-content-browse img {
     width: 100%;
     height: auto;
     border-radius: 10px;
@@ -271,31 +271,31 @@ input:checked + .slider:before {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.modal-content table {
+.modal-content-browse table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
 }
 
-.modal-content table th,
-.modal-content table td {
+.modal-content-browse table th,
+.modal-content-browse table td {
     padding: 10px;
     text-align: left;
     border-bottom: 1px solid #e0e0e0;
 }
 
-.modal-content table th {
+.modal-content-browse table th {
     background-color: #f9f9f9;
     font-weight: bold;
     color: #555;
 }
 
-.modal-content table .total-row td {
+.modal-content-browse table .total-row td {
     font-weight: bold;
     color: #28a745;
 }
 
-.modal-content button {
+.modal-content-browse button {
     display: inline-block;
     padding: 10px 20px;
     font-size: 16px;
@@ -308,12 +308,12 @@ input:checked + .slider:before {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.modal-content button:hover {
+.modal-content-browse button:hover {
     background-color: #0056b3;
     transform: scale(1.05);
 }
 
-.modal-content button#confirmBtn {
+.modal-content-browse button#confirmBtn {
     background-color: #28a745;
     color: white;
     border: none;
@@ -325,13 +325,13 @@ input:checked + .slider:before {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.modal-content button#confirmBtn:hover {
+.modal-content-browse button#confirmBtn:hover {
     background-color: #218838;
     transform: translateY(-2px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-.modal-content button#confirmBtn:focus {
+.modal-content-browse button#confirmBtn:focus {
     outline: none;
     box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.3);
 }
@@ -552,7 +552,7 @@ input:checked + .slider:before {
 }
 
 
-#mapModal .modal-content {
+#mapModal .modal-content-browse {
     top: 10%;
     background-color: #fff;
     padding: 25px;
@@ -574,7 +574,7 @@ input:checked + .slider:before {
     border-radius: 8px;
 }
 
-#mapModal .modal-content > div:last-child {
+#mapModal .modal-content-browse > div:last-child {
     margin-top: 20px;
     display: flex;
     gap: 20px;
@@ -674,7 +674,7 @@ input:checked + .slider:before {
     display: none;
   }
   
-  .specsModal-content {
+  .specsmodal-content-browse {
     background-color: #fff;
     color: #2d2d30;
     padding: 2rem;

@@ -5,10 +5,11 @@ liip_imagine:
         item_watermarked:
             quality: 90
             filters:
+            
                 thumbnail:
                     size: [400, 400]
                     mode: inset
                 watermark_image:
-                    image: '%kernel.project_dir%/public/images/WattShop_watermark.png'
+                    image: 'public/images/WattShop_watermark.png'
                     size: 1.0          # 1.0 = full width of the image (adjust as needed)
                     position: center   # positions watermark in the middle

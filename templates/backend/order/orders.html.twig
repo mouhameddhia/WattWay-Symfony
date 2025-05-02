@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="{{ asset('back/css/ordersBack.css') }}">
 <link rel="stylesheet" href="{{ asset('back/css/newCss.css') }}">
 
+        <link href="{{ asset('back/css/orders.css') }}" rel="stylesheet">
 {% set highlightId = app.request.get('highlight') %}
 {% set nextStatus = {
     null: 'Pending',
@@ -118,33 +119,9 @@
 
 
         
-        <!-- Month Selector -->
-        <div class="input-group input-group-sm" style="width:160px; height:32px; margin-top:21px;">
-            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-            <select id="monthFilterOrder" class="form-select form-select-sm">
-                <option value="all" selected>All Months</option>
-                <option value="01">January</option>
-                <option value="02">February</option>
-                <option value="03">March</option>
-                <option value="04">April</option>
-                <option value="05">May</option>
-                <option value="06">June</option>
-                <option value="07">July</option>
-                <option value="08">August</option>
-                <option value="09">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
-            </select>
-        </div>
+        
 
-        <!-- Search Orders by Item -->
-        <div class="alignSearchSVG" style="width:250px;height:40px; margin-top:10px;boarder-radius;">
-            <input type="text" id="searchInput" placeholder="Search by item name..." />
-            <svg id="searchIconButton" xmlns="http://www.w3.org/2000/svg" style="margin-left:5px;" height="12" width="12" viewBox="0 0 512 512">
-                <path fill="#ddd" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
-            </svg>
-        </div>
+        
         
     </div>
 
@@ -352,7 +329,7 @@
             </div>
             
             <!-- Right Arrow -->
-            <div id="arrowRight"  style="position: relative; left: 1260px;top:-130px;" class="chart-arrow">
+            <div id="arrowRight"  style="position: relative; left: 1320px;top:-130px;" class="chart-arrow">
                 <i class="fas fa-chevron-right fa-2x"></i>
             </div>
             
@@ -444,6 +421,32 @@
         </div>
     </div>
 </div>
+  <!-- Notification Toast - Centered with Items -->
+<div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1060; width: 400px;">
+    <div id="orderNotification" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-primary text-white">
+            <strong class="me-auto">Order #<span id="orderIdDisplay"></span> Items</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderItemsList">
+                        <!-- Items will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+ <!-- jQuery -->
 
 <style>
     /* Highlight the active link */
@@ -457,34 +460,156 @@ a.active {
 
 </style>
 {% block javascripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Custom scripts -->
+<script>
+$(document).ready(function() {
+
+
+    // Month filter functionality
+$('#monthFilter').change(function() {
+    const month = $(this).val();
+    filterOrdersByMonth(month);
+});
+
+function filterOrdersByMonth(month) {
+    if (month === 'all') {
+        $('tbody tr.clickable-order').show();
+        $('#noMonthResults').remove();
+        return;
+    }
+    
+    // Show loading state
+    $('tbody tr.clickable-order').hide();
+    $('tbody').append('<tr id="monthLoading"><td colspan="8" class="text-center py-3"><div class="spinner-border spinner-border-sm text-primary" role="status"></div> Loading orders...</td></tr>');
+    
+    $.ajax({
+        url: `/orders/by-month/${month}`,
+        method: 'GET',
+        success: function(response) {
+            $('#monthLoading, #noMonthResults').remove();
+            
+            if (response.orders.length > 0) {
+                // Hide all orders first
+                $('tbody tr.clickable-order').hide();
+                
+                // Show only matching orders
+                response.orders.forEach(order => {
+                    $(`tr[data-order-id="${order.id}"]`).show();
+                });
+            } else {
+                $('tbody').append('<tr id="noMonthResults"><td colspan="8" class="text-center py-3 text-muted">No orders found for selected month</td></tr>');
+            }
+        },
+        error: function() {
+            $('#monthLoading').remove();
+            $('tbody').append('<tr id="monthError"><td colspan="8" class="text-center py-3 text-danger">Error loading orders</td></tr>');
+        }
+    });
+}
+
+
+
+
+    const orderToast = new bootstrap.Toast(document.getElementById('orderNotification'), {
+        autohide: false,
+        animation: true
+        });
+        // Handle order clicks
+        $(document).on('click', '.clickable-order', function(e) {
+            if ($(e.target).closest('.btn').length) return;
+            const orderId = $(this).data('order-id');
+            const $itemsList = $('#orderItemsList');
+            // Update order ID display
+            $('#orderIdDisplay').text(orderId);
+            // Set loading state
+            $itemsList.html('')
+                .addClass('loading')
+                .removeClass('empty error');
+            
+            // Show toast before making the request
+            orderToast.show();
+            
+            // Fetch items from server
+            $.ajax({
+            url: `/order/items/${orderId}`,
+            method: 'GET',
+            dataType: 'json',
+            beforeSend: function() {
+                $itemsList.html('').addClass('loading');
+            },
+            success: function(response) {
+                $itemsList.removeClass('loading');
+                
+                if (response.items && response.items.length > 0) {
+                    let itemsHtml = '';
+                    let total = 0;
+                    
+                    // Build items table
+                    response.items.forEach(item => {
+                        total += item.price * item.quantity;
+                        itemsHtml += `
+                            <tr>
+                                <td class="text-nowrap">${item.name}</td>
+                                <td class="text-end">${item.quantity}</td>
+                                <td class="text-end">${item.price.toFixed(2)} TND</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    // Add total row
+                    itemsHtml += `
+                        <tr class="table-active">
+                            <td><strong>Total</strong></td>
+                            <td></td>
+                            <td class="text-end"><strong>${total.toFixed(2)} TND</strong></td>
+                        </tr>
+                    `;
+                    
+                    $itemsList.html(itemsHtml);
+                } else {
+                    $itemsList.addClass('empty')
+                        .html('<tr><td colspan="3">No items found in this order</td></tr>');
+                }
+            },
+            error: function(xhr) {
+                $itemsList.removeClass('loading')
+                    .addClass('error');
+                
+                let errorMsg = 'Error loading items';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg += `: ${xhr.responseJSON.message}`;
+                }
+                
+                $itemsList.html(`<tr><td colspan="3">${errorMsg}</td></tr>`);
+            },
+            complete: function() {
+                // Ensure toast stays visible
+                orderToast._element.style.visibility = 'visible';
+            }
+        });
+    });
+    
+    // Close button hover effect
+    $(document).on('mouseenter', '#orderNotification .btn-close', function() {
+        $(this).css('opacity', '1');
+    }).on('mouseleave', '#orderNotification .btn-close', function() {
+        $(this).css('opacity', '0.8');
+    });
+
+    
+
+});
+</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     window.adminOrdersData = {{ admin_orders_by_month|json_encode|raw }};
     window.clientOrdersData = {{ client_orders_by_month|json_encode|raw }};
     window.expensesData = {{ expenses_by_month|json_encode|raw }};
     window.revenuesData = {{ revenues_by_month|json_encode|raw }};
-    document.addEventListener('DOMContentLoaded', function () {
-        const monthSelector = document.getElementById('monthFilterOrder');
-        const ordersTable = document.querySelector('table#dataTable tbody');
-        const allRows = ordersTable.querySelectorAll('tr');
     
-        // Event listener to detect month change
-        monthSelector.addEventListener('change', function () {
-            const selectedMonth = monthSelector.value; // Get selected month value (e.g., "01" for January)
-    
-            allRows.forEach(function(row) {
-                const orderDate = row.querySelector('td:nth-child(4)').textContent.trim(); // Assuming the date is in the 4th column
-                const orderMonth = orderDate ? orderDate.split('/')[0] : null; // Extract the month from the date (e.g., "05" from "05/01/2025")
-    
-                // Show or hide rows based on the selected month
-                if (selectedMonth === 'all' || orderMonth === selectedMonth) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-    });
     
     
 
@@ -492,6 +617,7 @@ a.active {
     
 </script>
 <script src="{{ asset('back/js/orderBack.js') }}"></script>
+
 
 
 {% endblock %}

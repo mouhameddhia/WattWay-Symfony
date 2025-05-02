@@ -3,13 +3,11 @@
     "version": "1.0.0",
     "description": "Submission Management System",
     "devDependencies": {
-        "@babel/core": "^7.17.0",
-        "@babel/preset-env": "^7.16.0",
-        "@symfony/webpack-encore": "^5.0.0",
-        "core-js": "^3.38.0",
-        "regenerator-runtime": "^0.13.9",
-        "webpack": "^5.74.0",
-        "webpack-cli": "^5.1.0"
+        "@symfony/stimulus-bridge": "^3.2.0",
+        "@symfony/webpack-encore": "^4.2.0",
+        "webpack": "^5.88.2",
+        "webpack-cli": "^5.1.4",
+        "webpack-notifier": "^1.15.0"
     },
     "license": "UNLICENSED",
     "private": true,
@@ -23,15 +21,7 @@
         "@hotwired/stimulus": "^3.2.2",
         "chart.js": "^4.4.1"
     },
-    "devDependencies": {
-        "@symfony/stimulus-bridge": "^3.2.0",
-        "@symfony/webpack-encore": "^4.2.0",
-        "webpack": "^5.88.2",
-        "webpack-cli": "^5.1.4",
-        "webpack-notifier": "^1.15.0"
-    },
-        "@symfony/ux-chartjs": "^2.24.0",
-        "chart.js": "^4.4.9",
-        "stimulus": "^3.2.2"
+    "@symfony/ux-chartjs": "^2.24.0",
+    "chart.js": "^4.4.9",
+    "stimulus": "^3.2.2"
 }
-

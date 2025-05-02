@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="{{ asset('back/css/ordersBack.css') }}">
 <link rel="stylesheet" href="{{ asset('back/css/newCss.css') }}">
 
+        <link href="{{ asset('back/css/orders.css') }}" rel="stylesheet">
 <!-- Items Management -->
 
 <div class="card shadow mb-4">
@@ -86,7 +87,7 @@
 
 
         <!-- Search by Item -->
-        <form method="get" action="{{ path('items') }}" class="alignSearchSVG" style="width:250px;height:40px; margin-top:10px;">
+        <form method="get" action="{{ path('items') }}" class="alignSearchSVG" style="width:220px;height:50px;display:flex;align-items:center;">
             <input type="text" id="searchInput" name="search" placeholder="Search by item name..."
                 value="{{ app.request.get('search') }}" />
 
@@ -298,11 +299,11 @@
                 <div class="d-flex justify-content-between mb-2"><span>Total Revenue</span><span class="fw-bold">32,688 TND</span></div>
                 <div class="d-flex justify-content-between mb-2"><span>Top Category</span><span class="fw-bold text-success">Electronics (6,897 TND)</span></div>
                 <div class="d-flex justify-content-between mb-2"><span>Lowest Category</span><span class="fw-bold text-danger">Exterior (358.5 TND)</span></div>
-                <div class="d-flex justify-content-between"><span>Avg Revenue/Order</span><span class="fw-bold">$250</span></div>
+                <div class="d-flex justify-content-between"><span>Avg Revenue/Order</span><span class="fw-bold">250 TND</span></div>
             `;
             monthlyAverage.innerHTML = `
                 <h6 class="text-muted mb-2">Monthly Average</h6>
-                <div class="d-flex justify-content-between mb-1"><small>Revenue</small><small class="fw-bold">$2,000/month</small></div>
+                <div class="d-flex justify-content-between mb-1"><small>Revenue</small><small class="fw-bold">2,000 TND/month</small></div>
             `;
         }
     }

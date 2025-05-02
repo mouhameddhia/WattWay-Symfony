@@ -209,7 +209,7 @@ async function fetchFilteredCars() {
         const data = await response.json();
 
         if (data.success && data.html) {
-            const container = document.querySelector('.card-container');
+            const container = document.querySelector('.card-container-browse');
             container.outerHTML = data.html; 
             rebindCardFunctions();
         } else {

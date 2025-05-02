@@ -228,7 +228,7 @@ function updateBillTable(bills) {
                 <td>${bill.user.firstNameUser} ${bill.user.lastNameUser}</td>
                 <td>${bill.totalAmountBill} DT</td>
                 <td>${bill.dateBill.split('T')[0]}</td>
-                <td>${bill.statusBill === 1 ? 'Paid' : 'Pending'}</td>
+                <td>${bill.statusBill === 1 ? '<span class="paidBill"> Paid </span>' :  '<span class="paidBill"> Pending</span>'}</td>
                 <td class="action-column">
                     <div class="btn-group btn-group-sm">
                         <a href="/dashboard/bill/update/${bill.idBill}" class="btn btn-warning btn-sm" title="Update">

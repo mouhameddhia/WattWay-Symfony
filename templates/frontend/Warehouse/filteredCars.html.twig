@@ -1,5 +1,5 @@
 
-<div class="card-container">
+<div class="card-container-browse">
     {% set nbcars = 0 %}
     {% for car in cars %}
         {% set nbcars = nbcars + 1 %}
@@ -112,8 +112,8 @@
             <div id="overlay"></div>
 
             <!-- Floating Container for Rent -->
-            <div id="floatingContainerRent" class="floating-container hidden">
-                <div class="modal-content">
+            <div id="floatingContainerRent" class="floating-container-browse hidden">
+                <div class="modal-content-browse">
                     <img id="modalCarImage" src="" alt="Car image" class="car-image">
                     <h4 class="modal-title">Please select the range in which you will be renting this car</h4>
                     <table class="floating-table">
@@ -140,8 +140,8 @@
             </div>
 
             <!-- Floating Container for Purchase -->
-            <div id="floatingContainer" class="floating-container hidden">
-                <div class="modal-content">
+            <div id="floatingContainer" class="floating-container-browse hidden">
+                <div class="modal-content-browse">
                     <img id="modalCarImage2" src="" alt="Car image" class="car-image">
                     <table class="floating-table">
                         <tr>

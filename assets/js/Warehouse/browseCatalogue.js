@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalCarId = document.getElementById('modalCarId');
 
     // Toggle price visibility
-    document.querySelector('.card-container').addEventListener('change', (event) => {
+    document.querySelector('.card-container-browse').addEventListener('change', (event) => {
         if (event.target.classList.contains('price-toggle')) {
             const card = event.target.closest('.car-card');
             card.querySelectorAll('.purchase-price, .rent-price, .purchase-label, .rent-label, .buy-btn, .rent-btn')
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Rent button functionality
-    document.querySelector('.card-container').addEventListener('click', (event) => {
+    document.querySelector('.card-container-browse').addEventListener('click', (event) => {
         if (event.target.classList.contains('rent-btn')) {
             const card = event.target.closest('.car-card');
             const carImage = card.querySelector('.car-image').src;
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     // Purchase button functionality
-    document.querySelector('.card-container').addEventListener('click', (event) => {
+    document.querySelector('.card-container-browse').addEventListener('click', (event) => {
         if (event.target.classList.contains('proceed-btn')) {
             console.log('Purchase button clicked');
             const card = event.target.closest('.car-card');
@@ -138,7 +138,7 @@ function rebindCardFunctions() {
     const modalRentCarId = document.getElementById('modalRentCarId');
     const modalCarId = document.getElementById('modalCarId');
 
-    document.querySelector('.card-container').addEventListener('change', (event) => {
+    document.querySelector('.card-container-browse').addEventListener('change', (event) => {
         if (event.target.classList.contains('price-toggle')) {
             const card = event.target.closest('.car-card');
             card.querySelectorAll('.purchase-price, .rent-price, .purchase-label, .rent-label, .buy-btn, .rent-btn')
@@ -146,7 +146,7 @@ function rebindCardFunctions() {
         }
     });
 
-    document.querySelector('.card-container').addEventListener('click', (event) => {
+    document.querySelector('.card-container-browse').addEventListener('click', (event) => {
         if (event.target.classList.contains('rent-btn')) {
             const card = event.target.closest('.car-card');
             const carImage = card.querySelector('.car-image').src;
@@ -163,7 +163,7 @@ function rebindCardFunctions() {
         }
     });
 
-    document.querySelector('.card-container').addEventListener('click', (event) => {
+    document.querySelector('.card-container-browse').addEventListener('click', (event) => {
         if (event.target.classList.contains('proceed-btn')) {
             const card = event.target.closest('.car-card');
             const carImage = card.querySelector('.car-image').src;
