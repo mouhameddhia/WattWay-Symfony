@@ -2,7 +2,10 @@
 
 namespace App\Entity;
 
+<<<<<<< HEAD
 use Doctrine\DBAL\Types\Types;
+=======
+>>>>>>> 7bf07a5064643563162ffd5f224dcf29261c4b00
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -113,6 +116,7 @@ class MessengerMessage
         return $this;
     }
 
+<<<<<<< HEAD
     public function getQueueName(): ?string
     {
         return $this->queue_name;
@@ -161,4 +165,6 @@ class MessengerMessage
         return $this;
     }
 
+=======
+>>>>>>> 7bf07a5064643563162ffd5f224dcf29261c4b00
 }

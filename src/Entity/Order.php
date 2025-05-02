@@ -2,141 +2,119 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
 use App\Repository\OrderRepository;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
-#[ORM\Table(name: 'order')]
+#[ORM\Table(name: '`order`')]
 class Order
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(name: 'idOrder', type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]  // This makes the id auto-incremented
     private ?int $idOrder = null;
+
+    #[ORM\Column(name: 'supplierOrder', type: 'string', length: 255)]
+    private ?string $supplierOrder = null;
+
+    #[ORM\Column(name: 'dateOrder', type: 'datetime')]
+    private ?\DateTimeInterface $dateOrder = null;
+
+    #[ORM\Column(name: 'totalAmountOrder', type: 'float')]
+    private ?float $totalAmountOrder = null;
+
+    #[ORM\Column(name: 'statusOrder', type: 'string', length: 100)]
+    private ?string $statusOrder = null;
+
+    #[ORM\Column(name: 'addressSupplierOrder', type: 'string', length: 255)]
+    private ?string $addressSupplierOrder = null;
+
+    #[ORM\Column(name: 'idAdmin', type: 'integer')]
+    private ?int $idAdmin = null;
+
+    // Getters and setters
 
     public function getIdOrder(): ?int
     {
         return $this->idOrder;
     }
 
-    public function setIdOrder(int $idOrder): self
+    public function setIdOrder(int $idOrder): static
     {
         $this->idOrder = $idOrder;
+
         return $this;
     }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $supplierOrder = null;
 
     public function getSupplierOrder(): ?string
     {
         return $this->supplierOrder;
     }
 
-    public function setSupplierOrder(string $supplierOrder): self
+    public function setSupplierOrder(string $supplierOrder): static
     {
         $this->supplierOrder = $supplierOrder;
+
         return $this;
     }
-
-    #[ORM\Column(type: 'date')]
-    private ?\DateTimeInterface $dateOrder = null;
 
     public function getDateOrder(): ?\DateTimeInterface
     {
         return $this->dateOrder;
     }
 
-    public function setDateOrder(\DateTimeInterface $dateOrder): self
+    public function setDateOrder(\DateTimeInterface $dateOrder): static
     {
         $this->dateOrder = $dateOrder;
+
         return $this;
     }
-
-    #[ORM\Column(type: 'float')]
-    private ?float $totalAmountOrder = null;
 
     public function getTotalAmountOrder(): ?float
     {
         return $this->totalAmountOrder;
     }
 
-    public function setTotalAmountOrder(float $totalAmountOrder): self
+    public function setTotalAmountOrder(float $totalAmountOrder): static
     {
         $this->totalAmountOrder = $totalAmountOrder;
+
         return $this;
     }
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private ?string $statusOrder = null;
 
     public function getStatusOrder(): ?string
     {
         return $this->statusOrder;
     }
 
-    public function setStatusOrder(string $statusOrder): self
+    public function setStatusOrder(string $statusOrder): static
     {
         $this->statusOrder = $statusOrder;
+
         return $this;
     }
-
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $idAdmin = null;
-
-    public function getIdAdmin(): ?int
-    {
-        return $this->idAdmin;
-    }
-
-    public function setIdAdmin(?int $idAdmin): self
-    {
-        $this->idAdmin = $idAdmin;
-        return $this;
-    }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $addressSupplierOrder = null;
 
     public function getAddressSupplierOrder(): ?string
     {
         return $this->addressSupplierOrder;
     }
 
-    public function setAddressSupplierOrder(string $addressSupplierOrder): self
+    public function setAddressSupplierOrder(string $addressSupplierOrder): static
     {
         $this->addressSupplierOrder = $addressSupplierOrder;
+
         return $this;
     }
 
-    #[ORM\Column(type: 'integer')]
-    private ?int $idUser = null;
-
-    public function getIdUser(): ?int
+    public function getIdAdmin(): ?int
     {
-        return $this->idUser;
+        return $this->idAdmin;
     }
 
-    public function setIdUser(int $idUser): self
+    public function setIdAdmin(int $idAdmin): static
     {
-        $this->idUser = $idUser;
-        return $this;
-    }
+        $this->idAdmin = $idAdmin;
 
-    #[ORM\Column(type: 'integer')]
-    private ?int $idWarehouse = null;
-
-    public function getIdWarehouse(): ?int
-    {
-        return $this->idWarehouse;
-    }
-
-    public function setIdWarehouse(int $idWarehouse): self
-    {
-        $this->idWarehouse = $idWarehouse;
         return $this;
     }
 }

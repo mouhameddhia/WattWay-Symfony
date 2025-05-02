@@ -34,4 +34,7 @@ return [
     'chart.js' => [
         'version' => '3.9.1',
     ],
+    '@symfony/ux-chartjs' => [
+        'version' => '2.24.0',
+    ]
 ];

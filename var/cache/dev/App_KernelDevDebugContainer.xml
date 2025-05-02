@@ -41,6 +41,8 @@
       <parameter key="SymfonycastsTailwindBundle">Symfonycasts\TailwindBundle\SymfonycastsTailwindBundle</parameter>
       <parameter key="CMENGoogleChartsBundle">CMEN\GoogleChartsBundle\CMENGoogleChartsBundle</parameter>
       <parameter key="MercurySeriesFlashyBundle">MercurySeries\FlashyBundle\MercurySeriesFlashyBundle</parameter>
+      <parameter key="WebpackEncoreBundle">Symfony\WebpackEncoreBundle\WebpackEncoreBundle</parameter>
+      <parameter key="LiipImagineBundle">Liip\ImagineBundle\LiipImagineBundle</parameter>
     </parameter>
     <parameter key="kernel.bundles_metadata" type="collection">
       <parameter key="FrameworkBundle" type="collection">
@@ -155,6 +157,14 @@
         <parameter key="path">C:\Users\harou\WarehouseManagement\vendor\mercuryseries\flashy-bundle\src</parameter>
         <parameter key="namespace">MercurySeries\FlashyBundle</parameter>
       </parameter>
+      <parameter key="WebpackEncoreBundle" type="collection">
+        <parameter key="path">C:\Users\harou\WarehouseManagement\vendor\symfony\webpack-encore-bundle\src</parameter>
+        <parameter key="namespace">Symfony\WebpackEncoreBundle</parameter>
+      </parameter>
+      <parameter key="LiipImagineBundle" type="collection">
+        <parameter key="path">C:\Users\harou\WarehouseManagement\vendor\liip\imagine-bundle</parameter>
+        <parameter key="namespace">Liip\ImagineBundle</parameter>
+      </parameter>
     </parameter>
     <parameter key="kernel.charset">UTF-8</parameter>
     <parameter key="kernel.container_class">App_KernelDevDebugContainer</parameter>
@@ -166,6 +176,8 @@
     <parameter key="pdfgeneratorapi.api_key">%env(PDFGENERATORAPI_API_KEY)%</parameter>
     <parameter key="pdfgeneratorapi.api_secret">%env(PDFGENERATORAPI_API_SECRET)%</parameter>
     <parameter key="pdfgeneratorapi.template_id">%env(PDFGENERATORAPI_TEMPLATE_ID)%</parameter>
+    <parameter key="images_directory">C:\Users\harou\WarehouseManagement/public/images</parameter>
+    <parameter key="locale">en</parameter>
     <parameter key="event_dispatcher.event_aliases" type="collection">
       <parameter key="Symfony\Component\Console\Event\ConsoleCommandEvent">console.command</parameter>
       <parameter key="Symfony\Component\Console\Event\ConsoleErrorEvent">console.error</parameter>
@@ -309,6 +321,7 @@
     <parameter key="env(VAR_DUMPER_SERVER)">127.0.0.1:9912</parameter>
     <parameter key="twig.form.resources" type="collection">
       <parameter>form_div_layout.html.twig</parameter>
+      <parameter>@LiipImagine/Form/form_div_layout.html.twig</parameter>
     </parameter>
     <parameter key="twig.default_path">C:\Users\harou\WarehouseManagement/templates</parameter>
     <parameter key="web_profiler.debug_toolbar.intercept_redirects">false</parameter>
@@ -555,6 +568,93 @@
     <parameter key="time.twig.extension.time.class">Knp\Bundle\TimeBundle\Twig\Extension\TimeExtension</parameter>
     <parameter key="cmen_google_charts.version">current</parameter>
     <parameter key="cmen_google_charts.language"></parameter>
+    <parameter key="liip_imagine.resolvers" type="collection">
+      <parameter key="default" type="collection">
+        <parameter key="web_path" type="collection">
+          <parameter key="web_root">C:\Users\harou\WarehouseManagement/public</parameter>
+          <parameter key="cache_prefix">media/cache</parameter>
+        </parameter>
+      </parameter>
+    </parameter>
+    <parameter key="liip_imagine.loaders" type="collection">
+      <parameter key="default" type="collection">
+        <parameter key="filesystem" type="collection">
+          <parameter key="locator">filesystem</parameter>
+          <parameter key="data_root" type="collection">
+            <parameter>C:\Users\harou\WarehouseManagement/public</parameter>
+          </parameter>
+          <parameter key="allow_unresolvable_data_roots">false</parameter>
+          <parameter key="bundle_resources" type="collection">
+            <parameter key="enabled">false</parameter>
+            <parameter key="access_control_type">blacklist</parameter>
+            <parameter key="access_control_list" type="collection"/>
+          </parameter>
+        </parameter>
+      </parameter>
+    </parameter>
+    <parameter key="liip_imagine.jpegoptim.binary">/usr/bin/jpegoptim</parameter>
+    <parameter key="liip_imagine.jpegoptim.stripAll">true</parameter>
+    <parameter key="liip_imagine.jpegoptim.max">null</parameter>
+    <parameter key="liip_imagine.jpegoptim.progressive">true</parameter>
+    <parameter key="liip_imagine.jpegoptim.tempDir">null</parameter>
+    <parameter key="liip_imagine.optipng.binary">/usr/bin/optipng</parameter>
+    <parameter key="liip_imagine.optipng.level">7</parameter>
+    <parameter key="liip_imagine.optipng.stripAll">true</parameter>
+    <parameter key="liip_imagine.optipng.tempDir">null</parameter>
+    <parameter key="liip_imagine.pngquant.binary">/usr/bin/pngquant</parameter>
+    <parameter key="liip_imagine.mozjpeg.binary">/opt/mozjpeg/bin/cjpeg</parameter>
+    <parameter key="liip_imagine.cwebp.binary">/usr/bin/cwebp</parameter>
+    <parameter key="liip_imagine.cwebp.tempDir">null</parameter>
+    <parameter key="liip_imagine.cwebp.q">75</parameter>
+    <parameter key="liip_imagine.cwebp.alphaQ">100</parameter>
+    <parameter key="liip_imagine.cwebp.m">4</parameter>
+    <parameter key="liip_imagine.cwebp.alphaFilter">fast</parameter>
+    <parameter key="liip_imagine.cwebp.alphaMethod">1</parameter>
+    <parameter key="liip_imagine.cwebp.exact">false</parameter>
+    <parameter key="liip_imagine.cwebp.metadata" type="collection">
+      <parameter>none</parameter>
+    </parameter>
+    <parameter key="liip_imagine.driver_service">liip_imagine.gd</parameter>
+    <parameter key="liip_imagine.cache.resolver.default">default</parameter>
+    <parameter key="liip_imagine.default_image">null</parameter>
+    <parameter key="liip_imagine.filter_sets" type="collection">
+      <parameter key="item_watermarked" type="collection">
+        <parameter key="quality">90</parameter>
+        <parameter key="jpeg_quality">null</parameter>
+        <parameter key="png_compression_level">null</parameter>
+        <parameter key="png_compression_filter">null</parameter>
+        <parameter key="format">null</parameter>
+        <parameter key="animated">false</parameter>
+        <parameter key="cache">null</parameter>
+        <parameter key="data_loader">null</parameter>
+        <parameter key="default_image">null</parameter>
+        <parameter key="filters" type="collection">
+          <parameter key="thumbnail" type="collection">
+            <parameter key="size" type="collection">
+              <parameter>400</parameter>
+              <parameter>400</parameter>
+            </parameter>
+            <parameter key="mode">inset</parameter>
+          </parameter>
+          <parameter key="watermark_image" type="collection">
+            <parameter key="image">C:\Users\harou\WarehouseManagement/public/images/WattShop_watermark.png</parameter>
+            <parameter key="size">1</parameter>
+            <parameter key="position">center</parameter>
+          </parameter>
+        </parameter>
+        <parameter key="post_processors" type="collection"/>
+      </parameter>
+    </parameter>
+    <parameter key="liip_imagine.binary.loader.default">default</parameter>
+    <parameter key="liip_imagine.controller.filter_action">Liip\ImagineBundle\Controller\ImagineController::filterAction</parameter>
+    <parameter key="liip_imagine.controller.filter_runtime_action">Liip\ImagineBundle\Controller\ImagineController::filterRuntimeAction</parameter>
+    <parameter key="liip_imagine.webp.generate">false</parameter>
+    <parameter key="liip_imagine.webp.options" type="collection">
+      <parameter key="quality">100</parameter>
+      <parameter key="cache">null</parameter>
+      <parameter key="data_loader">null</parameter>
+      <parameter key="post_processors" type="collection"/>
+    </parameter>
     <parameter key="data_collector.templates" type="collection">
       <parameter key="data_collector.request" type="collection">
         <parameter>request</parameter>
@@ -738,6 +838,22 @@
         <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\FrontController"/>
       </call>
     </service>
+    <service id="App\Controller\Order\ImageWatermarkService" class="App\Controller\Order\ImageWatermarkService" autowire="true" autoconfigure="true"/>
+    <service id="App\Controller\Order\ItemsController" class="App\Controller\Order\ItemsController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\Order\ItemsController"/>
+      </call>
+    </service>
+    <service id="App\Controller\Order\OrdersController" class="App\Controller\Order\OrdersController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\Order\OrdersController"/>
+      </call>
+    </service>
     <service id="App\Controller\ResetPasswordController" class="App\Controller\ResetPasswordController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
@@ -883,6 +999,12 @@
     <service id="App\Form\ChangePasswordFormType" class="App\Form\ChangePasswordFormType" autowire="true" autoconfigure="true">
       <tag name="form.type"/>
     </service>
+    <service id="App\Form\CreateItemType" class="App\Form\CreateItemType" autowire="true" autoconfigure="true">
+      <tag name="form.type"/>
+    </service>
+    <service id="App\Form\CreateOrderType" class="App\Form\CreateOrderType" autowire="true" autoconfigure="true">
+      <tag name="form.type"/>
+    </service>
     <service id="App\Form\FormAddCarType" class="App\Form\FormAddCarType" autowire="true" autoconfigure="true">
       <tag name="form.type"/>
     </service>
@@ -975,6 +1097,10 @@
       <tag name="doctrine.repository_service"/>
       <argument type="service" id="doctrine"/>
     </service>
+    <service id="App\Repository\–regenerateRepository" class="App\Repository\–regenerateRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
     <service id="App\Security\AccessDeniedHandler" class="App\Security\AccessDeniedHandler" autowire="true" autoconfigure="true"/>
     <service id="App\Security\FaceAuthenticator" class="App\Security\FaceAuthenticator" autowire="true" autoconfigure="true">
       <argument type="service" id="doctrine.orm.default_entity_manager"/>
@@ -1027,7 +1153,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
       <tag priority="-50" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">controller.argument_value_resolver</tag>
-      <argument type="service" id=".service_locator.YgW8TNd"/>
+      <argument type="service" id=".service_locator.Yu6P4tD"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver">
       <tag priority="-100" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver">controller.argument_value_resolver</tag>
@@ -1188,6 +1314,9 @@
         <argument key="api_platform.cache.metadata.property" type="service" id="api_platform.cache.metadata.property" on-invalid="ignore_uninitialized"/>
         <argument key="api_platform.cache.metadata.resource_collection" type="service" id="api_platform.cache.metadata.resource_collection" on-invalid="ignore_uninitialized"/>
         <argument key="api_platform.cache.openapi" type="service" id="api_platform.cache.openapi" on-invalid="ignore_uninitialized"/>
+        <argument key="webpack_encore.tag_renderer" type="service" id="webpack_encore.tag_renderer" on-invalid="ignore_uninitialized"/>
+        <argument key="cache.webpack_encore" type="service" id="cache.webpack_encore" on-invalid="ignore_uninitialized"/>
+        <argument key="webpack_encore.entrypoint_lookup[_default]" type="service" id="webpack_encore.entrypoint_lookup[_default]" on-invalid="ignore_uninitialized"/>
         <argument key=".debug.http_client" type="service" id=".debug.http_client" on-invalid="ignore_uninitialized"/>
       </argument>
       <argument type="collection">
@@ -1322,6 +1451,15 @@
           <argument>reset</argument>
         </argument>
         <argument key="api_platform.cache.openapi" type="collection">
+          <argument>reset</argument>
+        </argument>
+        <argument key="webpack_encore.tag_renderer" type="collection">
+          <argument>reset</argument>
+        </argument>
+        <argument key="cache.webpack_encore" type="collection">
+          <argument>reset</argument>
+        </argument>
+        <argument key="webpack_encore.entrypoint_lookup[_default]" type="collection">
           <argument>reset</argument>
         </argument>
         <argument key=".debug.http_client" type="collection">
@@ -1500,6 +1638,7 @@
         <argument>api_platform.cache.metadata.property</argument>
         <argument>api_platform.cache.metadata.resource_collection</argument>
         <argument>api_platform.cache.openapi</argument>
+        <argument>cache.webpack_encore</argument>
       </argument>
       <call method="setName">
         <argument>cache:pool:clear</argument>
@@ -1556,6 +1695,7 @@
         <argument>api_platform.cache.metadata.property</argument>
         <argument>api_platform.cache.metadata.resource_collection</argument>
         <argument>api_platform.cache.openapi</argument>
+        <argument>cache.webpack_encore</argument>
       </argument>
       <call method="setName">
         <argument>cache:pool:delete</argument>
@@ -1589,6 +1729,7 @@
         <argument>api_platform.cache.metadata.property</argument>
         <argument>api_platform.cache.metadata.resource_collection</argument>
         <argument>api_platform.cache.openapi</argument>
+        <argument>cache.webpack_encore</argument>
       </argument>
       <call method="setName">
         <argument>cache:pool:list</argument>
@@ -1694,6 +1835,7 @@
       <argument type="collection">
         <argument>async</argument>
         <argument>failed</argument>
+        <argument>sync</argument>
       </argument>
       <argument type="service" id="messenger.listener.reset_services" on-invalid="null"/>
       <argument type="collection">
@@ -2029,10 +2171,13 @@
         <argument>App\Form</argument>
         <argument>Symfony\Bridge\Doctrine\Form\Type</argument>
         <argument>EasyCorp\Bundle\EasyAdminBundle\Form\Type</argument>
+        <argument>Liip\ImagineBundle\Form\Type</argument>
       </argument>
       <argument type="collection">
         <argument>App\Form\BanUserType</argument>
         <argument>App\Form\ChangePasswordFormType</argument>
+        <argument>App\Form\CreateItemType</argument>
+        <argument>App\Form\CreateOrderType</argument>
         <argument>App\Form\FormAddCarType</argument>
         <argument>App\Form\FormAddWarehouseType</argument>
         <argument>App\Form\FormUpdateBillType</argument>
@@ -2050,6 +2195,7 @@
         <argument>EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType</argument>
         <argument>EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType</argument>
         <argument>EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType</argument>
+        <argument>Liip\ImagineBundle\Form\Type\ImageType</argument>
       </argument>
       <argument type="collection">
         <argument>Symfony\Component\Form\Extension\Core\Type\TransformationFailureExtension</argument>
@@ -2336,6 +2482,7 @@
         <argument key="api_platform.cache.metadata.property" type="service" id="api_platform.cache.metadata.property" on-invalid="ignore_uninitialized"/>
         <argument key="api_platform.cache.metadata.resource_collection" type="service" id="api_platform.cache.metadata.resource_collection" on-invalid="ignore_uninitialized"/>
         <argument key="api_platform.cache.openapi" type="service" id="api_platform.cache.openapi" on-invalid="ignore_uninitialized"/>
+        <argument key="cache.webpack_encore" type="service" id="cache.webpack_encore" on-invalid="ignore_uninitialized"/>
       </argument>
     </service>
     <service id="cache.global_clearer" class="Symfony\Component\HttpKernel\CacheClearer\Psr6CacheClearer" public="true">
@@ -2362,6 +2509,7 @@
         <argument key="api_platform.cache.metadata.property" type="service" id="api_platform.cache.metadata.property" on-invalid="ignore_uninitialized"/>
         <argument key="api_platform.cache.metadata.resource_collection" type="service" id="api_platform.cache.metadata.resource_collection" on-invalid="ignore_uninitialized"/>
         <argument key="api_platform.cache.openapi" type="service" id="api_platform.cache.openapi" on-invalid="ignore_uninitialized"/>
+        <argument key="cache.webpack_encore" type="service" id="cache.webpack_encore" on-invalid="ignore_uninitialized"/>
       </argument>
     </service>
     <service id="identity_translator" class="Symfony\Component\Translation\IdentityTranslator"/>
@@ -2402,6 +2550,11 @@
     <service id="assets.empty_version_strategy" class="Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy"/>
     <service id="assets.json_manifest_version_strategy" class="Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy" abstract="true">
       <argument type="abstract">manifest path</argument>
+      <argument type="service" id=".debug.http_client" on-invalid="null"/>
+      <argument>false</argument>
+    </service>
+    <service id="assets._version__default" class="Symfony\Component\Asset\VersionStrategy\JsonManifestVersionStrategy">
+      <argument>C:\Users\harou\WarehouseManagement/public/build/manifest.json</argument>
       <argument type="service" id=".debug.http_client" on-invalid="null"/>
       <argument>false</argument>
     </service>
@@ -2896,6 +3049,7 @@
             <argument>C:\Users\harou\WarehouseManagement\vendor\knplabs\knp-paginator-bundle/translations\KnpPaginatorBundle.en.xliff</argument>
             <argument>C:\Users\harou\WarehouseManagement\vendor\easycorp\easyadmin-bundle/translations\EasyAdminBundle.en.php</argument>
             <argument>C:\Users\harou\WarehouseManagement\vendor\knplabs\knp-time-bundle/Resources/translations\time.en.xliff</argument>
+            <argument>C:\Users\harou\WarehouseManagement/translations\messages.en.yaml</argument>
           </argument>
           <argument key="es" type="collection">
             <argument>C:\Users\harou\WarehouseManagement\vendor\symfony\validator/Resources/translations\validators.es.xlf</argument>
@@ -2944,6 +3098,7 @@
             <argument>C:\Users\harou\WarehouseManagement\vendor\knplabs\knp-paginator-bundle/translations\KnpPaginatorBundle.fr.xliff</argument>
             <argument>C:\Users\harou\WarehouseManagement\vendor\easycorp\easyadmin-bundle/translations\EasyAdminBundle.fr.php</argument>
             <argument>C:\Users\harou\WarehouseManagement\vendor\knplabs\knp-time-bundle/Resources/translations\time.fr.xliff</argument>
+            <argument>C:\Users\harou\WarehouseManagement/translations\messages.fr.yaml</argument>
           </argument>
           <argument key="gl" type="collection">
             <argument>C:\Users\harou\WarehouseManagement\vendor\symfony\validator/Resources/translations\validators.gl.xlf</argument>
@@ -3279,6 +3434,8 @@
           <argument>C:\Users\harou\WarehouseManagement\vendor\symfonycasts\tailwind-bundle\src/translations</argument>
           <argument>C:\Users\harou\WarehouseManagement\vendor\cmen\google-charts-bundle/translations</argument>
           <argument>C:\Users\harou\WarehouseManagement\vendor\mercuryseries\flashy-bundle\src/translations</argument>
+          <argument>C:\Users\harou\WarehouseManagement\vendor\symfony\webpack-encore-bundle\src/translations</argument>
+          <argument>C:\Users\harou\WarehouseManagement\vendor\liip\imagine-bundle/translations</argument>
         </argument>
         <argument key="cache_vary" type="collection">
           <argument key="scanned_directories" type="collection">
@@ -3314,6 +3471,8 @@
             <argument>C:\Users\harou\WarehouseManagement\vendor\symfonycasts\tailwind-bundle\src/translations</argument>
             <argument>C:\Users\harou\WarehouseManagement\vendor\cmen\google-charts-bundle/translations</argument>
             <argument>C:\Users\harou\WarehouseManagement\vendor\mercuryseries\flashy-bundle\src/translations</argument>
+            <argument>C:\Users\harou\WarehouseManagement\vendor\symfony\webpack-encore-bundle\src/translations</argument>
+            <argument>C:\Users\harou\WarehouseManagement\vendor\liip\imagine-bundle/translations</argument>
           </argument>
         </argument>
       </argument>
@@ -3758,6 +3917,14 @@
         <argument>-96</argument>
       </call>
       <call method="addListener">
+        <argument>kernel.exception</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="webpack_encore.exception_listener"/>
+          <argument>onKernelException</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
         <argument>kernel.controller_arguments</argument>
         <argument type="collection">
           <argument type="service_closure" id="argument_resolver.request_payload"/>
@@ -4134,6 +4301,14 @@
         <argument>0</argument>
       </call>
       <call method="addListener">
+        <argument>kernel.request</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="doctrine.dbal.idle_connection_listener"/>
+          <argument>onKernelRequest</argument>
+        </argument>
+        <argument>192</argument>
+      </call>
+      <call method="addListener">
         <argument>Symfony\Component\Messenger\Event\WorkerMessageHandledEvent</argument>
         <argument type="collection">
           <argument type="service_closure" id="doctrine.orm.messenger.event_subscriber.doctrine_clear_entity_manager"/>
@@ -4366,6 +4541,14 @@
         <argument>0</argument>
       </call>
       <call method="addListener">
+        <argument>kernel.finish_request</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="Symfony\WebpackEncoreBundle\EventListener\ResetAssetsEventListener"/>
+          <argument>resetAssets</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
         <argument>Symfony\Component\Security\Http\Event\CheckPassportEvent</argument>
         <argument type="collection">
           <argument type="service_closure" id="security.listener.csrf_protection"/>
@@ -4395,7 +4578,7 @@
     </service>
     <service id="argument_resolver.not_tagged_controller" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
       <tag name="controller.argument_value_resolver" priority="-200"/>
-      <argument type="service" id=".service_locator.YgW8TNd"/>
+      <argument type="service" id=".service_locator.Yu6P4tD"/>
     </service>
     <service id="debug.log_processor" class="Symfony\Bridge\Monolog\Processor\DebugProcessor">
       <tag name="kernel.reset" method="reset"/>
@@ -4943,7 +5126,7 @@
       <argument type="service" id="form.registry"/>
     </service>
     <service id="form.extension" class="Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension">
-      <argument type="service" id=".service_locator.ba8rBWO"/>
+      <argument type="service" id=".service_locator.6x3_X2Z"/>
       <argument type="collection">
         <argument key="Symfony\Component\Form\Extension\Core\Type\FormType" type="iterator">
           <argument type="service" id="form.type_extension.form.transformation_failure_handling"/>
@@ -5459,7 +5642,7 @@
     </service>
     <service id="messenger.transport.sqs.factory" class="Symfony\Component\Messenger\Bridge\AmazonSqs\Transport\AmazonSqsTransportFactory">
       <tag name="monolog.logger" channel="messenger"/>
-      <tag name="container.error" message="Invalid service &quot;messenger.transport.sqs.factory&quot;: class &quot;Symfony\Component\Messenger\Bridge\AmazonSqs\Transport\AmazonSqsTransportFactory&quot; does not exist."/>
+      <tag name="messenger.transport_factory"/>
       <argument type="service" id="monolog.logger.messenger" on-invalid="ignore"/>
     </service>
     <service id="messenger.transport.beanstalkd.factory" class="Symfony\Component\Messenger\Bridge\Beanstalkd\Transport\BeanstalkdTransportFactory"/>
@@ -5502,12 +5685,6 @@
       <tag name="kernel.event_subscriber"/>
       <argument type="service" id="cache.messenger.restart_workers_signal"/>
       <argument type="service" id="monolog.logger.messenger" on-invalid="ignore"/>
-    </service>
-    <service id="messenger.listener.stop_worker_signals_listener" class="Symfony\Component\Messenger\EventListener\StopWorkerOnSignalsListener">
-      <tag name="monolog.logger" channel="messenger"/>
-      <argument>null</argument>
-      <argument type="service" id="monolog.logger.messenger" on-invalid="ignore"/>
-      <deprecated package="6.4" version="symfony/messenger">The "%service_id%" service is deprecated, use the "Symfony\Component\Console\Command\SignalableCommandInterface" instead.</deprecated>
     </service>
     <service id="messenger.listener.stop_worker_on_stop_exception_listener" class="Symfony\Component\Messenger\EventListener\StopWorkerOnCustomStopExceptionListener">
       <tag name="kernel.event_subscriber"/>
@@ -5963,6 +6140,10 @@
         <argument>api_platform.cache.openapi</argument>
         <argument type="service" id="api_platform.cache.openapi"/>
       </call>
+      <call method="addInstance">
+        <argument>cache.webpack_encore</argument>
+        <argument type="service" id="cache.webpack_encore"/>
+      </call>
     </service>
     <service id="cache_pool_clearer.cache_warmer" class="Symfony\Bundle\FrameworkBundle\CacheWarmer\CachePoolClearerCacheWarmer">
       <tag name="kernel.cache_warmer" priority="64"/>
@@ -6115,6 +6296,12 @@
       <argument type="service" id="doctrine"/>
       <argument type="service" id="profiler"/>
     </service>
+    <service id="doctrine.dbal.idle_connection_listener" class="Symfony\Bridge\Doctrine\Middleware\IdleConnection\Listener">
+      <tag name="kernel.event_subscriber"/>
+      <tag name="container.hot_path"/>
+      <argument type="service" id="doctrine.dbal.connection_expiries"/>
+      <argument type="service" id="service_container"/>
+    </service>
     <service id="doctrine.dbal.default_schema_manager_factory" class="Doctrine\DBAL\Schema\DefaultSchemaManagerFactory"/>
     <service id="doctrine.dbal.legacy_schema_manager_factory" class="Doctrine\DBAL\Schema\LegacySchemaManagerFactory"/>
     <service id="doctrine.dbal.default_connection.configuration" class="Doctrine\DBAL\Configuration">
@@ -6128,6 +6315,7 @@
         <argument type="collection">
           <argument type="service" id="doctrine.dbal.logging_middleware.default"/>
           <argument type="service" id="doctrine.dbal.debug_middleware.default"/>
+          <argument type="service" id="doctrine.dbal.idle_connection_middleware.default"/>
         </argument>
       </call>
     </service>
@@ -6254,6 +6442,13 @@
       <argument type="service" id="doctrine.debug_data_holder"/>
       <argument type="service" id="debug.stopwatch" on-invalid="null"/>
     </service>
+    <service id="doctrine.dbal.idle_connection_middleware" class="Doctrine\Bundle\DoctrineBundle\Middleware\IdleConnectionMiddleware" abstract="true">
+      <tag name="doctrine.middleware" connection="default" priority="10"/>
+      <argument type="service" id="doctrine.dbal.connection_expiries"/>
+      <argument type="collection">
+        <argument key="default">600</argument>
+      </argument>
+    </service>
     <service id="messenger.middleware.doctrine_transaction" class="Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddleware" abstract="true">
       <argument type="service" id="doctrine"/>
     </service>
@@ -6300,7 +6495,7 @@
     <service id="doctrine.orm.configuration" class="Doctrine\ORM\Configuration" abstract="true"/>
     <service id="doctrine.orm.entity_manager.abstract" class="Doctrine\ORM\EntityManager" lazy="true" abstract="true"/>
     <service id="doctrine.orm.container_repository_factory" class="Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory">
-      <argument type="service" id=".service_locator.6bKgGVA"/>
+      <argument type="service" id=".service_locator.IjcxP4w"/>
     </service>
     <service id="doctrine.orm.manager_configurator.abstract" class="Doctrine\Bundle\DoctrineBundle\ManagerConfigurator" abstract="true">
       <argument type="collection"/>
@@ -6996,6 +7191,12 @@
         <argument type="service" id="CMEN\GoogleChartsBundle\Twig\GoogleChartsExtension"/>
       </call>
       <call method="addExtension">
+        <argument type="service" id="webpack_encore.twig_entry_files_extension"/>
+      </call>
+      <call method="addExtension">
+        <argument type="service" id="liip_imagine.templating.filter_extension"/>
+      </call>
+      <call method="addExtension">
         <argument type="service" id="stimulus.twig_extension"/>
       </call>
       <call method="addGlobal">
@@ -7174,6 +7375,14 @@
       <call method="addPath">
         <argument>C:\Users\harou\WarehouseManagement\vendor\mercuryseries\flashy-bundle\src/Resources/views</argument>
         <argument>!MercurySeriesFlashy</argument>
+      </call>
+      <call method="addPath">
+        <argument>C:\Users\harou\WarehouseManagement\vendor\liip\imagine-bundle/Resources/views</argument>
+        <argument>LiipImagine</argument>
+      </call>
+      <call method="addPath">
+        <argument>C:\Users\harou\WarehouseManagement\vendor\liip\imagine-bundle/Resources/views</argument>
+        <argument>!LiipImagine</argument>
       </call>
       <call method="addPath">
         <argument>C:\Users\harou\WarehouseManagement/templates</argument>
@@ -10464,6 +10673,535 @@
     <service id="mercuryseries_flashy.symfony_session_store" class="MercurySeries\FlashyBundle\SymfonySessionStore">
       <argument type="service" id="request_stack"/>
     </service>
+    <service id=".1_ServiceLocator~8sQZY9H" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="webpack_encore.entrypoint_lookup_collection" type="service_closure" id="webpack_encore.entrypoint_lookup_collection"/>
+        <argument key="webpack_encore.tag_renderer" type="service_closure" id="webpack_encore.tag_renderer"/>
+      </argument>
+    </service>
+    <service id="webpack_encore.entrypoint_lookup_collection" class="Symfony\WebpackEncoreBundle\Asset\EntrypointLookupCollection">
+      <argument type="service" id=".service_locator.Yi4Ff.p"/>
+      <argument>_default</argument>
+    </service>
+    <service id="webpack_encore.tag_renderer" class="Symfony\WebpackEncoreBundle\Asset\TagRenderer">
+      <tag name="kernel.reset" method="reset"/>
+      <argument type="service" id="webpack_encore.entrypoint_lookup_collection"/>
+      <argument type="service" id="assets.packages"/>
+      <argument type="collection"/>
+      <argument type="collection">
+        <argument key="defer">true</argument>
+      </argument>
+      <argument type="collection"/>
+      <argument type="service" id="debug.event_dispatcher"/>
+    </service>
+    <service id="webpack_encore.twig_entry_files_extension" class="Symfony\WebpackEncoreBundle\Twig\EntryFilesTwigExtension">
+      <tag name="twig.extension"/>
+      <argument type="service" id=".1_ServiceLocator~8sQZY9H"/>
+    </service>
+    <service id="webpack_encore.entrypoint_lookup.cache_warmer" class="Symfony\WebpackEncoreBundle\CacheWarmer\EntrypointCacheWarmer">
+      <tag name="kernel.cache_warmer"/>
+      <argument type="collection">
+        <argument key="_default">C:\Users\harou\WarehouseManagement/public/build/entrypoints.json</argument>
+      </argument>
+      <argument type="service" id=".debug.http_client" on-invalid="null"/>
+      <argument>C:/Users/harou/WarehouseManagement/var/cache/dev/webpack_encore.cache.php</argument>
+    </service>
+    <service id="webpack_encore.cache" class="Symfony\Component\Cache\Adapter\PhpArrayAdapter" constructor="create">
+      <argument>C:/Users/harou/WarehouseManagement/var/cache/dev/webpack_encore.cache.php</argument>
+      <argument type="service" id="cache.webpack_encore"/>
+    </service>
+    <service id="cache.webpack_encore" class="Symfony\Component\Cache\Adapter\TraceableAdapter">
+      <tag name="cache.pool"/>
+      <tag name="kernel.reset" method="reset"/>
+      <argument type="service" id="cache.webpack_encore.recorder_inner"/>
+    </service>
+    <service id="webpack_encore.exception_listener" class="Symfony\WebpackEncoreBundle\EventListener\ExceptionListener">
+      <tag name="kernel.event_listener" event="kernel.exception"/>
+      <argument type="service" id="webpack_encore.entrypoint_lookup_collection"/>
+      <argument type="collection">
+        <argument>_default</argument>
+      </argument>
+    </service>
+    <service id="Symfony\WebpackEncoreBundle\EventListener\ResetAssetsEventListener" class="Symfony\WebpackEncoreBundle\EventListener\ResetAssetsEventListener">
+      <tag name="kernel.event_subscriber"/>
+      <tag name="container.hot_path"/>
+      <argument type="service" id="webpack_encore.entrypoint_lookup_collection"/>
+      <argument type="collection">
+        <argument>_default</argument>
+      </argument>
+    </service>
+    <service id="webpack_encore.entrypoint_lookup[_default]" class="Symfony\WebpackEncoreBundle\Asset\EntrypointLookup">
+      <tag name="kernel.reset" method="reset"/>
+      <argument>C:\Users\harou\WarehouseManagement/public/build/entrypoints.json</argument>
+      <argument>null</argument>
+      <argument>_default</argument>
+      <argument>true</argument>
+      <argument type="service" id=".debug.http_client" on-invalid="null"/>
+    </service>
+    <service id=".service_locator.Yi4Ff.p" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="_default" type="service_closure" id="webpack_encore.entrypoint_lookup[_default]"/>
+      </argument>
+    </service>
+    <service id="liip_imagine.mime_types" class="Symfony\Component\Mime\MimeTypes" constructor="getDefault"/>
+    <service id="liip_imagine.cache.resolver.default" class="Liip\ImagineBundle\Imagine\Cache\Resolver\WebPathResolver" public="true">
+      <tag name="liip_imagine.cache.resolver" resolver="default"/>
+      <argument type="service" id="filesystem"/>
+      <argument type="service" id="router.request_context"/>
+      <argument>C:\Users\harou\WarehouseManagement/public</argument>
+      <argument>media/cache</argument>
+    </service>
+    <service id="liip_imagine.binary.loader.default" class="Liip\ImagineBundle\Binary\Loader\FileSystemLoader" public="true">
+      <tag name="liip_imagine.binary.loader" loader="default"/>
+      <argument type="service">
+        <service class="Symfony\Component\Mime\MimeTypes" constructor="getDefault"/>
+      </argument>
+      <argument type="service">
+        <service class="Symfony\Component\Mime\MimeTypes" constructor="getDefault"/>
+      </argument>
+      <argument type="service">
+        <service class="Liip\ImagineBundle\Binary\Locator\FileSystemLocator">
+          <argument type="collection">
+            <argument>C:\Users\harou\WarehouseManagement/public</argument>
+          </argument>
+          <argument>false</argument>
+        </service>
+      </argument>
+    </service>
+    <service id="liip_imagine.factory.config.filter.argument.point" class="Liip\ImagineBundle\Factory\Config\Filter\Argument\PointFactory"/>
+    <service id="liip_imagine.factory.config.filter.argument.size" class="Liip\ImagineBundle\Factory\Config\Filter\Argument\SizeFactory"/>
+    <service id="liip_imagine.factory.config.stack" class="Liip\ImagineBundle\Factory\Config\StackFactory"/>
+    <service id="liip_imagine.factory.config.filter.auto_rotate" class="Liip\ImagineBundle\Factory\Config\Filter\AutoRotateFactory"/>
+    <service id="liip_imagine.factory.config.filter.background" class="Liip\ImagineBundle\Factory\Config\Filter\BackgroundFactory">
+      <argument type="service" id="liip_imagine.factory.config.filter.argument.size"/>
+    </service>
+    <service id="liip_imagine.factory.config.filter.crop" class="Liip\ImagineBundle\Factory\Config\Filter\CropFactory">
+      <argument type="service" id="liip_imagine.factory.config.filter.argument.size"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.argument.point"/>
+    </service>
+    <service id="liip_imagine.factory.config.filter.downscale" class="Liip\ImagineBundle\Factory\Config\Filter\DownscaleFactory">
+      <argument type="service" id="liip_imagine.factory.config.filter.argument.size"/>
+    </service>
+    <service id="liip_imagine.factory.config.filter.flip" class="Liip\ImagineBundle\Factory\Config\Filter\FlipFactory"/>
+    <service id="liip_imagine.factory.config.filter.grayscale" class="Liip\ImagineBundle\Factory\Config\Filter\GrayscaleFactory"/>
+    <service id="liip_imagine.factory.config.filter.interlace" class="Liip\ImagineBundle\Factory\Config\Filter\InterlaceFactory"/>
+    <service id="liip_imagine.factory.config.filter.paste" class="Liip\ImagineBundle\Factory\Config\Filter\PasteFactory">
+      <argument type="service" id="liip_imagine.factory.config.filter.argument.point"/>
+    </service>
+    <service id="liip_imagine.factory.config.filter.relative_resize" class="Liip\ImagineBundle\Factory\Config\Filter\RelativeResizeFactory"/>
+    <service id="liip_imagine.factory.config.filter.resize" class="Liip\ImagineBundle\Factory\Config\Filter\ResizeFactory">
+      <argument type="service" id="liip_imagine.factory.config.filter.argument.size"/>
+    </service>
+    <service id="liip_imagine.factory.config.filter.rotate" class="Liip\ImagineBundle\Factory\Config\Filter\RotateFactory"/>
+    <service id="liip_imagine.factory.config.filter.scale" class="Liip\ImagineBundle\Factory\Config\Filter\ScaleFactory">
+      <argument type="service" id="liip_imagine.factory.config.filter.argument.size"/>
+    </service>
+    <service id="liip_imagine.factory.config.filter.strip" class="Liip\ImagineBundle\Factory\Config\Filter\StripFactory"/>
+    <service id="liip_imagine.factory.config.filter.thumbnail" class="Liip\ImagineBundle\Factory\Config\Filter\ThumbnailFactory">
+      <argument type="service" id="liip_imagine.factory.config.filter.argument.size"/>
+    </service>
+    <service id="liip_imagine.factory.config.filter.upscale" class="Liip\ImagineBundle\Factory\Config\Filter\UpscaleFactory">
+      <argument type="service" id="liip_imagine.factory.config.filter.argument.size"/>
+    </service>
+    <service id="liip_imagine.factory.config.filter.watermark" class="Liip\ImagineBundle\Factory\Config\Filter\WatermarkFactory"/>
+    <service id="liip_imagine.config.filter_factory_collection" class="Liip\ImagineBundle\Config\FilterFactoryCollection">
+      <argument type="service" id="liip_imagine.factory.config.filter.auto_rotate"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.background"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.crop"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.downscale"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.flip"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.grayscale"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.interlace"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.paste"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.relative_resize"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.resize"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.rotate"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.scale"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.strip"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.thumbnail"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.upscale"/>
+      <argument type="service" id="liip_imagine.factory.config.filter.watermark"/>
+    </service>
+    <service id="liip_imagine.config.stack_builder" class="Liip\ImagineBundle\Config\StackBuilder">
+      <argument type="service" id="liip_imagine.factory.config.stack"/>
+      <argument type="service" id="liip_imagine.config.filter_factory_collection"/>
+    </service>
+    <service id="liip_imagine.config.stack_collection" class="Liip\ImagineBundle\Config\StackCollection" public="true">
+      <argument type="service" id="liip_imagine.config.stack_builder"/>
+      <argument>%liip_imagine.filter_sets%</argument>
+    </service>
+    <service id="liip_imagine.filter.manager" class="Liip\ImagineBundle\Imagine\Filter\FilterManager" public="true">
+      <argument type="service" id="liip_imagine.filter.configuration"/>
+      <argument type="service" id="liip_imagine.gd"/>
+      <argument type="service" id="liip_imagine.binary.mime_type_guesser"/>
+      <call method="addLoader">
+        <argument>relative_resize</argument>
+        <argument type="service" id="liip_imagine.filter.loader.relative_resize"/>
+      </call>
+      <call method="addLoader">
+        <argument>resize</argument>
+        <argument type="service" id="liip_imagine.filter.loader.resize"/>
+      </call>
+      <call method="addLoader">
+        <argument>thumbnail</argument>
+        <argument type="service" id="liip_imagine.filter.loader.thumbnail"/>
+      </call>
+      <call method="addLoader">
+        <argument>crop</argument>
+        <argument type="service" id="liip_imagine.filter.loader.crop"/>
+      </call>
+      <call method="addLoader">
+        <argument>grayscale</argument>
+        <argument type="service" id="liip_imagine.filter.loader.grayscale"/>
+      </call>
+      <call method="addLoader">
+        <argument>paste_image</argument>
+        <argument type="service" id="liip_imagine.filter.loader.paste_image"/>
+      </call>
+      <call method="addLoader">
+        <argument>watermark_image</argument>
+        <argument type="service" id="liip_imagine.filter.loader.watermark_image"/>
+      </call>
+      <call method="addLoader">
+        <argument>background</argument>
+        <argument type="service" id="liip_imagine.filter.loader.background"/>
+      </call>
+      <call method="addLoader">
+        <argument>strip</argument>
+        <argument type="service" id="liip_imagine.filter.loader.strip"/>
+      </call>
+      <call method="addLoader">
+        <argument>scale</argument>
+        <argument type="service" id="liip_imagine.filter.loader.scale"/>
+      </call>
+      <call method="addLoader">
+        <argument>upscale</argument>
+        <argument type="service" id="liip_imagine.filter.loader.upscale"/>
+      </call>
+      <call method="addLoader">
+        <argument>downscale</argument>
+        <argument type="service" id="liip_imagine.filter.loader.downscale"/>
+      </call>
+      <call method="addLoader">
+        <argument>auto_rotate</argument>
+        <argument type="service" id="liip_imagine.filter.loader.auto_rotate"/>
+      </call>
+      <call method="addLoader">
+        <argument>rotate</argument>
+        <argument type="service" id="liip_imagine.filter.loader.rotate"/>
+      </call>
+      <call method="addLoader">
+        <argument>flip</argument>
+        <argument type="service" id="liip_imagine.filter.loader.flip"/>
+      </call>
+      <call method="addLoader">
+        <argument>interlace</argument>
+        <argument type="service" id="liip_imagine.filter.loader.interlace"/>
+      </call>
+      <call method="addLoader">
+        <argument>resample</argument>
+        <argument type="service" id="liip_imagine.filter.loader.resample"/>
+      </call>
+      <call method="addLoader">
+        <argument>fixed</argument>
+        <argument type="service" id="liip_imagine.filter.loader.fixed"/>
+      </call>
+      <call method="addPostProcessor">
+        <argument>jpegoptim</argument>
+        <argument type="service" id="liip_imagine.filter.post_processor.jpegoptim"/>
+      </call>
+      <call method="addPostProcessor">
+        <argument>optipng</argument>
+        <argument type="service" id="liip_imagine.filter.post_processor.optipng"/>
+      </call>
+      <call method="addPostProcessor">
+        <argument>pngquant</argument>
+        <argument type="service" id="liip_imagine.filter.post_processor.pngquant"/>
+      </call>
+      <call method="addPostProcessor">
+        <argument>mozjpeg</argument>
+        <argument type="service" id="liip_imagine.filter.post_processor.mozjpeg"/>
+      </call>
+      <call method="addPostProcessor">
+        <argument>cwebp</argument>
+        <argument type="service" id="liip_imagine.filter.post_processor.cwebp"/>
+      </call>
+    </service>
+    <service id="liip_imagine.data.manager" class="Liip\ImagineBundle\Imagine\Data\DataManager" public="true">
+      <argument type="service" id="liip_imagine.binary.mime_type_guesser"/>
+      <argument type="service">
+        <service class="Symfony\Component\Mime\MimeTypes" constructor="getDefault"/>
+      </argument>
+      <argument type="service" id="liip_imagine.filter.configuration"/>
+      <argument>default</argument>
+      <argument>null</argument>
+      <call method="addLoader">
+        <argument>default</argument>
+        <argument type="service" id="liip_imagine.binary.loader.default"/>
+      </call>
+    </service>
+    <service id="liip_imagine.cache.manager" class="Liip\ImagineBundle\Imagine\Cache\CacheManager" public="true">
+      <argument type="service" id="liip_imagine.filter.configuration"/>
+      <argument type="service" id="router.default"/>
+      <argument type="service" id="liip_imagine.cache.signer"/>
+      <argument type="service" id="debug.event_dispatcher"/>
+      <argument>default</argument>
+      <argument>false</argument>
+      <call method="addResolver">
+        <argument>default</argument>
+        <argument type="service" id="liip_imagine.cache.resolver.default"/>
+      </call>
+      <call method="addResolver">
+        <argument>no_cache</argument>
+        <argument type="service" id="liip_imagine.cache.resolver.no_cache_web_path"/>
+      </call>
+    </service>
+    <service id="liip_imagine.filter.configuration" class="Liip\ImagineBundle\Imagine\Filter\FilterConfiguration">
+      <argument>%liip_imagine.filter_sets%</argument>
+    </service>
+    <service id="liip_imagine.service.filter" class="Liip\ImagineBundle\Service\FilterService">
+      <argument type="service" id="liip_imagine.data.manager"/>
+      <argument type="service" id="liip_imagine.filter.manager"/>
+      <argument type="service" id="liip_imagine.cache.manager"/>
+      <argument>false</argument>
+      <argument>%liip_imagine.webp.options%</argument>
+      <argument type="service" id="monolog.logger" on-invalid="ignore"/>
+    </service>
+    <service id="liip_imagine.controller.config" class="Liip\ImagineBundle\Config\Controller\ControllerConfig">
+      <argument>302</argument>
+    </service>
+    <service id="Liip\ImagineBundle\Controller\ImagineController" class="Liip\ImagineBundle\Controller\ImagineController" public="true">
+      <argument type="service" id="liip_imagine.service.filter"/>
+      <argument type="service" id="liip_imagine.data.manager"/>
+      <argument type="service" id="liip_imagine.cache.signer"/>
+      <argument type="service" id="liip_imagine.controller.config"/>
+    </service>
+    <service id="liip_imagine.meta_data.reader" class="Imagine\Image\Metadata\ExifMetadataReader"/>
+    <service id="liip_imagine.gd" class="Imagine\Gd\Imagine">
+      <call method="setMetadataReader">
+        <argument type="service" id="liip_imagine.meta_data.reader"/>
+      </call>
+    </service>
+    <service id="liip_imagine.imagick" class="Imagine\Imagick\Imagine">
+      <call method="setMetadataReader">
+        <argument type="service" id="liip_imagine.meta_data.reader"/>
+      </call>
+    </service>
+    <service id="liip_imagine.gmagick" class="Imagine\Gmagick\Imagine">
+      <call method="setMetadataReader">
+        <argument type="service" id="liip_imagine.meta_data.reader"/>
+      </call>
+    </service>
+    <service id="liip_imagine.filter.loader.relative_resize" class="Liip\ImagineBundle\Imagine\Filter\Loader\RelativeResizeFilterLoader">
+      <tag name="liip_imagine.filter.loader" loader="relative_resize"/>
+    </service>
+    <service id="liip_imagine.filter.loader.resize" class="Liip\ImagineBundle\Imagine\Filter\Loader\ResizeFilterLoader">
+      <tag name="liip_imagine.filter.loader" loader="resize"/>
+    </service>
+    <service id="liip_imagine.filter.loader.thumbnail" class="Liip\ImagineBundle\Imagine\Filter\Loader\ThumbnailFilterLoader">
+      <tag name="liip_imagine.filter.loader" loader="thumbnail"/>
+    </service>
+    <service id="liip_imagine.filter.loader.crop" class="Liip\ImagineBundle\Imagine\Filter\Loader\CropFilterLoader">
+      <tag name="liip_imagine.filter.loader" loader="crop"/>
+    </service>
+    <service id="liip_imagine.filter.loader.grayscale" class="Liip\ImagineBundle\Imagine\Filter\Loader\GrayscaleFilterLoader" public="true">
+      <tag name="liip_imagine.filter.loader" loader="grayscale"/>
+    </service>
+    <service id="liip_imagine.filter.loader.paste_image" class="Liip\ImagineBundle\Imagine\Filter\Loader\PasteFilterLoader">
+      <tag name="liip_imagine.filter.loader" loader="paste_image"/>
+      <argument type="service" id="liip_imagine.gd"/>
+      <argument>C:\Users\harou\WarehouseManagement</argument>
+    </service>
+    <service id="liip_imagine.filter.loader.watermark_image" class="Liip\ImagineBundle\Imagine\Filter\Loader\WatermarkFilterLoader">
+      <tag name="liip_imagine.filter.loader" loader="watermark_image"/>
+      <argument type="service" id="liip_imagine.gd"/>
+      <argument>C:\Users\harou\WarehouseManagement</argument>
+    </service>
+    <service id="liip_imagine.filter.loader.background" class="Liip\ImagineBundle\Imagine\Filter\Loader\BackgroundFilterLoader">
+      <tag name="liip_imagine.filter.loader" loader="background"/>
+      <argument type="service" id="liip_imagine.gd"/>
+    </service>
+    <service id="liip_imagine.filter.loader.strip" class="Liip\ImagineBundle\Imagine\Filter\Loader\StripFilterLoader">
+      <tag name="liip_imagine.filter.loader" loader="strip"/>
+    </service>
+    <service id="liip_imagine.filter.loader.scale" class="Liip\ImagineBundle\Imagine\Filter\Loader\ScaleFilterLoader">
+      <tag name="liip_imagine.filter.loader" loader="scale"/>
+    </service>
+    <service id="liip_imagine.filter.loader.upscale" class="Liip\ImagineBundle\Imagine\Filter\Loader\UpscaleFilterLoader">
+      <tag name="liip_imagine.filter.loader" loader="upscale"/>
+    </service>
+    <service id="liip_imagine.filter.loader.downscale" class="Liip\ImagineBundle\Imagine\Filter\Loader\DownscaleFilterLoader" public="true">
+      <tag name="liip_imagine.filter.loader" loader="downscale"/>
+    </service>
+    <service id="liip_imagine.filter.loader.auto_rotate" class="Liip\ImagineBundle\Imagine\Filter\Loader\AutoRotateFilterLoader">
+      <tag name="liip_imagine.filter.loader" loader="auto_rotate"/>
+    </service>
+    <service id="liip_imagine.filter.loader.rotate" class="Liip\ImagineBundle\Imagine\Filter\Loader\RotateFilterLoader" public="true">
+      <tag name="liip_imagine.filter.loader" loader="rotate"/>
+    </service>
+    <service id="liip_imagine.filter.loader.flip" class="Liip\ImagineBundle\Imagine\Filter\Loader\FlipFilterLoader" public="true">
+      <tag name="liip_imagine.filter.loader" loader="flip"/>
+    </service>
+    <service id="liip_imagine.filter.loader.interlace" class="Liip\ImagineBundle\Imagine\Filter\Loader\InterlaceFilterLoader" public="true">
+      <tag name="liip_imagine.filter.loader" loader="interlace"/>
+    </service>
+    <service id="liip_imagine.filter.loader.resample" class="Liip\ImagineBundle\Imagine\Filter\Loader\ResampleFilterLoader" public="true">
+      <tag name="liip_imagine.filter.loader" loader="resample"/>
+      <argument type="service" id="liip_imagine.gd"/>
+    </service>
+    <service id="liip_imagine.filter.loader.fixed" class="Liip\ImagineBundle\Imagine\Filter\Loader\FixedFilterLoader" public="true">
+      <tag name="liip_imagine.filter.loader" loader="fixed"/>
+    </service>
+    <service id="liip_imagine.binary.loader.prototype.filesystem" class="Liip\ImagineBundle\Binary\Loader\FileSystemLoader">
+      <argument type="service" id="mime_types"/>
+      <argument type="service" id="mime_types"/>
+      <argument></argument>
+    </service>
+    <service id="liip_imagine.binary.loader.prototype.stream" class="Liip\ImagineBundle\Binary\Loader\StreamLoader">
+      <argument></argument>
+      <argument></argument>
+    </service>
+    <service id="liip_imagine.binary.loader.prototype.flysystem" class="Liip\ImagineBundle\Binary\Loader\FlysystemLoader" abstract="true">
+      <argument type="service" id="mime_types"/>
+      <argument></argument>
+    </service>
+    <service id="liip_imagine.binary.loader.prototype.flysystem2" class="Liip\ImagineBundle\Binary\Loader\FlysystemV2Loader" abstract="true">
+      <argument type="service" id="mime_types"/>
+      <argument></argument>
+    </service>
+    <service id="liip_imagine.binary.loader.prototype.chain" class="Liip\ImagineBundle\Binary\Loader\ChainLoader" abstract="true">
+      <argument></argument>
+    </service>
+    <service id="liip_imagine.binary.locator.filesystem" class="Liip\ImagineBundle\Binary\Locator\FileSystemLocator" shared="false">
+      <tag name="liip_imagine.binary.locator" shared=""/>
+      <argument></argument>
+      <argument></argument>
+    </service>
+    <service id="liip_imagine.binary.locator.filesystem_insecure" class="Liip\ImagineBundle\Binary\Locator\FileSystemInsecureLocator" shared="false">
+      <tag name="liip_imagine.binary.locator" shared=""/>
+      <argument></argument>
+      <argument></argument>
+    </service>
+    <service id="liip_imagine.cache.resolver.prototype.web_path" class="Liip\ImagineBundle\Imagine\Cache\Resolver\WebPathResolver" public="true" abstract="true">
+      <argument type="service" id="filesystem"/>
+      <argument type="service" id="router.request_context"/>
+      <argument></argument>
+      <argument></argument>
+    </service>
+    <service id="liip_imagine.cache.resolver.prototype.aws_s3" class="Liip\ImagineBundle\Imagine\Cache\Resolver\AwsS3Resolver" public="true" abstract="true">
+      <argument></argument>
+      <argument></argument>
+      <argument></argument>
+      <argument></argument>
+      <argument></argument>
+    </service>
+    <service id="liip_imagine.cache.resolver.prototype.cache" class="Liip\ImagineBundle\Imagine\Cache\Resolver\CacheResolver" public="true" abstract="true">
+      <argument></argument>
+      <argument></argument>
+    </service>
+    <service id="liip_imagine.cache.resolver.prototype.flysystem" class="Liip\ImagineBundle\Imagine\Cache\Resolver\FlysystemResolver" public="true" abstract="true">
+      <argument></argument>
+      <argument type="service" id="router.request_context"/>
+      <argument></argument>
+      <argument></argument>
+      <argument></argument>
+    </service>
+    <service id="liip_imagine.cache.resolver.prototype.flysystem2" class="Liip\ImagineBundle\Imagine\Cache\Resolver\FlysystemV2Resolver" public="true" abstract="true">
+      <argument></argument>
+      <argument type="service" id="router.request_context"/>
+      <argument></argument>
+      <argument></argument>
+      <argument></argument>
+    </service>
+    <service id="liip_imagine.cache.resolver.prototype.proxy" class="Liip\ImagineBundle\Imagine\Cache\Resolver\ProxyResolver" public="true" abstract="true">
+      <argument></argument>
+      <argument></argument>
+    </service>
+    <service id="liip_imagine.cache.resolver.prototype.psr_cache" class="Liip\ImagineBundle\Imagine\Cache\Resolver\PsrCacheResolver" public="true" abstract="true">
+      <argument></argument>
+      <argument></argument>
+    </service>
+    <service id="liip_imagine.cache.resolver.no_cache_web_path" class="Liip\ImagineBundle\Imagine\Cache\Resolver\NoCacheWebPathResolver" public="true">
+      <tag name="liip_imagine.cache.resolver" resolver="no_cache"/>
+      <argument type="service" id="router.request_context"/>
+    </service>
+    <service id="liip_imagine.form.type.image" class="Liip\ImagineBundle\Form\Type\ImageType">
+      <tag name="form.type" alias="liip_imagine_image"/>
+    </service>
+    <service id="liip_imagine.binary.mime_type_guesser" class="Liip\ImagineBundle\Binary\SimpleMimeTypeGuesser">
+      <argument type="service">
+        <service class="Symfony\Component\Mime\MimeTypes" constructor="getDefault"/>
+      </argument>
+    </service>
+    <service id="liip_imagine.cache.signer" class="Liip\ImagineBundle\Imagine\Cache\Signer" public="true">
+      <argument>%env(APP_SECRET)%</argument>
+    </service>
+    <service id="liip_imagine.filter.post_processor.jpegoptim" class="Liip\ImagineBundle\Imagine\Filter\PostProcessor\JpegOptimPostProcessor">
+      <tag name="liip_imagine.filter.post_processor" post_processor="jpegoptim"/>
+      <argument>/usr/bin/jpegoptim</argument>
+      <argument>true</argument>
+      <argument>null</argument>
+      <argument>true</argument>
+      <argument>null</argument>
+    </service>
+    <service id="liip_imagine.filter.post_processor.optipng" class="Liip\ImagineBundle\Imagine\Filter\PostProcessor\OptiPngPostProcessor">
+      <tag name="liip_imagine.filter.post_processor" post_processor="optipng"/>
+      <argument>/usr/bin/optipng</argument>
+      <argument>7</argument>
+      <argument>true</argument>
+      <argument>null</argument>
+    </service>
+    <service id="liip_imagine.filter.post_processor.pngquant" class="Liip\ImagineBundle\Imagine\Filter\PostProcessor\PngquantPostProcessor">
+      <tag name="liip_imagine.filter.post_processor" post_processor="pngquant"/>
+      <argument>/usr/bin/pngquant</argument>
+    </service>
+    <service id="liip_imagine.filter.post_processor.mozjpeg" class="Liip\ImagineBundle\Imagine\Filter\PostProcessor\MozJpegPostProcessor">
+      <tag name="liip_imagine.filter.post_processor" post_processor="mozjpeg"/>
+      <argument>/opt/mozjpeg/bin/cjpeg</argument>
+    </service>
+    <service id="liip_imagine.filter.post_processor.cwebp" class="Liip\ImagineBundle\Imagine\Filter\PostProcessor\CwebpPostProcessor">
+      <tag name="liip_imagine.filter.post_processor" post_processor="cwebp"/>
+      <argument>/usr/bin/cwebp</argument>
+      <argument>null</argument>
+      <argument>75</argument>
+      <argument>100</argument>
+      <argument>4</argument>
+      <argument>fast</argument>
+      <argument>1</argument>
+      <argument>false</argument>
+      <argument>%liip_imagine.cwebp.metadata%</argument>
+    </service>
+    <service id="liip_imagine.templating.filter_extension" class="Liip\ImagineBundle\Templating\FilterExtension">
+      <tag name="twig.extension"/>
+      <argument type="service" id="liip_imagine.cache.manager"/>
+    </service>
+    <service id="liip_imagine.command.cache_remove" class="Liip\ImagineBundle\Command\RemoveCacheCommand">
+      <tag name="console.command" command="liip:imagine:cache:remove" alias="imagine:del"/>
+      <tag name="container.no_preload"/>
+      <argument type="service" id="liip_imagine.cache.manager"/>
+      <argument type="service" id="liip_imagine.filter.manager"/>
+      <argument type="service" id="liip_imagine.service.filter"/>
+      <call method="setName">
+        <argument>liip:imagine:cache:remove</argument>
+      </call>
+    </service>
+    <service id="liip_imagine.command.cache_resolve" class="Liip\ImagineBundle\Command\ResolveCacheCommand">
+      <tag name="console.command" command="liip:imagine:cache:resolve" alias="imagine:get"/>
+      <tag name="container.no_preload"/>
+      <argument type="service" id="liip_imagine.cache.manager"/>
+      <argument type="service" id="liip_imagine.filter.manager"/>
+      <argument type="service" id="liip_imagine.service.filter"/>
+      <call method="setName">
+        <argument>liip:imagine:cache:resolve</argument>
+      </call>
+    </service>
+    <service id="liip_imagine.templating.filter_helper" class="Liip\ImagineBundle\Templating\Helper\FilterHelper">
+      <tag name="templating.helper" alias="imagine"/>
+      <argument type="service" id="liip_imagine.cache.manager"/>
+      <deprecated package="liip/imagine-bundle" version="2.2">The "%service_id%" service is deprecated since LiipImagineBundle 2.2 and will be removed in 3.0.</deprecated>
+    </service>
     <service id="Symfony\Contracts\HttpClient\HttpClientInterface" class="Symfony\Contracts\HttpClient\HttpClientInterface" autowire="true" autoconfigure="true">
       <factory class="Symfony\Component\HttpClient\HttpClient" method="create"/>
     </service>
@@ -10483,6 +11221,12 @@
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\FrontController" class="App\Controller\FrontController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\FrontController" class="App\Controller\FrontController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\FrontController" class="App\Controller\FrontController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\Order\ItemsController" class="App\Controller\Order\ItemsController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\Order\ItemsController" class="App\Controller\Order\ItemsController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\Order\ItemsController" class="App\Controller\Order\ItemsController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\Order\OrdersController" class="App\Controller\Order\OrdersController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\Order\OrdersController" class="App\Controller\Order\OrdersController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\Order\OrdersController" class="App\Controller\Order\OrdersController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\ResetPasswordController" class="App\Controller\ResetPasswordController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\ResetPasswordController" class="App\Controller\ResetPasswordController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\ResetPasswordController" class="App\Controller\ResetPasswordController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -10540,6 +11284,10 @@
     <service id=".abstract.instanceof.App\Form\BanUserType" class="App\Form\BanUserType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\ChangePasswordFormType" class="App\Form\ChangePasswordFormType" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Form\ChangePasswordFormType" class="App\Form\ChangePasswordFormType" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\CreateItemType" class="App\Form\CreateItemType" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Form\CreateItemType" class="App\Form\CreateItemType" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\CreateOrderType" class="App\Form\CreateOrderType" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Form\CreateOrderType" class="App\Form\CreateOrderType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\FormAddCarType" class="App\Form\FormAddCarType" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Form\FormAddCarType" class="App\Form\FormAddCarType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\FormAddWarehouseType" class="App\Form\FormAddWarehouseType" autowire="true" abstract="true"/>
@@ -10590,6 +11338,8 @@
     <service id=".abstract.instanceof.App\Repository\UserRepository" class="App\Repository\UserRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\WarehouseRepository" class="App\Repository\WarehouseRepository" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Repository\WarehouseRepository" class="App\Repository\WarehouseRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\–regenerateRepository" class="App\Repository\–regenerateRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\–regenerateRepository" class="App\Repository\–regenerateRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface.0.EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\ChoiceConfigurator" class="EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\ChoiceConfigurator" abstract="true"/>
     <service id=".abstract.instanceof.EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\ChoiceConfigurator" class="EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\ChoiceConfigurator" abstract="true"/>
     <service id=".instanceof.EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterConfiguratorInterface.0.EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\CommonConfigurator" class="EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\CommonConfigurator" abstract="true"/>
@@ -11109,7 +11859,7 @@
         <argument key="loader" type="service_closure" id=".errored..service_locator.y4_Zrx..Symfony\Component\Config\Loader\LoaderInterface"/>
       </argument>
     </service>
-    <service id=".service_locator.NgRcxaA" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.DIWEsCp" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="billRepository" type="service_closure" id="App\Repository\BillRepository"/>
@@ -11117,12 +11867,73 @@
         <argument key="client" type="service_closure" id="Symfony\Contracts\HttpClient\HttpClientInterface"/>
         <argument key="doctrine" type="service_closure" id="doctrine"/>
         <argument key="feedbackRepository" type="service_closure" id="App\Repository\FeedbackRepository"/>
+        <argument key="itemRepository" type="service_closure" id="App\Repository\ItemRepository"/>
+        <argument key="orderRepository" type="service_closure" id="App\Repository\OrderRepository"/>
         <argument key="pdfService" type="service_closure" id="App\Service\PDFService"/>
         <argument key="responseRepository" type="service_closure" id="App\Repository\ResponseRepository"/>
         <argument key="slugger" type="service_closure" id="slugger"/>
         <argument key="submissionRepository" type="service_closure" id="App\Repository\SubmissionRepository"/>
         <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
         <argument key="warehouseRepository" type="service_closure" id="App\Repository\WarehouseRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.CsMkqUa" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+      </argument>
+    </service>
+    <service id=".service_locator.WdW2zRH" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="item" type="service_closure" id=".errored..service_locator.WdW2zRH.App\Entity\Item"/>
+        <argument key="logger" type="service_closure" id="monolog.logger"/>
+      </argument>
+    </service>
+    <service id=".service_locator.wCNelc_" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="itemRepository" type="service_closure" id="App\Repository\ItemRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.uiXCCiA" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="client" type="service_closure" id="Symfony\Contracts\HttpClient\HttpClientInterface"/>
+      </argument>
+    </service>
+    <service id=".service_locator.Z74ZQan" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="orderRepository" type="service_closure" id="App\Repository\OrderRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.72v7qe6" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="itemRepository" type="service_closure" id="App\Repository\ItemRepository"/>
+        <argument key="orderRepository" type="service_closure" id="App\Repository\OrderRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.NufvMIJ" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="itemRepository" type="service_closure" id="App\Repository\ItemRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.4n4ylFv" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="orderRepository" type="service_closure" id="App\Repository\OrderRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.9kKwU2t" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
       </argument>
     </service>
     <service id=".service_locator.EE0.cm9" class="Symfony\Component\DependencyInjection\ServiceLocator">
@@ -11258,12 +12069,6 @@
         <argument key="responseRepository" type="service_closure" id="App\Repository\ResponseRepository"/>
       </argument>
     </service>
-    <service id=".service_locator.CsMkqUa" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator"/>
-      <argument type="collection">
-        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
-      </argument>
-    </service>
     <service id=".service_locator.tHxDZ0k" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -11315,12 +12120,6 @@
       <argument type="collection">
         <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
         <argument key="feedback" type="service_closure" id=".errored..service_locator.5ffhAhu.App\Entity\Feedback"/>
-      </argument>
-    </service>
-    <service id=".service_locator.9kKwU2t" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator"/>
-      <argument type="collection">
-        <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
       </argument>
     </service>
     <service id=".service_locator.VSBSvo7" class="Symfony\Component\DependencyInjection\ServiceLocator">
@@ -11377,10 +12176,24 @@
         <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
       </argument>
     </service>
-    <service id=".service_locator.YgW8TNd" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.Yu6P4tD" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
-        <argument key="App\Controller\FrontController::index" type="service_closure" id=".service_locator.NgRcxaA"/>
+        <argument key="App\Controller\FrontController::checkout" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\FrontController::index" type="service_closure" id=".service_locator.DIWEsCp"/>
+        <argument key="App\Controller\Order\ItemsController::checkCarRelevance" type="service_closure" id=".service_locator.uiXCCiA"/>
+        <argument key="App\Controller\Order\ItemsController::checkItemName" type="service_closure" id=".service_locator.wCNelc_"/>
+        <argument key="App\Controller\Order\ItemsController::deleteItem" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\Order\ItemsController::editItem" type="service_closure" id=".service_locator.WdW2zRH"/>
+        <argument key="App\Controller\Order\OrdersController::createOrder" type="service_closure" id=".service_locator.NufvMIJ"/>
+        <argument key="App\Controller\Order\OrdersController::deleteItem" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\Order\OrdersController::deleteOrder" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\Order\OrdersController::getOrderItems" type="service_closure" id=".service_locator.wCNelc_"/>
+        <argument key="App\Controller\Order\OrdersController::getOrdersByMonth" type="service_closure" id=".service_locator.4n4ylFv"/>
+        <argument key="App\Controller\Order\OrdersController::items" type="service_closure" id=".service_locator.72v7qe6"/>
+        <argument key="App\Controller\Order\OrdersController::orders" type="service_closure" id=".service_locator.Z74ZQan"/>
+        <argument key="App\Controller\Order\OrdersController::updateItemQuantity" type="service_closure" id=".service_locator.9kKwU2t"/>
+        <argument key="App\Controller\Order\OrdersController::updateOrder" type="service_closure" id=".service_locator.CsMkqUa"/>
         <argument key="App\Controller\ResetPasswordController::request" type="service_closure" id=".service_locator.EE0.cm9"/>
         <argument key="App\Controller\ResetPasswordController::reset" type="service_closure" id=".service_locator.Z9ydiC1"/>
         <argument key="App\Controller\Warehouse\BillController::deleteBill" type="service_closure" id=".service_locator.FjS4two"/>
@@ -11462,7 +12275,21 @@
         <argument key="App\Kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.y4_Zrx."/>
         <argument key="kernel::loadRoutes" type="service_closure" id=".service_locator.y4_Zrx."/>
         <argument key="kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.y4_Zrx."/>
-        <argument key="App\Controller\FrontController:index" type="service_closure" id=".service_locator.NgRcxaA"/>
+        <argument key="App\Controller\FrontController:checkout" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\FrontController:index" type="service_closure" id=".service_locator.DIWEsCp"/>
+        <argument key="App\Controller\Order\ItemsController:checkCarRelevance" type="service_closure" id=".service_locator.uiXCCiA"/>
+        <argument key="App\Controller\Order\ItemsController:checkItemName" type="service_closure" id=".service_locator.wCNelc_"/>
+        <argument key="App\Controller\Order\ItemsController:deleteItem" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\Order\ItemsController:editItem" type="service_closure" id=".service_locator.WdW2zRH"/>
+        <argument key="App\Controller\Order\OrdersController:createOrder" type="service_closure" id=".service_locator.NufvMIJ"/>
+        <argument key="App\Controller\Order\OrdersController:deleteItem" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\Order\OrdersController:deleteOrder" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\Order\OrdersController:getOrderItems" type="service_closure" id=".service_locator.wCNelc_"/>
+        <argument key="App\Controller\Order\OrdersController:getOrdersByMonth" type="service_closure" id=".service_locator.4n4ylFv"/>
+        <argument key="App\Controller\Order\OrdersController:items" type="service_closure" id=".service_locator.72v7qe6"/>
+        <argument key="App\Controller\Order\OrdersController:orders" type="service_closure" id=".service_locator.Z74ZQan"/>
+        <argument key="App\Controller\Order\OrdersController:updateItemQuantity" type="service_closure" id=".service_locator.9kKwU2t"/>
+        <argument key="App\Controller\Order\OrdersController:updateOrder" type="service_closure" id=".service_locator.CsMkqUa"/>
         <argument key="App\Controller\ResetPasswordController:request" type="service_closure" id=".service_locator.EE0.cm9"/>
         <argument key="App\Controller\ResetPasswordController:reset" type="service_closure" id=".service_locator.Z9ydiC1"/>
         <argument key="App\Controller\Warehouse\BillController:deleteBill" type="service_closure" id=".service_locator.FjS4two"/>
@@ -11789,11 +12616,13 @@
       <argument type="service" id="argument_resolver.query_parameter_value_resolver"/>
       <argument type="service" id="debug.stopwatch"/>
     </service>
-    <service id=".service_locator.ba8rBWO" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.6x3_X2Z" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Form\BanUserType" type="service_closure" id="App\Form\BanUserType"/>
         <argument key="App\Form\ChangePasswordFormType" type="service_closure" id="App\Form\ChangePasswordFormType"/>
+        <argument key="App\Form\CreateItemType" type="service_closure" id="App\Form\CreateItemType"/>
+        <argument key="App\Form\CreateOrderType" type="service_closure" id="App\Form\CreateOrderType"/>
         <argument key="App\Form\FormAddCarType" type="service_closure" id="App\Form\FormAddCarType"/>
         <argument key="App\Form\FormAddWarehouseType" type="service_closure" id="App\Form\FormAddWarehouseType"/>
         <argument key="App\Form\FormUpdateBillType" type="service_closure" id="App\Form\FormUpdateBillType"/>
@@ -11806,6 +12635,7 @@
         <argument key="EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType" type="service_closure" id="EasyCorp\Bundle\EasyAdminBundle\Form\Type\CrudFormType"/>
         <argument key="EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType" type="service_closure" id="EasyCorp\Bundle\EasyAdminBundle\Form\Type\FileUploadType"/>
         <argument key="EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType" type="service_closure" id="EasyCorp\Bundle\EasyAdminBundle\Form\Type\FiltersFormType"/>
+        <argument key="Liip\ImagineBundle\Form\Type\ImageType" type="service_closure" id="liip_imagine.form.type.image"/>
         <argument key="Symfony\Bridge\Doctrine\Form\Type\EntityType" type="service_closure" id="form.type.entity"/>
         <argument key="Symfony\Component\Form\Extension\Core\Type\ChoiceType" type="service_closure" id="form.type.choice"/>
         <argument key="Symfony\Component\Form\Extension\Core\Type\ColorType" type="service_closure" id="form.type.color"/>
@@ -11939,7 +12769,7 @@
         <argument key="turbo.doctrine.event_listener" type="service_closure" id="turbo.doctrine.event_listener"/>
       </argument>
     </service>
-    <service id=".service_locator.6bKgGVA" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.IjcxP4w" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Repository\AdminRepository" type="service_closure" id="App\Repository\AdminRepository"/>
@@ -11958,6 +12788,7 @@
         <argument key="App\Repository\SubmissionRepository" type="service_closure" id="App\Repository\SubmissionRepository"/>
         <argument key="App\Repository\UserRepository" type="service_closure" id="App\Repository\UserRepository"/>
         <argument key="App\Repository\WarehouseRepository" type="service_closure" id="App\Repository\WarehouseRepository"/>
+        <argument key="App\Repository\–regenerateRepository" type="service_closure" id="App\Repository\–regenerateRepository"/>
       </argument>
     </service>
     <service id=".service_locator.KLVvNIq" class="Symfony\Component\DependencyInjection\ServiceLocator">
@@ -11984,6 +12815,15 @@
     <service id="doctrine.dbal.debug_middleware.default" class="Doctrine\Bundle\DoctrineBundle\Middleware\DebugMiddleware">
       <argument type="service" id="doctrine.debug_data_holder"/>
       <argument type="service" id="debug.stopwatch" on-invalid="null"/>
+      <call method="setConnectionName">
+        <argument>default</argument>
+      </call>
+    </service>
+    <service id="doctrine.dbal.idle_connection_middleware.default" class="Doctrine\Bundle\DoctrineBundle\Middleware\IdleConnectionMiddleware">
+      <argument type="service" id="doctrine.dbal.connection_expiries"/>
+      <argument type="collection">
+        <argument key="default">600</argument>
+      </argument>
       <call method="setConnectionName">
         <argument>default</argument>
       </call>
@@ -12378,6 +13218,18 @@
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.O2p6Lk7" method="withContext"/>
     </service>
+    <service id=".service_locator.O2p6Lk7.App\Controller\Order\ItemsController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\Order\ItemsController"/>
+      <argument>App\Controller\Order\ItemsController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.O2p6Lk7" method="withContext"/>
+    </service>
+    <service id=".service_locator.O2p6Lk7.App\Controller\Order\OrdersController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\Order\OrdersController"/>
+      <argument>App\Controller\Order\OrdersController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.O2p6Lk7" method="withContext"/>
+    </service>
     <service id=".service_locator.O2p6Lk7.App\Controller\ResetPasswordController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Controller\ResetPasswordController"/>
       <argument>App\Controller\ResetPasswordController</argument>
@@ -12714,7 +13566,7 @@
     </service>
     <service id="asset_mapper.asset_package.inner" class="Symfony\Component\Asset\PathPackage">
       <argument></argument>
-      <argument type="service" id="assets.empty_version_strategy"/>
+      <argument type="service" id="assets._version__default"/>
       <argument type="service" id="assets.context"/>
     </service>
     <service id="debug.event_dispatcher.inner" class="Symfony\Component\EventDispatcher\EventDispatcher"/>
@@ -12734,6 +13586,8 @@
           <argument>App\Controller\Api\SentimentAnalysisController</argument>
           <argument>App\Controller\DashboardController</argument>
           <argument>App\Controller\FrontController</argument>
+          <argument>App\Controller\Order\ItemsController</argument>
+          <argument>App\Controller\Order\OrdersController</argument>
           <argument>App\Controller\ResetPasswordController</argument>
           <argument>App\Controller\Warehouse\BillController</argument>
           <argument>App\Controller\Warehouse\CarController</argument>
@@ -13136,6 +13990,9 @@
     </service>
     <service id=".errored..service_locator.y4_Zrx..Symfony\Component\Config\Loader\LoaderInterface" class="Symfony\Component\Config\Loader\LoaderInterface">
       <tag name="container.error" message="Cannot autowire service &quot;.service_locator.y4_Zrx.&quot;: it needs an instance of &quot;Symfony\Component\Config\Loader\LoaderInterface&quot; but this type has been excluded from autowiring."/>
+    </service>
+    <service id=".errored..service_locator.WdW2zRH.App\Entity\Item" class="App\Entity\Item">
+      <tag name="container.error" message="Cannot autowire service &quot;.service_locator.WdW2zRH&quot;: it needs an instance of &quot;App\Entity\Item&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
     </service>
     <service id=".errored..service_locator.cfE8SPz.App\Entity\Submission" class="App\Entity\Submission">
       <tag name="container.error" message="Cannot autowire service &quot;.service_locator.cfE8SPz&quot;: it needs an instance of &quot;App\Entity\Submission&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
@@ -13904,7 +14761,7 @@
     </service>
     <service id="console.command_loader" class="Symfony\Component\Console\CommandLoader\ContainerCommandLoader" public="true">
       <tag name="container.no_preload"/>
-      <argument type="service" id=".service_locator.yVK92ku"/>
+      <argument type="service" id=".service_locator.MHWrO8y"/>
       <argument type="collection">
         <argument key="app:train-priority-model">App\Command\TrainPriorityModelCommand</argument>
         <argument key="about">console.command.about</argument>
@@ -14004,6 +14861,8 @@
         <argument key="doctrine:fixtures:load">doctrine.fixtures_load_command</argument>
         <argument key="tailwind:build">tailwind.command.build</argument>
         <argument key="tailwind:init">tailwind.command.init</argument>
+        <argument key="liip:imagine:cache:remove">liip_imagine.command.cache_remove</argument>
+        <argument key="liip:imagine:cache:resolve">liip_imagine.command.cache_resolve</argument>
         <argument key="make:auth">maker.auto_command.make_auth</argument>
         <argument key="make:command">maker.auto_command.make_command</argument>
         <argument key="make:twig-component">maker.auto_command.make_twig_component</argument>
@@ -14038,7 +14897,7 @@
         <argument key="make:state-provider">maker.auto_command.make_state_provider</argument>
       </argument>
     </service>
-    <service id=".service_locator.yVK92ku" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.MHWrO8y" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Command\TrainPriorityModelCommand" type="service_closure" id=".App\Command\TrainPriorityModelCommand.lazy"/>
@@ -14139,6 +14998,8 @@
         <argument key="doctrine.fixtures_load_command" type="service_closure" id="doctrine.fixtures_load_command"/>
         <argument key="tailwind.command.build" type="service_closure" id=".tailwind.command.build.lazy"/>
         <argument key="tailwind.command.init" type="service_closure" id=".tailwind.command.init.lazy"/>
+        <argument key="liip_imagine.command.cache_remove" type="service_closure" id="liip_imagine.command.cache_remove"/>
+        <argument key="liip_imagine.command.cache_resolve" type="service_closure" id="liip_imagine.command.cache_resolve"/>
         <argument key="maker.auto_command.make_auth" type="service_closure" id=".maker.auto_command.make_auth.lazy"/>
         <argument key="maker.auto_command.make_command" type="service_closure" id=".maker.auto_command.make_command.lazy"/>
         <argument key="maker.auto_command.make_twig_component" type="service_closure" id=".maker.auto_command.make_twig_component.lazy"/>
@@ -14320,6 +15181,14 @@
     </service>
     <service id="api_platform.cache.openapi.recorder_inner" class="Symfony\Component\Cache\Adapter\AdapterInterface">
       <argument>iB4pcELKPg</argument>
+      <argument>0</argument>
+      <argument>%container.build_id%</argument>
+      <argument>C:/Users/harou/WarehouseManagement/var/cache/dev/pools/system</argument>
+      <argument type="service" id="monolog.logger.cache" on-invalid="ignore"/>
+      <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
+    </service>
+    <service id="cache.webpack_encore.recorder_inner" class="Symfony\Component\Cache\Adapter\AdapterInterface">
+      <argument>bLQ2MK69TY</argument>
       <argument>0</argument>
       <argument>%container.build_id%</argument>
       <argument>C:/Users/harou/WarehouseManagement/var/cache/dev/pools/system</argument>
@@ -14599,9 +15468,20 @@
     <service id="Knp\Bundle\TimeBundle\DateTimeFormatter" alias="time.datetime_formatter"/>
     <service id="mercuryseries_flashy.session_store" alias="mercuryseries_flashy.symfony_session_store"/>
     <service id="MercurySeries\FlashyBundle\FlashyNotifier" alias="mercuryseries_flashy.flashy_notifier"/>
+    <service id="Symfony\WebpackEncoreBundle\Asset\EntrypointLookupCollectionInterface" alias="webpack_encore.entrypoint_lookup_collection"/>
+    <service id="Symfony\WebpackEncoreBundle\Asset\EntrypointLookupInterface" alias="webpack_encore.entrypoint_lookup[_default]"/>
+    <service id="Liip\ImagineBundle\Config\FilterFactoryCollection" alias="liip_imagine.config.filter_factory_collection"/>
+    <service id="Liip\ImagineBundle\Config\StackBuilder" alias="liip_imagine.config.stack_builder"/>
+    <service id="Liip\ImagineBundle\Config\StackCollection" alias="liip_imagine.config.stack_collection"/>
+    <service id="Liip\ImagineBundle\Imagine\Filter\FilterManager" alias="liip_imagine.filter.manager"/>
+    <service id="Liip\ImagineBundle\Imagine\Data\DataManager" alias="liip_imagine.data.manager"/>
+    <service id="Liip\ImagineBundle\Imagine\Cache\CacheManager" alias="liip_imagine.cache.manager"/>
+    <service id="liip_imagine.controller" alias="Liip\ImagineBundle\Controller\ImagineController" public="true"/>
+    <service id="liip_imagine" alias="liip_imagine.gd"/>
+    <service id="Imagine\Image\ImagineInterface" alias="liip_imagine.gd"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.w7.f4fT" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.YgW8TNd"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.Yu6P4tD"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="Psr\Log\LoggerInterface $requestLogger" alias="monolog.logger.request"/>
@@ -14624,14 +15504,19 @@
     <service id="Psr\Log\LoggerInterface $deprecationLogger" alias="monolog.logger.deprecation"/>
     <service id="turbo.mercure.stimulus_helper" alias="stimulus.helper"/>
     <service id="api_platform.name_converter" alias="api_platform.hydra.name_converter.hydra_prefix"/>
+    <service id="liip_imagine.mime_type_guesser" alias="mime_types"/>
+    <service id="liip_imagine.extension_guesser" alias="mime_types"/>
     <service id=".service_locator.GsIjbjK" alias="messenger.receiver_locator"/>
     <service id=".service_locator.Q7if2wv" alias="messenger.retry_strategy_locator"/>
     <service id=".service_locator.ZBZXtOS" alias=".service_locator.NZdAz3P"/>
     <service id=".service_locator.pCQiQWS" alias=".service_locator.Iv3qydr"/>
     <service id=".service_locator.Mo0FXEU" alias="service_locator_EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator"/>
     <service id=".service_locator.bnaLdkn" alias="api_platform.serializer_locator"/>
+    <service id=".service_locator.XDGmiR3" alias=".1_ServiceLocator~8sQZY9H"/>
     <service id=".service_locator.bJ.4HC5" alias=".service_locator.w7.f4fT"/>
-    <service id=".service_locator.UMGNYkx" alias=".service_locator.NgRcxaA"/>
+    <service id=".service_locator.9HHfFhM" alias=".service_locator.DIWEsCp"/>
+    <service id=".service_locator.PpS7vjf" alias=".service_locator.WdW2zRH"/>
+    <service id=".service_locator.OWaOgcU" alias=".service_locator.Z74ZQan"/>
     <service id=".service_locator.5mSKjHm" alias=".service_locator.3TE2pMc"/>
     <service id=".service_locator.y14Tdwj" alias=".service_locator.J7LPsp2"/>
     <service id=".service_locator.ssRYnE6" alias=".service_locator.fN2p8Nk"/>
@@ -14650,9 +15535,9 @@
     <service id=".service_locator.9A_qgEI" alias=".service_locator.avLZmv1"/>
     <service id=".service_locator.RtCGHrO" alias=".service_locator.lDw5jgg"/>
     <service id=".service_locator.djBiB42" alias=".service_locator.XhaxMWK"/>
-    <service id=".service_locator.5V2Vlpg" alias=".service_locator.YgW8TNd"/>
+    <service id=".service_locator.VoB00G7" alias=".service_locator.Yu6P4tD"/>
     <service id=".service_locator.BFrsqsn" alias=".service_locator.F9PKc.7"/>
-    <service id=".service_locator.MpEJUet" alias=".service_locator.ba8rBWO"/>
+    <service id=".service_locator.sa6xva0" alias=".service_locator.6x3_X2Z"/>
     <service id=".service_locator.kUfWnkZ" alias=".service_locator..ZrOtsY"/>
     <service id=".service_locator.KQS8tm0" alias=".service_locator.nIg6JWH"/>
     <service id=".service_locator.O24_MAy" alias=".service_locator.yY.p4P7"/>
@@ -14747,7 +15632,16 @@
     <service id="api_platform.metadata.resource.metadata_collection_factory.cached.inner" alias="api_platform.doctrine.orm.metadata.resource.metadata_collection_factory"/>
     <service id=".service_locator.Xbsa8iG" alias="api_platform.filter_locator"/>
     <service id=".service_locator.gFlme_s" alias=".service_locator.y4_Zrx."/>
-    <service id=".service_locator.SCwHiKi" alias=".service_locator.NgRcxaA"/>
+    <service id=".service_locator.abLUito" alias=".service_locator.DIWEsCp"/>
+    <service id=".service_locator.9e2t_lq" alias=".service_locator.CsMkqUa"/>
+    <service id=".service_locator.cU_v595" alias=".service_locator.WdW2zRH"/>
+    <service id=".service_locator.dKdYvD9" alias=".service_locator.wCNelc_"/>
+    <service id=".service_locator.WMOUiUu" alias=".service_locator.uiXCCiA"/>
+    <service id=".service_locator.ik3LbzS" alias=".service_locator.Z74ZQan"/>
+    <service id=".service_locator.9YCBtVb" alias=".service_locator.72v7qe6"/>
+    <service id=".service_locator.BmWozwE" alias=".service_locator.NufvMIJ"/>
+    <service id=".service_locator.BvvBT9K" alias=".service_locator.4n4ylFv"/>
+    <service id=".service_locator.gaTSUXr" alias=".service_locator.9kKwU2t"/>
     <service id=".service_locator.ostNlSn" alias=".service_locator.EE0.cm9"/>
     <service id=".service_locator.uPguXMt" alias=".service_locator.Z9ydiC1"/>
     <service id=".service_locator.nWDzidz" alias=".service_locator.3TE2pMc"/>
@@ -14766,7 +15660,6 @@
     <service id=".service_locator.RdxhYal" alias=".service_locator.uP379._"/>
     <service id=".service_locator.rsdHLIU" alias=".service_locator.z.VK42H"/>
     <service id=".service_locator.2B2hMew" alias=".service_locator.3wMQiHh"/>
-    <service id=".service_locator.9e2t_lq" alias=".service_locator.CsMkqUa"/>
     <service id=".service_locator.EIfNmL4" alias=".service_locator.tHxDZ0k"/>
     <service id=".service_locator._Z8fHCC" alias=".service_locator.vygPk_0"/>
     <service id=".service_locator.2nFOK6q" alias=".service_locator.IvUdUXI"/>
@@ -14775,7 +15668,6 @@
     <service id=".service_locator.Yc1mPPx" alias=".service_locator.hokdgZZ"/>
     <service id=".service_locator.wFeJNRM" alias=".service_locator.RroSN3V"/>
     <service id=".service_locator.7o.OJrY" alias=".service_locator.5ffhAhu"/>
-    <service id=".service_locator.gaTSUXr" alias=".service_locator.9kKwU2t"/>
     <service id=".service_locator.GXIaWy9" alias=".service_locator.VSBSvo7"/>
     <service id=".service_locator.cCYTHpf" alias=".service_locator.SPoJuN2"/>
     <service id=".service_locator.Feryq5t" alias=".service_locator.JttmJVc"/>

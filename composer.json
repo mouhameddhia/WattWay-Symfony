@@ -33,6 +33,9 @@
         "symfony/asset": "6.4.*",
         "symfony/asset-mapper": "6.4.*",
         "symfony/cache": "6.4.*",
+        "intervention/image": "^3.11",
+        "liip/imagine-bundle": "^2.13",
+        "symfony/amazon-sqs-messenger": "6.4.*",
         "symfony/console": "6.4.*",
         "symfony/doctrine-messenger": "6.4.*",
         "symfony/dotenv": "6.4.*",
@@ -55,7 +58,7 @@
         "symfony/runtime": "6.4.*",
         "symfony/security-bundle": "6.4.*",
         "symfony/serializer": "6.4.*",
-        "symfony/stimulus-bundle": "^2.23",
+        "symfony/stimulus-bundle": "^2.23|^2.24",
         "symfony/string": "6.4.*",
         "symfony/translation": "6.4.*",
         "symfony/twig-bundle": "6.4.*",
@@ -68,6 +71,7 @@
         "symfonycasts/reset-password-bundle": "^1.23",
         "symfonycasts/tailwind-bundle": "^0.10.0",
         "twig/extra-bundle": "^2.12|^3.0|^3.20",
+        "symfony/webpack-encore-bundle": "^2.2",
         "twig/twig": "^2.12|^3.0"
     },
     "config": {

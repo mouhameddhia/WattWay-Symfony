@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { Controller } from 'stimulus';
 
 /*
  * This is an example Stimulus controller!
@@ -13,4 +14,10 @@ export default class extends Controller {
     connect() {
         this.element.textContent = 'Hello Stimulus! Edit me in assets/controllers/hello_controller.js';
     }
+    static targets = [ "name" ]
+
+  greet() {
+    alert(`Hello, ${this.nameTarget.value}!`)
+  }
 }
+

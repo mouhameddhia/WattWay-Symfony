@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a
+class ComposerStaticInitf9e316276bc26d38e4e924ae328c0aaa
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -77,6 +77,7 @@ class ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a
         'S' => 
         array (
             'Symfonycasts\\TailwindBundle\\' => 28,
+            'Symfony\\WebpackEncoreBundle\\' => 28,
             'Symfony\\UX\\TwigComponent\\' => 25,
             'Symfony\\UX\\Turbo\\' => 17,
             'Symfony\\UX\\StimulusBundle\\' => 26,
@@ -123,6 +124,7 @@ class ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a
             'Symfony\\Component\\Notifier\\' => 27,
             'Symfony\\Component\\Mime\\' => 23,
             'Symfony\\Component\\Messenger\\Bridge\\Doctrine\\' => 44,
+            'Symfony\\Component\\Messenger\\Bridge\\AmazonSqs\\' => 45,
             'Symfony\\Component\\Messenger\\' => 28,
             'Symfony\\Component\\Mercure\\' => 26,
             'Symfony\\Component\\Mailer\\Bridge\\Mailgun\\' => 40,
@@ -206,6 +208,7 @@ class ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a
         ),
         'L' => 
         array (
+            'Liip\\ImagineBundle\\' => 19,
             'League\\OAuth2\\Client\\' => 21,
             'Lcobucci\\JWT\\' => 13,
             'Lcobucci\\Clock\\' => 15,
@@ -216,6 +219,12 @@ class ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a
             'Knp\\Bundle\\TimeBundle\\' => 22,
             'Knp\\Bundle\\PaginatorBundle\\' => 27,
             'KnpU\\OAuth2ClientBundle\\' => 24,
+        ),
+        'I' => 
+        array (
+            'Intervention\\Image\\' => 19,
+            'Intervention\\Gif\\' => 17,
+            'Imagine\\' => 8,
         ),
         'G' => 
         array (
@@ -261,6 +270,8 @@ class ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a
         ),
         'A' => 
         array (
+            'AsyncAws\\Sqs\\' => 13,
+            'AsyncAws\\Core\\' => 14,
             'App\\Tests\\' => 10,
             'App\\' => 4,
             'ApiPlatform\\Validator\\' => 22,
@@ -289,14 +300,14 @@ class ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a
     public static $prefixDirsPsr4 = array (
         'voku\\' => 
         array (
-            0 => __DIR__ . '/..' . '/voku/portable-ascii/src/voku',
-            1 => __DIR__ . '/..' . '/voku/portable-utf8/src/voku',
+            0 => __DIR__ . '/..' . '/voku/portable-utf8/src/voku',
+            1 => __DIR__ . '/..' . '/voku/portable-ascii/src/voku',
         ),
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
         ),
         'Zephir\\Optimizers\\FunctionCall\\' => 
         array (
@@ -329,6 +340,10 @@ class ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a
         'Symfonycasts\\TailwindBundle\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfonycasts/tailwind-bundle/src',
+        ),
+        'Symfony\\WebpackEncoreBundle\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/webpack-encore-bundle/src',
         ),
         'Symfony\\UX\\TwigComponent\\' => 
         array (
@@ -513,6 +528,10 @@ class ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a
         'Symfony\\Component\\Messenger\\Bridge\\Doctrine\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/doctrine-messenger',
+        ),
+        'Symfony\\Component\\Messenger\\Bridge\\AmazonSqs\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/amazon-sqs-messenger',
         ),
         'Symfony\\Component\\Messenger\\' => 
         array (
@@ -720,8 +739,8 @@ class ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -775,6 +794,10 @@ class ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a
         array (
             0 => __DIR__ . '/..' . '/masterminds/html5/src',
         ),
+        'Liip\\ImagineBundle\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/liip/imagine-bundle',
+        ),
         'League\\OAuth2\\Client\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/oauth2-client/src',
@@ -803,6 +826,18 @@ class ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a
         'KnpU\\OAuth2ClientBundle\\' => 
         array (
             0 => __DIR__ . '/..' . '/knpuniversity/oauth2-client-bundle/src',
+        ),
+        'Intervention\\Image\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/intervention/image/src',
+        ),
+        'Intervention\\Gif\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/intervention/gif/src',
+        ),
+        'Imagine\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/imagine/imagine/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -886,8 +921,8 @@ class ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a
         ),
         'Doctrine\\Common\\' => 
         array (
-            0 => __DIR__ . '/..' . '/doctrine/common/src',
-            1 => __DIR__ . '/..' . '/doctrine/event-manager/src',
+            0 => __DIR__ . '/..' . '/doctrine/event-manager/src',
+            1 => __DIR__ . '/..' . '/doctrine/common/src',
         ),
         'Doctrine\\Bundle\\MigrationsBundle\\' => 
         array (
@@ -912,6 +947,14 @@ class ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a
         'CMEN\\GoogleChartsBundle\\' => 
         array (
             0 => __DIR__ . '/..' . '/cmen/google-charts-bundle',
+        ),
+        'AsyncAws\\Sqs\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/async-aws/sqs/src',
+        ),
+        'AsyncAws\\Core\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/async-aws/core/src',
         ),
         'App\\Tests\\' => 
         array (
@@ -1687,10 +1730,10 @@ class ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInite4c1cb81ac3423c1a6ad1a427e14f20a::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitf9e316276bc26d38e4e924ae328c0aaa::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitf9e316276bc26d38e4e924ae328c0aaa::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitf9e316276bc26d38e4e924ae328c0aaa::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitf9e316276bc26d38e4e924ae328c0aaa::$classMap;
 
         }, null, ClassLoader::class);
     }

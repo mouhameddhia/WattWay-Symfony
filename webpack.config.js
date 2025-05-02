@@ -10,7 +10,11 @@ Encore
     .addEntry('app', './assets/app.js')
     .enableStimulusController('./assets/controllers/')
     .splitEntryChunks()
-
+    .enableStimulusBridge()
+    .enableSassLoader()
+    .enableVueLoader()
+    .enableReactPreset()
+    .enablePostCssLoader()
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
     .enableStimulusBridge('./assets/controllers.json')
     .enableSingleRuntimeChunk()

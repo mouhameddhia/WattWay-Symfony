@@ -1,0 +1,499 @@
+{% extends 'backend/baseBack.html.twig' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ asset('back/css/ordersBack.css') }}">
+<link rel="stylesheet" href="{{ asset('back/css/newCss.css') }}">
+
+{% set highlightId = app.request.get('highlight') %}
+{% set nextStatus = {
+    null: 'Pending',
+    'Pending': 'Shipped',
+    'Shipped': 'Delivered',
+    'Delivered': 'Cancelled',
+    'Cancelled': null
+}[currentSortStatus]|default('Pending') %}
+
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="flash-message flash-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+
+<!-- Orders Management -->
+
+<div class="card shadow mb-4">
+
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">List of Orders</h6>
+    </div>
+
+
+    <div style="display: flex; align-self:center; gap: 20px;">
+
+        <button class="refresh"><a href="{{ path('orders') }}"><svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path d="M463.5 224l8.5 0c13.3 0 24-10.7 24-24l0-128c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8l119.5 0z"/>
+        </svg></a></button>
+
+
+        <a href="{{ path('order_create') }}" class="dropdown dropdown-button" style="padding-left:17px;"> Create New Order</a>
+          
+        <!-- Sort Orders Status/Total Amount ASC/DSC -->
+<div class="dropdown">
+    <button class="dropdown-button" onclick="toggleDropdownSort()">Sort by</button>
+    <div class="dropdown-content" id="dropdownSortMenu">
+        <a href="{{ path('orders', {filter: currentFilter, sortStatus: nextStatus, month: currentMonth, page: 1}) }}"
+        class="{{ currentSortStatus == nextStatus ? 'active' : '' }}">
+            Status {% if currentSortStatus %} ({{ currentSortStatus }}) {% endif %}
+        </a>
+
+        <a href="{{ path('orders', {
+            filter: currentFilter,
+            sortAmount: 'asc',
+            sortStatus: currentSortStatus,
+            month: currentMonth,
+            page: 1
+        }) }}"
+        class="{{ currentSortAmount == 'asc' ? 'active' : '' }}">
+            Total Amount ↑
+        </a>
+
+        <a href="{{ path('orders', {
+            filter: currentFilter,
+            sortAmount: 'desc',
+            sortStatus: currentSortStatus,
+            month: currentMonth,
+            page: 1
+        }) }}"
+        class="{{ currentSortAmount == 'desc' ? 'active' : '' }}">
+            Total Amount ↓
+        </a>
+    </div>
+</div>
+
+
+        
+
+<!-- Filter Orders Admin/Client -->
+<div class="dropdown">
+    <button class="dropdown-button" onclick="toggleDropdownFilter()">Filter by</button>
+    <div class="dropdown-content" id="dropdownFilterMenu">
+        <a href="{{ path('orders', {
+            filter: 'all',
+            sortStatus: currentSortStatus,
+            sortAmount: currentSortAmount,
+            month: currentMonth,
+            page: 1
+        }) }}"
+        class="{{ currentFilter is not defined or currentFilter == 'all' ? 'active' : '' }}">
+            All Orders
+        </a>
+
+        <a href="{{ path('orders', {
+            filter: 'admin',
+            sortStatus: currentSortStatus,
+            sortAmount: currentSortAmount,
+            month: currentMonth,
+            page: 1
+        }) }}"
+        class="{{ currentFilter == 'admin' ? 'active' : '' }}">
+            Admin Orders
+        </a>
+
+        <a href="{{ path('orders', {
+            filter: 'client',
+            sortStatus: currentSortStatus,
+            sortAmount: currentSortAmount,
+            month: currentMonth,
+            page: 1
+        }) }}"
+        class="{{ currentFilter == 'client' ? 'active' : '' }}">
+            Client Orders
+        </a>
+    </div>
+</div>
+
+
+
+        
+        <!-- Month Selector -->
+        <div class="input-group input-group-sm" style="width:160px; height:32px; margin-top:21px;">
+            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+            <select id="monthFilterOrder" class="form-select form-select-sm">
+                <option value="all" selected>All Months</option>
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+        </div>
+
+        <!-- Search Orders by Item -->
+        <div class="alignSearchSVG" style="width:250px;height:40px; margin-top:10px;boarder-radius;">
+            <input type="text" id="searchInput" placeholder="Search by item name..." />
+            <svg id="searchIconButton" xmlns="http://www.w3.org/2000/svg" style="margin-left:5px;" height="12" width="12" viewBox="0 0 512 512">
+                <path fill="#ddd" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
+            </svg>
+        </div>
+        
+    </div>
+
+    <!-- Orders Table Container -->
+    <div class="card-body" style="max-height: 490px; overflow-y: auto; background-color:white;">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped shadow" id="dataTable">
+                <thead class="thead" style="position: sticky; top: 0; z-index: 1;">
+                    <tr>
+                        <th style="width: 5%; text-align: center;">ID</th>
+                        <th style="width: 12%; text-align: center;">Supplier</th>
+                        <th style="width: 33%; text-align: center;">Address Supplier</th>
+                        <th style="width: 10%; text-align: center;">Date</th>
+                        <th style="width: 12%; text-align: center;">Status</th>
+                        <th style="width: 13%; text-align: center;">Total Amount</th>
+                        <th style="width: 8%; text-align: center;">User</th>
+                        <th style="width: 10%; text-align: center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr class="clickable-order {{ order.supplierOrder == 'WattShop' ? 'wattshop-row' : '' }} {{ order.idOrder == highlightId|default('')|number_format(0, '.', '') ? 'highlighted-row' : '' }}" data-order-id="{{ order.idOrder }}">
+                            <td style="text-align: center;">{{ order.idOrder }}</td>
+                            <td>{{ order.supplierOrder }}</td>
+                            <td class="text-wrap" style="word-break: break-word; white-space: normal;">{{ order.addressSupplierOrder }} </td>
+                            <td style="text-align: center;">{{ order.dateOrder ? order.dateOrder|date('m/d/Y') : '—' }}</td>
+                            <td>
+                                <span class="badge badge-pill badge-{{ 
+                                    order.statusOrder == 'Delivered' ? 'success' : 
+                                    (order.statusOrder == 'Pending' ? 'warning' : 
+                                    (order.statusOrder == 'Cancelled' ? 'danger' : 'secondary')) 
+                                }} status-badge">
+                                    {{ order.statusOrder }}
+                                </span>
+                            </td>
+                            <td >{{ order.totalAmountOrder|number_format(2) }} TND</td>
+                            <td >{{ order.idAdmin }}</td>
+                            
+                            <td class="action-column">
+                                <div class="btn-group btn-group-sm">
+                                    {% if order.statusOrder == 'Pending' %}
+                                    <a href="#" class="btn btn-warning btn-sm edit-order-btn"
+                                       data-order-id="{{ order.idOrder }}" 
+                                       data-supplier="{{ order.supplierOrder }}"
+                                       data-date="{{ order.dateOrder ? order.dateOrder|date('Y-m-d') : '' }}"
+                                       data-status="{{ order.statusOrder }}"
+                                       data-total="{{ order.totalAmountOrder }}"
+                                       data-address="{{ order.addressSupplierOrder }}"><i class="fas fa-edit"></i></a>
+                                
+                                    {% endif %}
+                                   
+                                    <a href="{{ path('order_delete', {'idOrder': order.idOrder}) }}" onclick="return confirm('Are you sure you want to delete this order?');" class="btn btn-danger btn-sm" title="Delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center py-2">No orders found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination" style="display: flex; justify-content: center; gap: 8px;">
+            {# Previous Button #}
+            {% if currentPage > 1 %}
+                <a href="{{ path('orders', {
+                    page: currentPage - 1,
+                    filter: currentFilter,
+                    sortStatus: currentSortStatus,
+                    sortAmount: currentSortAmount
+                }) }}"
+                   class="pagination-link"
+                   style="padding: 8px 16px; border-radius: 6px; text-decoration: none;">
+                    &laquo; Previous
+                </a>
+            {% endif %}
+        
+            {# First Page #}
+            {% if currentPage > 2 %}
+                <a href="{{ path('orders', {
+                    page: 1,
+                    filter: currentFilter,
+                    sortStatus: currentSortStatus,
+                    sortAmount: currentSortAmount
+                }) }}"
+                   class="pagination-link"
+                   style="padding: 8px 12px; border-radius: 6px; text-decoration: none;">
+                    1
+                </a>
+                {% if currentPage > 3 %}
+                    <span style="padding: 8px 4px;">...</span>
+                {% endif %}
+            {% endif %}
+        
+            {# Current Page and Adjacent Pages #}
+            {% for i in max(1, currentPage - 1)..min(totalPages, currentPage + 1) %}
+                <a href="{{ path('orders', {
+                    page: i,
+                    filter: currentFilter,
+                    sortStatus: currentSortStatus,
+                    sortAmount: currentSortAmount
+                }) }}"
+                   class="pagination-link {{ i == currentPage ? 'active' : '' }}"
+                   style="padding: 8px 12px; border-radius: 6px; text-decoration: none;">
+                    {{ i }}
+                </a>
+            {% endfor %}
+        
+            {# Last Page #}
+            {% if currentPage < totalPages - 1 %}
+                {% if currentPage < totalPages - 2 %}
+                    <span style="padding: 8px 4px;">...</span>
+                {% endif %}
+                <a href="{{ path('orders', {
+                    page: totalPages,
+                    filter: currentFilter,
+                    sortStatus: currentSortStatus,
+                    sortAmount: currentSortAmount
+                }) }}"
+                   class="pagination-link"
+                   style="padding: 8px 12px; border-radius: 6px; text-decoration: none;">
+                    {{ totalPages }}
+                </a>
+            {% endif %}
+        
+            {# Next Button #}
+            {% if currentPage < totalPages %}
+                <a href="{{ path('orders', {
+                    page: currentPage + 1,
+                    filter: currentFilter,
+                    sortStatus: currentSortStatus,
+                    sortAmount: currentSortAmount
+                }) }}"
+                   class="pagination-link"
+                   style="padding: 8px 16px; border-radius: 6px; text-decoration: none;">
+                    Next &raquo;
+                </a>
+            {% endif %}
+        </div>
+        
+    </div>
+</div>
+
+<!-- Orders Stats -->
+<div class="card shadow mb-4">
+
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary" id="chartTitle">Order Statistics</h6>
+    </div>
+
+    <div class="card shadow-sm mt-4" >
+        
+        <div class="card-body position-relative" style="padding-bottom: 30px;height: 300px;">
+            <!-- Left Arrow -->
+            <div id="arrowLeft" class="chart-arrow" style="position: relative; left: -75px;top: 154px;">
+                <i class="fas fa-chevron-left fa-2x"></i>
+            </div>
+            
+            
+            <!-- Chart Container -->
+            <div class="row" >
+                <div class="col-md-8">
+                    <div class="chart-container" style="position: relative; height: 250px;margin-bottom:-20px;">
+                        <canvas id="ordersChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex flex-column h-100 justify-content-between">
+                        <div class="mb-3" id="statsSummary">
+                            <h6 class="text-muted mb-2">Summary</h6>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Total Orders</span>
+                                <span class="fw-bold">{{ total_orders_count }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Admin Orders</span>
+                                <span class="fw-bold text-primary">{{ admin_orders_count }} ({{ (admin_orders_count/total_orders_count*100)|round(1) }}%)</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Client Orders</span>
+                                <span class="fw-bold text-info">{{ client_orders_count }} ({{ (client_orders_count/total_orders_count*100)|round(1) }}%)</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Completed</span>
+                                <span class="fw-bold text-success">{{ completed_orders_count }} ({{ (completed_orders_count/total_orders_count*100)|round(1) }}%)</span>
+                            </div>
+                        </div>
+                        <div class="mt-auto" id="monthlyAverage">
+                            <h6 class="text-muted mb-2">Monthly Average</h6>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <small>Admin Orders</small>
+                                <small class="fw-bold">{{ (admin_orders_count/12)|round(1) }}/month</small>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <small>Client Orders</small>
+                                <small class="fw-bold">{{ (client_orders_count/12)|round(1) }}/month</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Arrow -->
+            <div id="arrowRight"  style="position: relative; left: 1260px;top:-130px;" class="chart-arrow">
+                <i class="fas fa-chevron-right fa-2x"></i>
+            </div>
+            
+            
+            <!-- Edit Modal -->
+            <div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editOrderModalLabel">Edit Order #<span id="editOrderId"></span></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+            
+                        <div class="modal-body">
+                            <form id="editOrderForm">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="editSupplier" class="form-label">Supplier</label>
+                                        <input type="text" class="form-control" id="editSupplier" required
+                                                maxlength="50"
+                                                pattern="^[a-zA-Z0-9\s\-_,\.;:()]+$"
+                                                title="Only letters, numbers, and basic punctuation allowed.">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="editDate" class="form-label">Date</label>
+                                        <input type="date" class="form-control" id="editDate" required
+                                                max="{{ "now"|date("Y-m-d") }}"
+                                                title="Date cannot be in the future.">
+                                    </div>
+                                </div>
+            
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="editStatus" class="form-label">Status</label>
+                                        <select class="form-select" id="editStatus" required>
+                                            <option value="" disabled selected>Select status</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Processing">Processing</option>
+                                            <option value="Shipped">Shipped</option>
+                                            <option value="Delivered">Delivered</option>
+                                            <option value="Cancelled">Cancelled</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="editTotal" class="form-label">Total Amount ($)</label>
+                                        <input type="number" step="0.01" class="form-control" id="editTotal" required
+                                                min="0" max="100000"
+                                                title="Enter a valid total between $0 and $100,000.">
+                                    </div>
+                                </div>
+            
+                                <div class="mb-3">
+                                    <label for="editAddress" class="form-label">Supplier Address</label>
+                                    <textarea class="form-control" id="editAddress" rows="3" required
+                                                maxlength="200"
+                                                placeholder="Enter supplier address..."></textarea>
+                                </div>
+                            </form>
+            
+                            <!-- Order Items Table -->
+                            <div class="mt-4">
+                                <h6>Order Items</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Quantity</th>
+                                                <th>Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="editOrderItemsList">
+                                            <!-- Items will be populated dynamically -->
+                                            <tr><td colspan="3" class="text-center text-muted">Loading items...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" id="saveOrderChanges">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Highlight the active link */
+a.active {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 5px 10px;
+}
+
+</style>
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    window.adminOrdersData = {{ admin_orders_by_month|json_encode|raw }};
+    window.clientOrdersData = {{ client_orders_by_month|json_encode|raw }};
+    window.expensesData = {{ expenses_by_month|json_encode|raw }};
+    window.revenuesData = {{ revenues_by_month|json_encode|raw }};
+    document.addEventListener('DOMContentLoaded', function () {
+        const monthSelector = document.getElementById('monthFilterOrder');
+        const ordersTable = document.querySelector('table#dataTable tbody');
+        const allRows = ordersTable.querySelectorAll('tr');
+    
+        // Event listener to detect month change
+        monthSelector.addEventListener('change', function () {
+            const selectedMonth = monthSelector.value; // Get selected month value (e.g., "01" for January)
+    
+            allRows.forEach(function(row) {
+                const orderDate = row.querySelector('td:nth-child(4)').textContent.trim(); // Assuming the date is in the 4th column
+                const orderMonth = orderDate ? orderDate.split('/')[0] : null; // Extract the month from the date (e.g., "05" from "05/01/2025")
+    
+                // Show or hide rows based on the selected month
+                if (selectedMonth === 'all' || orderMonth === selectedMonth) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    
+
+
+    
+</script>
+<script src="{{ asset('back/js/orderBack.js') }}"></script>
+
+
+{% endblock %}
+
+{% endblock %}

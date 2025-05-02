@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+=======
+>>>>>>> 7bf07a5064643563162ffd5f224dcf29261c4b00
 body {
     background-color: skyblue;
 }

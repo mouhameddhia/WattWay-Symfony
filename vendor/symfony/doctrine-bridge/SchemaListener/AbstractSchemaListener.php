@@ -13,6 +13,9 @@ namespace Symfony\Bridge\Doctrine\SchemaListener;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\TableNotFoundException;
+use Doctrine\DBAL\Schema\Name\Identifier;
+use Doctrine\DBAL\Schema\Name\UnqualifiedName;
+use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Tools\Event\GenerateSchemaEventArgs;
@@ -30,12 +33,17 @@ abstract class AbstractSchemaListener
             $table->addColumn('id', Types::INTEGER)
                 ->setAutoincrement(true)
                 ->setNotnull(true);
-            $table->setPrimaryKey(['id']);
+
+            if (class_exists(PrimaryKeyConstraint::class)) {
+                $table->addPrimaryKeyConstraint(new PrimaryKeyConstraint(null, [new UnqualifiedName(Identifier::unquoted('id'))], true));
+            } else {
+                $table->setPrimaryKey(['id']);
+            }
 
             $schemaManager->createTable($table);
 
             try {
-                $exec(sprintf('DROP TABLE %s', $checkTable));
+                $exec(\sprintf('DROP TABLE %s', $checkTable));
             } catch (\Exception) {
                 // ignore
             }

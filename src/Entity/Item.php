@@ -3,19 +3,33 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
 use App\Repository\ItemRepository;
 
 #[ORM\Entity(repositoryClass: ItemRepository::class)]
-#[ORM\Table(name: 'item')]
+#[ORM\Table(name: '`item`')]  // Backticks for table name if needed
 class Item
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(name: 'idItem', type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private ?int $idItem = null;
+
+    #[ORM\Column(name: 'nameItem', type: 'string', length: 255, nullable: false)]
+    private ?string $nameItem = null;
+
+    #[ORM\Column(name: 'quantityItem', type: 'integer', nullable: false)]
+    private ?int $quantityItem = null;
+
+    #[ORM\Column(name: 'pricePerUnitItem', type: 'float', nullable: false)]
+    private ?float $pricePerUnitItem = null;
+
+    #[ORM\Column(name: 'categoryItem', type: 'string', length: 255, nullable: false)]
+    private ?string $categoryItem = null;
+
+    #[ORM\Column(name: 'orderId', type: 'integer', nullable: true)]
+    private ?int $orderId = null;
+
+    // Getters and Setters
 
     public function getIdItem(): ?int
     {
@@ -28,9 +42,6 @@ class Item
         return $this;
     }
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private ?string $nameItem = null;
-
     public function getNameItem(): ?string
     {
         return $this->nameItem;
@@ -41,9 +52,6 @@ class Item
         $this->nameItem = $nameItem;
         return $this;
     }
-
-    #[ORM\Column(type: 'integer')]
-    private ?int $quantityItem = null;
 
     public function getQuantityItem(): ?int
     {
@@ -56,9 +64,6 @@ class Item
         return $this;
     }
 
-    #[ORM\Column(type: 'float')]
-    private ?float $pricePerUnitItem = null;
-
     public function getPricePerUnitItem(): ?float
     {
         return $this->pricePerUnitItem;
@@ -69,23 +74,14 @@ class Item
         $this->pricePerUnitItem = $pricePerUnitItem;
         return $this;
     }
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private ?string $categoryItem = null;
-
-    public function getCategoryItem(): ?string
-    {
-        return $this->categoryItem;
-    }
-
-    public function setCategoryItem(string $categoryItem): self
+    public function setCategoryItem(string $categoryItem):self
     {
         $this->categoryItem = $categoryItem;
         return $this;
     }
-
-    #[ORM\Column(type: 'integer')]
-    private ?int $orderId = null;
+    public function getCategoryItem():string{
+        return $this->categoryItem;
+    }
 
     public function getOrderId(): ?int
     {
@@ -97,5 +93,4 @@ class Item
         $this->orderId = $orderId;
         return $this;
     }
-
 }

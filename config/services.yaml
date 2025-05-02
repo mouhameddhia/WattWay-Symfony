@@ -7,7 +7,8 @@ parameters:
   pdfgeneratorapi.api_key: '%env(PDFGENERATORAPI_API_KEY)%'
   pdfgeneratorapi.api_secret: '%env(PDFGENERATORAPI_API_SECRET)%'
   pdfgeneratorapi.template_id: '%env(PDFGENERATORAPI_TEMPLATE_ID)%'
-
+  images_directory: '%kernel.project_dir%/public/images'
+  locale: 'en'
 services:
     App\Security\UserChecker:
         arguments:
