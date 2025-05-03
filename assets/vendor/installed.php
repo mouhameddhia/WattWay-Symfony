@@ -9,12 +9,11 @@
     array (
     ),
   ),
-  'chart.js' => 
+  '@hotwired/turbo' => 
   array (
-    'version' => '4.4.9',
+    'version' => '8.0.13',
     'dependencies' => 
     array (
-      0 => '@kurkle/color',
     ),
     'extraFiles' => 
     array (
@@ -30,11 +29,24 @@
     array (
     ),
   ),
-  '@hotwired/turbo' => 
+  'chart.js' => 
   array (
-    'version' => '8.0.13',
+    'version' => '4.4.8',
     'dependencies' => 
     array (
+      0 => '@kurkle/color',
+    ),
+    'extraFiles' => 
+    array (
+    ),
+  ),
+  '@symfony/ux-chartjs' => 
+  array (
+    'version' => '2.24.0',
+    'dependencies' => 
+    array (
+      0 => '@hotwired/stimulus',
+      1 => 'chart.js',
     ),
     'extraFiles' => 
     array (

@@ -26,9 +26,12 @@ return [
         'version' => '8.0.13',
     ],
     'chart.js' => [
-        'version' => '4.4.9',
+        'version' => '4.4.8',
     ],
     '@kurkle/color' => [
         'version' => '0.3.4',
+    ],
+    '@symfony/ux-chartjs' => [
+        'version' => '2.24.0',
     ],
 ];
