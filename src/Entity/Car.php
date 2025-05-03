@@ -3,14 +3,14 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\Assignment;
+use App\Entity\User;
 
 #[ORM\Entity]
 class Car
 {
-
     #[ORM\Id]
     #[ORM\Column(name: "idCar", type: "integer")]
     private int $idCar;
@@ -42,6 +42,31 @@ class Car
     #[ORM\Column(type: "string", length: 17)]
     private string $vin_code;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "cars")]
+    #[ORM\JoinColumn(name: "idUser", referencedColumnName: "idUser", nullable: true, onDelete: "SET NULL")]
+    private ?User $user = null;
+
+    #[ORM\OneToMany(mappedBy: "car", targetEntity: Assignment::class)]
+    private Collection $assignments;
+
+    public function __construct()
+    {
+        // initialize collections
+        $this->assignments = new ArrayCollection();
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    // ... existing getters and setters for other fields ...
 
     public function getIdCar()
     {
@@ -143,30 +168,27 @@ class Car
         $this->vin_code = $value;
     }
 
-    #[ORM\OneToMany(mappedBy: "car", targetEntity: Assignment::class)]
-    private Collection $assignments;
+    public function getAssignments(): Collection
+    {
+        return $this->assignments;
+    }
 
-        public function getAssignments(): Collection
-        {
-            return $this->assignments;
+    public function addAssignment(Assignment $assignment): self
+    {
+        if (!$this->assignments->contains($assignment)) {
+            $this->assignments[] = $assignment;
+            $assignment->setCar($this);
         }
-    
-        public function addAssignment(Assignment $assignment): self
-        {
-            if (!$this->assignments->contains($assignment)) {
-                $this->assignments[] = $assignment;
-                $assignment->setCar($this);
-            }
-    
-            return $this;
+
+        return $this;
+    }
+
+    public function removeAssignment(Assignment $assignment): self
+    {
+        if ($this->assignments->removeElement($assignment)) {
+            // no additional action needed here
         }
-    
-        public function removeAssignment(Assignment $assignment): self
-        {
-            if ($this->assignments->removeElement($assignment)) {
-                // Since car is non-nullable, we don't set it to null
-                // The assignment will be removed from the collection but keep its car reference
-            }
-            return $this;
-        }
+
+        return $this;
+    }
 }

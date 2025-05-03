@@ -1,16 +1,20 @@
 <?php
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
+#[AsCommand(
+    name: 'app:generate-repositories',
+    description: 'Generates repository classes for all entities.',
+    hidden: false
+)]
 class GenerateRepositoriesCommand extends Command
 {
-    protected static $defaultName = 'app:generate-repositories';
-
     private Filesystem $filesystem;
 
     public function __construct(Filesystem $filesystem)
@@ -19,14 +23,13 @@ class GenerateRepositoriesCommand extends Command
         $this->filesystem = $filesystem;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
-            ->setDescription('Generates repository classes for all entities.')
             ->setHelp('This command will generate repository classes for all entities in src/Entity.');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Generating repositories for all entities...');
 

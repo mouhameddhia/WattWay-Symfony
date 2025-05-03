@@ -11,3 +11,13 @@ import 'select2/dist/js/select2.full.min';
 import 'select2/dist/css/select2.min.css';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+
+// assets/app.js
+import Chart from 'chart.js/auto';
+import './styles/app.scss'; // if you have SCSS
+
+// optional: if you’re using Stimulus controllers or other UX packages:
+import { Application } from '@hotwired/stimulus';
+const application = Application.start();
+// application.register('chart', require('./controllers/chart_controller'));
+

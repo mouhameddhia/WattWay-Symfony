@@ -56,15 +56,15 @@ class Mechanic
     #[Assert\PositiveOrZero(message: "Cars repaired cannot be negative")]
     private int $carsRepaired = 0;
 
-    #[ORM\OneToMany(mappedBy: "idMechanic", targetEntity: Assignment::class)]
-    private Collection $assignments;
+    //#[ORM\OneToMany(mappedBy: "idMechanic", targetEntity: Assignment::class)]
+    //private Collection $assignments;
 
     #[ORM\OneToMany(mappedBy: "idMechanic", targetEntity: AssignmentMechanics::class)]
     private Collection $assignmentMechanics;
 
     public function __construct()
     {
-        $this->assignments = new ArrayCollection();
+        //$this->assignments = new ArrayCollection();
         $this->assignmentMechanics = new ArrayCollection();
     }
 
@@ -128,11 +128,13 @@ class Mechanic
         $this->carsRepaired = $value;
     }
 
-    public function getAssignments(): Collection
+    public function getAssignments(): array
     {
-        return $this->assignments;
+        return $this->assignmentMechanics
+        ->map(fn(AssignmentMechanics $am) => $am->getIdAssignment())
+        ->toArray();
     }
-
+/*
     public function addAssignment($assignment): self
     {
         if (!$this->assignments->contains($assignment)) {
@@ -153,7 +155,7 @@ class Mechanic
 
         return $this;
     }
-
+*/
     public function getAssignmentMechanics(): Collection
     {
         return $this->assignmentMechanics;

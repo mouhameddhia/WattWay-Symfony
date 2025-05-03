@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>New Assignment Notification</title>
+  <style type="text/css">
+    /* Reset & container */
+    body, table, td { margin:0; padding:0; }
+    body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
+    .email-container { width: 100%; max-width: 600px; margin: auto; background: #ffffff; border-radius: 8px; overflow: hidden; }
+
+    /* Header */
+    .email-header { background: #4e73df; color: #fff; text-align: center; padding: 20px; }
+    .email-header h1 { margin: 0; font-size: 1.5rem; }
+
+    /* Body */
+    .email-body { padding: 30px; color: #333; line-height: 1.5; }
+    .email-body h2 { font-size: 1.25rem; margin-bottom: 10px; color: #224abe; }
+    .email-body p { margin-bottom: 15px; }
+
+    /* Details box */
+    .details { border: 1px solid #e3e6f0; border-radius: 4px; padding: 15px; background: #f8f9fa; }
+    .details dt { font-weight: 600; }
+    .details dd { margin: 0 0 10px 0; }
+
+    /* Mechanics list */
+    .mechanics { margin-top: 20px; }
+    .mechanics li { margin-bottom: 8px; }
+
+    /* Footer */
+    .email-footer { text-align: center; padding: 20px; font-size: 0.85rem; color: #6c757d; }
+  </style>
+</head>
+<body>
+  <table class="email-container" cellpadding="0" cellspacing="0">
+    <tr>
+      <td class="email-header">
+        <h1>🔧 New Assignment Created</h1>
+      </td>
+    </tr>
+    <tr>
+      <td class="email-body">
+        <h2>Hello {{ mechanic.nameMechanic|default(mechanic.nameMechanic) }},</h2>
+
+        <p>You’ve been assigned a new repair job in the WattWay system. Here are the details:</p>
+
+        <dl class="details">
+          <dt>Description:</dt>
+          <dd>{{ assignment.descriptionAssignment }}</dd>
+
+          <dt>Date:</dt>
+          <dd>{{ assignment.dateAssignment ? assignment.dateAssignment|date('Y-m-d H:i') : '—' }}</dd>
+
+          <dt>Car:</dt>
+          <dd>{{ assignment.car.brandCar }} {{ assignment.car.modelCar }} ({{ assignment.car.yearCar }})</dd>
+
+          <dt>Status:</dt>
+          <dd>{{ assignment.statusAssignment }}</dd>
+        </dl>
+
+        <p class="mechanics-title"><strong>Other mechanics on this job:</strong></p>
+            <ul class="mechanics">
+            {# track whether we printed at least one #}
+            {% set hasOther = false %}
+
+            {% for am in assignment.assignmentMechanics %}
+                {% set m = am.idMechanic %}
+                {% if m.idMechanic != mechanic.idMechanic %}
+                {% set hasOther = true %}
+                <li>👤 {{ m.nameMechanic }} — {{ m.emailMechanic }}</li>
+                {% endif %}
+            {% endfor %}
+
+            {% if not hasOther %}
+                <li>No other mechanics assigned.</li>
+            {% endif %}
+            </ul>
+
+        <p>Please log in to your dashboard to view or update the assignment, Check the Items vault to order necessary equipment:</p>
+        <p><a href="{{ url('app_mechanic_index') }}" style="display:inline-block;padding:10px 20px;background:#224abe;color:#fff;text-decoration:none;border-radius:4px;">View Dashboard</a></p>
+      </td>
+    </tr>
+    <tr>
+      <td class="email-footer">
+        © {{ "now"|date("Y") }} WattWay — <a href="mailto:wattwayorg@gmail.com" style="color:#6c757d;text-decoration:none;">wattwayorg@gmail.com</a>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -3,16 +3,16 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use App\Entity\Car;
 use App\Entity\Response;
 
 #[ORM\Entity]
 class User
 {
-
     #[ORM\Id]
-    #[ORM\Column(type: "integer")]
+    #[ORM\Column(name: "idUser", type: "integer")]
     private int $idUser;
 
     #[ORM\Column(type: "string", length: 100)]
@@ -27,23 +27,99 @@ class User
     #[ORM\Column(type: "string", length: 50)]
     private string $lastNameUser;
 
-    #[ORM\Column(type: "string")]
+    #[ORM\Column(type: "string")]  
     private string $roleUser;
 
     #[ORM\Column(type: "string", length: 20)]
     private string $phoneNumber;
 
-    #[ORM\Column(type: "string")]
+    #[ORM\Column(type: "string")]  
     private string $paymentDetails;
 
     #[ORM\Column(type: "string", length: 255)]
     private string $address;
 
-    #[ORM\Column(type: "string")]
+    #[ORM\Column(type: "string")]  
     private string $functionAdmin;
 
     #[ORM\Column(type: "string", length: 255)]
     private string $profilePicture;
+    #[ORM\OneToMany(mappedBy: "idUser", targetEntity: Submission::class)]
+    private Collection $submissions;
+
+        public function getSubmissions(): Collection
+        {
+            return $this->submissions;
+        }
+    
+        public function addSubmission(Submission $submission): self
+        {
+            if (!$this->submissions->contains($submission)) {
+                $this->submissions[] = $submission;
+                $submission->setUser($this);
+            }
+    
+            return $this;
+        }
+    
+        public function removeSubmission(Submission $submission): self
+        {
+            if ($this->submissions->removeElement($submission)) {
+                // set the owning side to null (unless already changed)
+                if ($submission->getUser() === $this) {
+                    $submission->setUser(null);
+                }
+            }
+    
+            return $this;
+        }
+
+    // --- Inverse side of Car relation ---
+    #[ORM\OneToMany(mappedBy: "idUser", targetEntity: Car::class)]
+    private Collection $cars;
+
+    // --- Inverse side of Response relation ---
+    #[ORM\OneToMany(mappedBy: "idUser", targetEntity: Response::class)]
+    private Collection $responses;
+
+    public function __construct()
+    {
+        $this->cars = new ArrayCollection();
+        $this->responses = new ArrayCollection();
+    }
+
+    // --- Car getters & setters ---
+    public function getCars(): Collection
+    {
+        return $this->cars;
+    }
+
+    public function addCar(Car $car): self
+    {
+        if (!$this->cars->contains($car)) {
+            $this->cars->add($car);
+            $car->setUser($this);
+        }
+        return $this;
+    }
+
+    public function removeCar(Car $car): self
+    {
+        if ($this->cars->removeElement($car)) {
+            if ($car->getUser() === $this) {
+                $car->setUser(null);
+            }
+        }
+        return $this;
+    }
+
+    // --- Response getters & setters ---
+    public function getResponses(): Collection
+    {
+        return $this->responses;
+    }
+
+    // --- Existing simple getters & setters ---
 
     public function getIdUser()
     {
@@ -154,37 +230,4 @@ class User
     {
         $this->profilePicture = $value;
     }
-
-    #[ORM\OneToMany(mappedBy: "idUser", targetEntity: Submission::class)]
-    private Collection $submissions;
-
-        public function getSubmissions(): Collection
-        {
-            return $this->submissions;
-        }
-    
-        public function addSubmission(Submission $submission): self
-        {
-            if (!$this->submissions->contains($submission)) {
-                $this->submissions[] = $submission;
-                $submission->setIdUser($this);
-            }
-    
-            return $this;
-        }
-    
-        public function removeSubmission(Submission $submission): self
-        {
-            if ($this->submissions->removeElement($submission)) {
-                // set the owning side to null (unless already changed)
-                if ($submission->getIdUser() === $this) {
-                    $submission->setIdUser(null);
-                }
-            }
-    
-            return $this;
-        }
-
-    #[ORM\OneToMany(mappedBy: "idUser", targetEntity: Response::class)]
-    private Collection $responses;
 }

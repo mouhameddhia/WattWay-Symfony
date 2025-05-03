@@ -14,13 +14,13 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class AssignmentType extends AbstractType
 {
@@ -37,9 +37,11 @@ class AssignmentType extends AbstractType
             ->add('descriptionAssignment', TextareaType::class, [
                 'label' => 'Description',
                 'attr' => [
-                    'class' => 'form-control',
+                    'class' => 'form-control pe-5',
                     'placeholder' => 'Enter assignment description',
+                    'id'    => 'descriptionAssignment',
                     'rows' => 4
+                    
                 ],
                 'constraints' => [
                     new NotBlank(['message' => 'Description is required']),
@@ -54,9 +56,9 @@ class AssignmentType extends AbstractType
             ->add('statusAssignment', ChoiceType::class, [
                 'label' => 'Status',
                 'choices' => [
-                    'Pending' => 'pending',
-                    'In Progress' => 'in_progress',
-                    'Completed' => 'completed'
+                    'Pending' => 'Pending',
+                    'In Progress' => 'In Progress',
+                    'Completed' => 'Completed'
                 ],
                 'attr' => [
                     'class' => 'form-control'
@@ -64,7 +66,7 @@ class AssignmentType extends AbstractType
                 'constraints' => [
                     new NotBlank(['message' => 'Status is required']),
                     new Choice([
-                        'choices' => ['pending', 'in_progress', 'completed'],
+                        'choices' => ['Pending', 'In Progress', 'Completed'],
                         'message' => 'Please select a valid status'
                     ])
                 ]

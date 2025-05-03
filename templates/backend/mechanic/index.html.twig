@@ -7,6 +7,11 @@
     <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <style>
         /* Custom badge colors for specialities */
+        .btn-group-sm > .btn,
+            .btn-group-sm > form {
+            margin-right: .25rem;
+            }
+
         .badge-engine {
             background-color: #4e73df; /* Primary blue */
             color: white;
@@ -118,19 +123,62 @@
 {% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{{ asset('css/MechanicAssignment/crudTable.css') }}">
     <div class="container-fluid">
-        <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Mechanics Management</h1>
+            <h1 class="h3 mb-0 text-gray-800">Mechanics</h1>
             <a href="{{ path('app_mechanic_new') }}" class="d-none d-sm-inline-block btn btn-primary shadow-sm">
-                <i class="fas fa-plus fa-sm text-white-50 mr-2"></i>New Mechanic
+                <i class="fas fa-plus fa-sm text-white-50 mr-2"></i> Create New Mechanic
             </a>
-        </div>
+        </div>    
+    </div>
+    <div class="row mb-3">
+            <div class="col-12 col-md-8 offset-md-2">
+                <form method="get" class="form-inline mb-3">
+                            <input
+                                type="text"
+                                name="q"
+                                class="form-control form-control-sm mr-2"
+                                placeholder="Search mechanics…"
+                                value="{{ currentSearch }}"
+                            />
 
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">All Mechanics</h6>
+                            <select name="sort" class="form-control form-control-sm mr-2">
+                                <option value="">Sort by…</option>
+                                <option value="name"         {{ currentSort=='name'         ? 'selected' }}>Name</option>
+                                <option value="speciality"   {{ currentSort=='speciality'   ? 'selected' }}>Speciality</option>
+                                <option value="carsRepaired" {{ currentSort=='carsRepaired' ? 'selected' }}>Cars Repaired</option>
+                            </select>
+
+                            <select name="dir" class="form-control form-control-sm mr-2">
+                                <option value="ASC"  {{ currentDir=='ASC'  ? 'selected' }}>↑ ASC</option>
+                                <option value="DESC" {{ currentDir=='DESC' ? 'selected' }}>↓ DESC</option>
+                            </select>
+
+                            <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+                            <a href="{{ path('app_mechanic_index') }}" class="btn btn-secondary btn-sm ml-2">Reset</a>
+                        </form>
+                    </div>
+                </div>
             </div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">All Mechanics</h6>
+        </div>
+        
+        <!-- Flash Messages (Backup Display) -->
+        {% if app.flashes.error is defined and app.flashes.error|length > 0 %}
+            {% for message in app.flashes.error %}
+                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <strong>Error:</strong> {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <!-- Page Heading -->
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table" id="mechanicsTable">
@@ -167,7 +215,8 @@
                                     {% if mechanic.imgMechanic %}
                                         <img src="{{ asset('uploads/mechanics/' ~ mechanic.imgMechanic) }}" 
                                              alt="{{ mechanic.nameMechanic }}" 
-                                             class="img-thumbnail">
+                                             class="img-thumbnail"
+                                             loading="lazy">
                                     {% else %}
                                         <span class="text-muted">No image</span>
                                     {% endif %}
@@ -184,7 +233,20 @@
                                                 <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"/>
                                             </svg>
                                         </a>
-                                        {{ include('backend/mechanic/_delete_form.html.twig') }}
+                                         <form 
+                                            method="post" 
+                                            action="{{ path('app_mechanic_delete', {'idMechanic': mechanic.idMechanic}) }}" 
+                                            onsubmit="return confirm('Are you sure you want to delete this mechanic?');"
+                                            style="display:inline-block"
+                                        >
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ mechanic.idMechanic) }}">
+                                            <button type="submit" class="btn btn-danger btn-sm" title="Delete">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="14" height="14" fill="currentColor">
+                                                    <!-- Trash can icon from FontAwesome Free -->
+                                                    <path d="M268 416h24a12 12 0 0 0 12-12V204a12 12 0 0 0-12-12h-24a12 12 0 0 0-12 12v200a12 12 0 0 0 12 12zm-88 0h24a12 12 0 0 0 12-12V204a12 12 0 0 0-12-12h-24a12 12 0 0 0-12 12v200a12 12 0 0 0 12 12zM432 80h-82.4l-34-56.7A48 48 0 0 0 274.5 0H173.5a48 48 0 0 0-40.9 23.3L98.6 80H16A16 16 0 0 0 0 96v32a16 16 0 0 0 16 16h16v304a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V144h16a16 16 0 0 0 16-16V96a16 16 0 0 0-16-16zM173.5 48h101l19.6 32H153.9z"/>
+                                                </svg>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -199,44 +261,32 @@
             </div>
         </div>
     </div>
+    <div class="card shadow mb-4" style="width:600px; height:400px;">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Cars Repaired per Mechanic</h6>
+    </div>
+    <div class="card-body" style="width:600px; height:400px;">
+        <canvas id="mechanicsChart"></canvas>
+    </div>
+</div>
+    
+
 {% endblock %}
 
 {% block javascript %}
     {{ parent() }}
-    <!-- jQuery, Bootstrap, and DataTables JavaScript -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+    {# 1) load Chart.js from CDN #}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+
+    {# 2) draw the bar chart #}
     <script>
-        $(document).ready(function() {
-            $('#mechanicsTable').DataTable({
-                "order": [[ 1, "asc" ]],
-                "pageLength": 10,
-                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-                "responsive": true,
-                "language": {
-                    "lengthMenu": "Show _MENU_ mechanics per page",
-                    "zeroRecords": "No mechanics found",
-                    "info": "Showing page _PAGE_ of _PAGES_",
-                    "infoEmpty": "No mechanics available",
-                    "infoFiltered": "(filtered from _MAX_ total mechanics)",
-                    "search": "Search:",
-                    "paginate": {
-                        "previous": "&laquo;",
-                        "next": "&raquo;"
-                    }
-                },
-                "columnDefs": [
-                    { "width": "5%", "targets": 0, "orderable": false },
-                    { "width": "20%", "targets": 1 },
-                    { "width": "15%", "targets": 2 },
-                    { "width": "20%", "targets": 3 },
-                    { "width": "10%", "targets": 4 },
-                    { "width": "15%", "targets": 5 },
-                    { "width": "15%", "targets": 6, "orderable": false }
-                ]
-            });
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('mechanicsChart').getContext('2d');
+        // chartConfig is a JSON string ready for use
+        const config = {{ chartConfig | raw }};
+
+        new Chart(ctx, config);
+    });
     </script>
+    
 {% endblock %}

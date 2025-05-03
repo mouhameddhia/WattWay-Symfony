@@ -15,6 +15,7 @@
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
         <link href="{{ asset('back/css/sb-admin-2.min.css') }}" rel="stylesheet">
     {% endblock %}
+    {{ encore_entry_link_tags('app') }}
 </head>
 
 <body id="page-top">
@@ -182,6 +183,27 @@
                 </nav>
                 <!-- End of Topbar -->
 
+                <!-- Flash Messages -->
+                <div class="container-fluid mb-4">
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            {% set alert_class = label %}
+                            {% if label == 'error' %}
+                                {% set alert_class = 'danger' %}
+                            {% endif %}
+                            
+                            <div class="alert alert-{{ alert_class }} alert-dismissible fade show mb-3" role="alert">
+                                <i class="fas fa-{% if label == 'success' %}check-circle{% elseif label == 'error' %}exclamation-circle{% else %}info-circle{% endif %} mr-2"></i>
+                                <strong>{{ label|capitalize }}:</strong> {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                <!-- End Flash Messages -->
+
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     {% block content %}
@@ -215,17 +237,20 @@
     </a>
 
     {% block javascript %}
-    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-    <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
-    <script src="{{ asset('build/select2.js') }}"></script>
 
-    
+    <script src="{{ asset('back/vendor/jquery/jquery.min.js') }}" defer></script>
+    <script src="{{ asset('back/vendor/jquery-easing/jquery.easing.min.js') }}" defer></script>
+    <script src="{{ asset('back/js/sb-admin-2.min.js') }}" defer></script>
+
+    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}" defer></script>
+    <script src="{{ asset('js/sb-admin-2.min.js') }}" defer></script>
+
     {% endblock %}
     {% block stylesheets %}
-        <link rel="stylesheet" href="{{ asset('build/select2.css') }}">
+        
     {% endblock %}
+    {{ encore_entry_script_tags('app') }}
+    
 
 </body>
 

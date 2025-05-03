@@ -2,6 +2,7 @@
 
 namespace App\Controller\mechanic;
 
+use App\Repository\MechanicRepository;
 use App\Entity\AssignmentMechanics;
 use App\Entity\Mechanic;
 use App\Form\MechanicType;
@@ -10,22 +11,76 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
+use Symfony\UX\Chartjs\Model\Chart;
+
+
+
 
 #[Route('/mechanic')]
 final class MechanicController extends AbstractController
 {
     #[Route(name: 'app_mechanic_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(Request $request, MechanicRepository $repo, ChartBuilderInterface $chartBuilder): Response
     {
-        $mechanics = $entityManager
-            ->getRepository(Mechanic::class)
-            ->findAll();
+        $q    = $request->query->get('q', '');
+        $sort = $request->query->get('sort', '');
+        $dir  = strtoupper($request->query->get('dir', 'ASC'));
+
+        if ($q !== '') {
+            $mechanics = $repo->search($q);
+        } elseif ($sort === 'name') {
+            $mechanics = $repo->sortByName($dir);
+        } elseif ($sort === 'speciality') {
+            $mechanics = $repo->sortBySpeciality($dir);
+        } elseif ($sort === 'carsRepaired') {
+            $mechanics = $repo->sortByCarsRepaired($dir);
+        } else {
+            $mechanics = $repo->findAll();
+        }
+        
+        $labels = [];
+        $data   = [];
+        foreach ($mechanics as $m) {
+            $labels[] = $m->getNameMechanic();
+            $data[]   = $m->getCarsRepaired();
+        }
+
+        // 3) build the Chart.js configuration array
+        $chartConfig = [
+            'type' => 'bar',
+            'data' => [
+                'labels'   => $labels,
+                'datasets' => [
+                    [
+                        'label'           => 'Cars Repaired',
+                        'data'            => $data,
+                        'backgroundColor' => 'rgba(78, 115, 223, .5)',
+                        'borderColor'     => 'rgba(78, 115, 223, 1)',
+                        'borderWidth'     => 1,
+                    ],
+                ],
+            ],
+            'options' => [
+                'responsive' => true,
+                'maintainAspectRatio' => false,
+                'scales'     => [
+                    'y' => ['beginAtZero' => true],
+                ],
+            ],
+        ];
+
 
         return $this->render('backend/mechanic/index.html.twig', [
-            'mechanics' => $mechanics,
+            'mechanics'    => $mechanics,
+            'currentSearch'=> $q,
+            'currentSort'  => $sort,
+            'currentDir'   => $dir,
+            'chartConfig'  => json_encode($chartConfig),
         ]);
     }
+        
     private $entityManager;
     
     public function __construct(EntityManagerInterface $entityManager)
@@ -99,7 +154,7 @@ final class MechanicController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-    #[Route('/{idMechanic}', name: 'app_mechanic_show', methods: ['GET'])]
+    #[Route('/{idMechanic}/show', name: 'app_mechanic_show', methods: ['GET'])]
     public function show(Mechanic $mechanic): Response
     {
         return $this->render('backend/mechanic/show.html.twig', [
@@ -109,10 +164,12 @@ final class MechanicController extends AbstractController
 
     
 
-    #[Route('/{idMechanic}', name: 'app_mechanic_delete', methods: ['POST'])]
+    #[Route('/{idMechanic}/delete', name: 'app_mechanic_delete', methods: ['POST'])]
     public function delete(Request $request, Mechanic $mechanic, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$mechanic->getIdMechanic(), $request->getPayload()->getString('_token'))) {
+        $token = $request->request->get('_token');
+        
+        if ($this->isCsrfTokenValid('delete' . $mechanic->getIdMechanic(), $token)) {
             // Check if mechanic has any assignments
             $assignmentCount = $entityManager->getRepository(AssignmentMechanics::class)
                 ->count(['idMechanic' => $mechanic->getIdMechanic()]);
@@ -126,12 +183,18 @@ final class MechanicController extends AbstractController
                 ));
             } else {
                 // Only delete if no assignments exist
-                $entityManager->remove($mechanic);
-                $entityManager->flush();
-                $this->addFlash('success', 'Mechanic deleted successfully');
+                try {
+                    $entityManager->remove($mechanic);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Mechanic deleted successfully');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Error during deletion: ' . $e->getMessage());
+                }
             }
+        } else {
+            $this->addFlash('error', 'Invalid security token');
         }
-
+        
         return $this->redirectToRoute('app_mechanic_index', [], Response::HTTP_SEE_OTHER);
     }
 
@@ -152,4 +215,32 @@ final class MechanicController extends AbstractController
             'mechanics' => $mechanics,
         ]);
     }
+    #[Route('/mechanic/search', name: 'app_mechanic_search', methods: ['GET'])]
+    public function search(Request $request, MechanicRepository $repo): JsonResponse
+    {
+        $term = $request->query->get('q', '');
+        $results = $repo->search($term);
+        return $this->json($results);
+    }
+    #[Route('/mechanic/sort/name', name: 'app_mechanic_sort_name', methods: ['GET'])]
+    public function sortByName(Request $request, MechanicRepository $repo): JsonResponse
+    {
+        $dir = strtoupper($request->query->get('dir', 'ASC'));
+        $list = $repo->sortByName($dir);
+        return $this->json($list);
+    }
+
+    #[Route('/mechanic/sort/speciality', name: 'app_mechanic_sort_speciality', methods: ['GET'])]
+    public function sortBySpeciality(Request $request, MechanicRepository $repo): JsonResponse
+    {
+        $dir = strtoupper($request->query->get('dir', 'ASC'));
+        return $this->json($repo->sortBySpeciality($dir));
+    }
+    #[Route('/mechanic/sort/cars-repaired', name: 'app_mechanic_sort_cars', methods: ['GET'])]
+    public function sortByCarsRepaired(Request $request, MechanicRepository $repo): JsonResponse
+    {
+        $dir = strtoupper($request->query->get('dir', 'ASC'));
+        return $this->json($repo->sortByCarsRepaired($dir));
+    }
+
 }

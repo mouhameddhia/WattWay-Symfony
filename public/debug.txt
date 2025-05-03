@@ -2,17 +2,16 @@ Array
 (
     [assignment] => Array
         (
-            [descriptionAssignment] => GDCFHJHVJHVH
+            [descriptionAssignment] => dfkgjufugegd
             [statusAssignment] => pending
-            [dateAssignment] => 2025-04-19T00:23
+            [dateAssignment] => 2025-04-26T15:16
             [car] => 0
             [mechanics] => Array
                 (
                     [0] => 1
-                    [1] => 4
                 )
 
-            [_token] => 66954bb4b2831653a249a4b0eed634.fU3EarFgtuBdu8mLjB0cF7Q69Sw5GTe17VOtAhpaJUI.Cwv3GdRN-NIb0vDCyUJPb8JMlkVjUnHZhBb5bHQWUg5PKogLhheDjiX2pg
+            [_token] => 828b83312728d5aa9b9.MsPtlbZWRv7Atv9UR_O8wLbQOlYGFDltzzBPPsrzj-8.RIXe5tN7CMyG38YdAqzvuMCmWT9cX38BpnUbUKS_-KMApKH0gSFzkLj7kA
         )
 
 )

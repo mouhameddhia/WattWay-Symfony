@@ -31,12 +31,12 @@ class Assignment
     #[ORM\Column(name: "statusAssignment", type: "string", length: 20)]
     #[Assert\NotBlank(message: "Status is required")]
     #[Assert\Choice(
-        choices: ["pending", "in-progress", "completed"],
+        choices: ["Pending", "In Progress", "Completed"],
         message: "Status must be either pending, in-progress, or completed"
     )]
     private string $statusAssignment;
 
-    #[ORM\ManyToOne(targetEntity: Car::class)]
+    #[ORM\ManyToOne(targetEntity:Car::class, inversedBy:"assignments")]
     #[ORM\JoinColumn(name: "idCar", referencedColumnName: "idCar")]
     #[Assert\NotBlank(message: "Car is required")]
     private ?Car $car = null;
@@ -48,6 +48,16 @@ class Assignment
 
     #[ORM\OneToMany(mappedBy: "idAssignment", targetEntity: AssignmentMechanics::class, cascade: ["persist", "remove"], orphanRemoval: true)]
     private Collection $assignmentMechanics;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $calendarEventId;
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $calendarEventUrl;
+
 
     public function __construct()
     {
@@ -144,5 +154,20 @@ class Assignment
         return $this->getAssignmentMechanics()->map(
             fn(AssignmentMechanics $am) => $am->getIdMechanic()
         )->toArray();
+    }
+    public function getCalendarEventId(): ?string
+    {
+        return $this->calendarEventId;
+    }
+
+    public function setCalendarEventId(string $calendarEventId): self
+    {
+        $this->calendarEventId = $calendarEventId;
+        return $this;
+    }
+
+    public function setCalendarEventUrl(string $url)
+    {
+        $this->calendarEventUrl = $url;
     }
 }

@@ -3,10 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\Mechanic;
+use App\Entity\Car;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\UserRepository;
+use Doctrine\DBAL\Connection;
+
+
+
+
 
 class FrontController extends AbstractController
 {
@@ -19,8 +27,15 @@ class FrontController extends AbstractController
             
         dump($mechanics); // Debug
 
+        $userCars = $entityManager
+            ->getRepository(Car::class)
+            ->findBy(['user' => 1]);
+
+        dump($userCars);
+
         return $this->render('frontend/baseFront.html.twig', [
             'mechanics' => $mechanics,
+            'userCars' => $userCars,
         ]);
     }
 
@@ -41,19 +56,31 @@ class FrontController extends AbstractController
             'mechanics' => $mechanics,
         ]);
     }
+/*
+    #[Route('/Front', name: 'Front')]
+    public function home(
+        Connection $conn,
+        UserRepository $userRepository
+    ): Response {
+        // 1) Dump your connection params:
+        dump($conn->getParams());
 
-    #[Route('/car-status', name: 'app_car_status')]
-    public function carStatus(EntityManagerInterface $entityManager): Response
-    {
-        // For now, we'll just pass an empty array
-        // Later, we'll implement the logic to fetch user's cars and their assignments
-        $userCars = [];
-        
-        return $this->render('frontend/car_status/index.html.twig', [
+        // 2) Run the same raw SQL you tried in MySQL:
+        $rows = $conn->fetchAllAssociative(
+            'SELECT * FROM car WHERE idUser = ?', 
+            [1]
+        );
+        dump($rows);
+
+        dd(); // stop here so you can read the dumps
+
+        // … your normal logic …
+        $userCars = $userRepository->find(1)?->getCars() ?? [];
+        return $this->render('front/baseFront.html.twig', [
             'userCars' => $userCars,
         ]);
     }
-
+        */
     //Every link of page is placed here
     //#[Route('/entity_name', name: 'your_entity_name')]
 }

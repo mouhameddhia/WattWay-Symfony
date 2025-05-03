@@ -7,6 +7,11 @@
     <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <style>
         /* Custom badge colors for status */
+        .btn-group-sm > .btn,
+            .btn-group-sm > form {
+            margin-right: .25rem;
+            }
+
         .badge-pending {
             background-color: #f6c23e; /* Yellow */
             color: white;
@@ -126,6 +131,36 @@
                 <i class="fas fa-plus fa-sm text-white-50 mr-2"></i> Create New Assignment
             </a>
         </div>
+        <div class="row mb-3">
+        <div class="col-12 col-md-8 offset-md-2">
+            <form method="get" class="form-inline justify-content-center">
+            <input
+                type="text"
+                name="q"
+                class="form-control form-control-sm mr-2"
+                placeholder="Search assignments…"
+                value="{{ currentSearch }}"
+            />
+
+            <select name="sort" class="form-control form-control-sm mr-2">
+                <option value="">Sort by…</option>
+                <option value="date"   {{ currentSort=='date'   ? 'selected' }}>Date</option>
+                <option value="status" {{ currentSort=='status' ? 'selected' }}>Status</option>
+                <option value="car"    {{ currentSort=='car'    ? 'selected' }}>Car</option>
+            </select>
+
+            <select name="dir" class="form-control form-control-sm mr-2">
+                <option value="ASC"  {{ currentDir=='ASC'  ? 'selected' }}>↑ ASC</option>
+                <option value="DESC" {{ currentDir=='DESC' ? 'selected' }}>↓ DESC</option>
+            </select>
+
+            <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+            <a href="{{ path('app_assignment_index') }}"
+                class="btn btn-secondary btn-sm ml-2">Reset</a>
+            </form>
+        </div>
+        </div>
+
 
         <!-- Card -->
         <div class="card shadow mb-4">

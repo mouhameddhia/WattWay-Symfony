@@ -1,0 +1,28 @@
+<button id="testRecord">Test Record</button>
+<button id="testPlay" disabled>Test Play</button>
+
+<script>
+const testRecord = document.getElementById('testRecord');
+const testPlay = document.getElementById('testPlay');
+let audioBlob;
+
+testRecord.onclick = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const recorder = new MediaRecorder(stream);
+    const chunks = [];
+    
+    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.onstop = () => {
+        audioBlob = new Blob(chunks, { type: 'audio/webm' });
+        testPlay.disabled = false;
+    };
+    
+    recorder.start();
+    setTimeout(() => recorder.stop(), 3000); // Record for 3 seconds
+};
+
+testPlay.onclick = () => {
+    const audioUrl = URL.createObjectURL(audioBlob);
+    new Audio(audioUrl).play();
+};
+</script>

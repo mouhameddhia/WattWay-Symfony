@@ -1,0 +1,5 @@
+cmen_google_charts:
+    version: "current"      # or "45", "upcoming", etc.
+    language: "en"
+    
+
