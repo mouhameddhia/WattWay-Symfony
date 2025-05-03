@@ -474,7 +474,10 @@ nav.navbar.bootsnav.no-background{
 /* Navbar Sticky
 =================================*/
 .wrap-sticky{
+<<<<<<< HEAD
     
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
     position: relative;
     -webkit-transition: all 0.3s ease-in-out;
 	-moz-transition: all 0.3s ease-in-out;
@@ -488,7 +491,10 @@ nav.navbar.bootsnav.no-background{
     width: 100%;
     left: 0;
     top: 0;
+<<<<<<< HEAD
 
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 }
 
 .wrap-sticky nav.navbar.bootsnav.sticked{
@@ -498,7 +504,10 @@ nav.navbar.bootsnav.no-background{
 	-o-transition: all 0.2s ease-in-out;
 	-ms-transition: all 0.2s ease-in-out;
 	transition: all 0.2s ease-in-out;
+<<<<<<< HEAD
 
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 }
 
 body.on-side .wrap-sticky nav.navbar.bootsnav.sticked{
@@ -1283,7 +1292,11 @@ body.on-side .wrap-sticky nav.navbar.bootsnav.sticked{
     /* Tabs
     =================================*/ 
     nav.navbar.bootsnav .megamenu-content.tabbed{
+<<<<<<< HEAD
         padding-left: 0 !important;
+=======
+        padding-left: 0 !mportant;
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
     }
     
     nav.navbar.bootsnav .tabbed > li{

@@ -74,10 +74,14 @@ var myBarChart = new Chart(ctx, {
           // Include a dollar sign in the ticks
           callback: function(value, index, values) {
 <<<<<<< HEAD
+<<<<<<< HEAD
             return '$' + number_format(value);
 =======
             return 'TND' + number_format(value);
 >>>>>>> 7bf07a5064643563162ffd5f224dcf29261c4b00
+=======
+            return '$' + number_format(value);
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
           }
         },
         gridLines: {
@@ -108,10 +112,14 @@ var myBarChart = new Chart(ctx, {
         label: function(tooltipItem, chart) {
           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
 <<<<<<< HEAD
+<<<<<<< HEAD
           return datasetLabel + ': $' + number_format(tooltipItem.yLabel);
 =======
           return datasetLabel + ': TND' + number_format(tooltipItem.yLabel);
 >>>>>>> 7bf07a5064643563162ffd5f224dcf29261c4b00
+=======
+          return datasetLabel + ': $' + number_format(tooltipItem.yLabel);
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
         }
       }
     },

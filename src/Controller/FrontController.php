@@ -11,8 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\FormAddCarType;
 use App\Entity\Car;
 use App\Entity\Bill;
+use App\Entity\Mechanic;
 use App\Entity\Submission;
 use App\Form\FormUpdateBillType;
+use Doctrine\DBAL\Connection;
 use App\Repository\BillRepository;
 use App\Repository\UserRepository;
 use App\Repository\WarehouseRepository;
@@ -34,11 +36,12 @@ use App\Repository\ItemRepository;
 use App\Entity\Order;
 use App\Entity\Item;
 use App\Repository\OrderRepository;
+use Doctrine\ORM\EntityManager;
 
 class FrontController extends AbstractController
 {
     #[Route('/Front', name: 'Front')]
-    public function index(ItemRepository $itemRepository, OrderRepository $orderRepository, SubmissionRepository $submissionRepository, ResponseRepository $responseRepository,PDFService $pdfService, HttpClientInterface $client, FeedbackRepository $feedbackRepository, SluggerInterface $slugger, CarRepository $carRepository, BillRepository $billRepository, UserRepository $userRepository , WarehouseRepository $warehouseRepository, ManagerRegistry $doctrine, Request $request): Response
+    public function index(EntityManagerInterface $entityManager,ItemRepository $itemRepository, OrderRepository $orderRepository, SubmissionRepository $submissionRepository, ResponseRepository $responseRepository,PDFService $pdfService, HttpClientInterface $client, FeedbackRepository $feedbackRepository, SluggerInterface $slugger, CarRepository $carRepository, BillRepository $billRepository, UserRepository $userRepository , WarehouseRepository $warehouseRepository, ManagerRegistry $doctrine, Request $request): Response
     {
         // CAR CONTROLLER
         $car = new Car();
@@ -249,9 +252,21 @@ class FrontController extends AbstractController
 
         // Calculate total quantities for each item
         $itemQuantities = $this->calculateItemQuantities($dividedItems['clientItems'], $dividedItems['adminItems']);
+        // MECHANIC CONTROLLER
+        $mechanics = $entityManager
+            ->getRepository(Mechanic::class)
+            ->findAll();
+            
+        dump($mechanics); // Debug
 
+        $userCars = $entityManager
+            ->getRepository(Car::class)
+            ->findBy(['user' => 68]);
 
+        dump($userCars);
         return $this->render('frontend/baseFront.html.twig', [
+            'mechanics' => $mechanics,
+            'userCars' => $userCars,
             'items' => $items,
             'itemQuantities' => $itemQuantities,
             'clientItems' => $dividedItems['clientItems'],
@@ -408,6 +423,23 @@ class FrontController extends AbstractController
         // You could save the cart to session or database here
 
         return new JsonResponse(['success' => true]);
+    }
+        #[Route('/mechanics', name: 'app_front_mechanics')]
+    public function mechanics(EntityManagerInterface $entityManager): Response
+    {
+        // Debug to check if route is hit
+        dump('Route hit!');
+        
+        $mechanics = $entityManager
+            ->getRepository(Mechanic::class)
+            ->findAll();
+            
+        // Debug to check mechanics data
+        dump($mechanics);
+
+        return $this->render('frontend/mechanic/index.html.twig', [
+            'mechanics' => $mechanics,
+        ]);
     }
     
 }

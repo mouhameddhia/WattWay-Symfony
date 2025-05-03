@@ -9,7 +9,7 @@
     <meta name="author" content="">
 
     <title>Wattway Dashboard</title>
-
+    
     {% block css %}
         <link href="{{ asset('back/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
@@ -73,6 +73,9 @@
         {% endfor %}
     {% endfor %}
 </div>
+    {{ encore_entry_link_tags('app') }}
+</head>
+
 <body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -202,7 +205,7 @@
 
             <!-- Nav Item - Mechanics -->
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('dashboard') }}">
+                <a class="nav-link" href="{{ path('app_mechanic_index') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" style="margin-right: 8px;" viewBox="0 0 512 512"><path fill="#ffffff" d="M176 88l0 40 160 0 0-40c0-4.4-3.6-8-8-8L184 80c-4.4 0-8 3.6-8 8zm-48 40l0-40c0-30.9 25.1-56 56-56l144 0c30.9 0 56 25.1 56 56l0 40 28.1 0c12.7 0 24.9 5.1 33.9 14.1l51.9 51.9c9 9 14.1 21.2 14.1 33.9l0 92.1-128 0 0-32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 32-128 0 0-32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 32L0 320l0-92.1c0-12.7 5.1-24.9 14.1-33.9l51.9-51.9c9-9 21.2-14.1 33.9-14.1l28.1 0zM0 416l0-64 128 0c0 17.7 14.3 32 32 32s32-14.3 32-32l128 0c0 17.7 14.3 32 32 32s32-14.3 32-32l128 0 0 64c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64z"/></svg>
                     <span>Mechanics</span>
                 </a>
@@ -210,7 +213,7 @@
 
             <!-- Nav Item - Assignments -->
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('dashboard') }}">
+                <a class="nav-link" href="{{ path('app_assignment_index') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" height="12" width="12" style="margin-right: 8px;" viewBox="0 0 512 512"><path fill="#ffffff" d="M352 320c88.4 0 160-71.6 160-160c0-15.3-2.2-30.1-6.2-44.2c-3.1-10.8-16.4-13.2-24.3-5.3l-76.8 76.8c-3 3-7.1 4.7-11.3 4.7L336 192c-8.8 0-16-7.2-16-16l0-57.4c0-4.2 1.7-8.3 4.7-11.3l76.8-76.8c7.9-7.9 5.4-21.2-5.3-24.3C382.1 2.2 367.3 0 352 0C263.6 0 192 71.6 192 160c0 19.1 3.4 37.5 9.5 54.5L19.9 396.1C7.2 408.8 0 426.1 0 444.1C0 481.6 30.4 512 67.9 512c18 0 35.3-7.2 48-19.9L297.5 310.5c17 6.2 35.4 9.5 54.5 9.5zM80 408a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/></svg>
                     <span>Assignments</span>
                 </a>
@@ -237,6 +240,27 @@
                     </button>
                 </nav>
                 <!-- End of Topbar -->
+
+                <!-- Flash Messages -->
+                <div class="container-fluid mb-4">
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            {% set alert_class = label %}
+                            {% if label == 'error' %}
+                                {% set alert_class = 'danger' %}
+                            {% endif %}
+                            
+                            <div class="alert alert-{{ alert_class }} alert-dismissible fade show mb-3" role="alert">
+                                <i class="fas fa-{% if label == 'success' %}check-circle{% elseif label == 'error' %}exclamation-circle{% else %}info-circle{% endif %} mr-2"></i>
+                                <strong>{{ label|capitalize }}:</strong> {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                <!-- End Flash Messages -->
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
@@ -269,8 +293,18 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
+
     {% block javascript %}
+
+    <script src="{{ asset('back/vendor/jquery/jquery.min.js') }}" defer></script>
+    
+
     {% endblock %}
+    {% block stylesheets %}
+        
+    {% endblock %}
+    {{ encore_entry_script_tags('app') }}
+
 </body>
 
 </html>

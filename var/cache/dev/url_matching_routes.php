@@ -19,6 +19,12 @@ return [
         '/Front' => [[['_route' => 'Front', '_controller' => 'App\\Controller\\FrontController::index'], null, null, null, false, false, null]],
         '/checkout' => [[['_route' => 'checkout', '_controller' => 'App\\Controller\\FrontController::checkout'], null, ['POST' => 0], null, false, false, null]],
         '/update-cart' => [[['_route' => 'update_cart', '_controller' => 'App\\Controller\\FrontController::updateCart'], null, ['POST' => 0], null, false, false, null]],
+        '/mechanics' => [
+            [['_route' => 'app_front_mechanics', '_controller' => 'App\\Controller\\FrontController::mechanics'], null, null, null, false, false, null],
+            [['_route' => 'app_frontend_mechanics', '_controller' => 'App\\Controller\\FrontendController::mechanics'], null, null, null, false, false, null],
+        ],
+        '/assignment/google/auth' => [[['_route' => 'google_auth', '_controller' => 'App\\Controller\\GoogleCalendarController::auth'], null, null, null, false, false, null]],
+        '/assignment/google/callback' => [[['_route' => 'google_callback', '_controller' => 'App\\Controller\\GoogleCalendarController::callback'], null, null, null, false, false, null]],
         '/items/create' => [[['_route' => 'create_item', '_controller' => 'App\\Controller\\Order\\ItemsController::create'], null, null, null, false, false, null]],
         '/ai/suggest-price' => [[['_route' => 'ai_suggest_price', '_controller' => 'App\\Controller\\Order\\ItemsController::suggestPrice'], null, ['POST' => 0], null, false, false, null]],
         '/items/check-name' => [[['_route' => 'check_item_name', '_controller' => 'App\\Controller\\Order\\ItemsController::checkItemName'], null, ['POST' => 0], null, false, false, null]],
@@ -68,6 +74,15 @@ return [
         '/dashboard/warehouse/repair' => [[['_route' => 'repairWarehouse', '_controller' => 'App\\Controller\\Warehouse\\WarehouseController::repairWarehouse'], null, null, null, false, false, null]],
         '/dashboard/warehouse/search' => [[['_route' => 'searchWarehouse', '_controller' => 'App\\Controller\\Warehouse\\WarehouseController::searchWarehouse'], null, ['POST' => 0], null, false, false, null]],
         '/get-city-from-coordinates' => [[['_route' => 'get_city_from_coordinates', '_controller' => 'App\\Controller\\Warehouse\\WarehouseController::getCityFromCoordinates'], null, ['POST' => 0], null, false, false, null]],
+        '/assignment' => [[['_route' => 'app_assignment_index', '_controller' => 'App\\Controller\\assignment\\AssignmentController::index'], null, ['GET' => 0], null, false, false, null]],
+        '/assignment/new' => [[['_route' => 'app_assignment_new', '_controller' => 'App\\Controller\\assignment\\AssignmentController::new'], null, ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        '/mechanic' => [[['_route' => 'app_mechanic_index', '_controller' => 'App\\Controller\\mechanic\\MechanicController::index'], null, ['GET' => 0], null, false, false, null]],
+        '/mechanic/new' => [[['_route' => 'app_mechanic_new', '_controller' => 'App\\Controller\\mechanic\\MechanicController::new'], null, ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        '/mechanic/frontend/mechanic' => [[['_route' => 'app_frontend_mechanic_index', '_controller' => 'App\\Controller\\mechanic\\MechanicController::frontendIndex'], null, ['GET' => 0], null, false, false, null]],
+        '/mechanic/mechanic/search' => [[['_route' => 'app_mechanic_search', '_controller' => 'App\\Controller\\mechanic\\MechanicController::search'], null, ['GET' => 0], null, false, false, null]],
+        '/mechanic/mechanic/sort/name' => [[['_route' => 'app_mechanic_sort_name', '_controller' => 'App\\Controller\\mechanic\\MechanicController::sortByName'], null, ['GET' => 0], null, false, false, null]],
+        '/mechanic/mechanic/sort/speciality' => [[['_route' => 'app_mechanic_sort_speciality', '_controller' => 'App\\Controller\\mechanic\\MechanicController::sortBySpeciality'], null, ['GET' => 0], null, false, false, null]],
+        '/mechanic/mechanic/sort/cars-repaired' => [[['_route' => 'app_mechanic_sort_cars', '_controller' => 'App\\Controller\\mechanic\\MechanicController::sortByCarsRepaired'], null, ['GET' => 0], null, false, false, null]],
         '/submission/create' => [[['_route' => 'Front_Submission_create', '_controller' => 'App\\Controller\\submission\\FrontSubmissionController::create'], null, ['POST' => 0], null, false, false, null]],
         '/dashboard/response/filter' => [[['_route' => 'app_response_filter', '_controller' => 'App\\Controller\\submission\\ResponseController::filter'], null, ['GET' => 0], null, false, false, null]],
         '/dashboard/response' => [[['_route' => 'app_response_index', '_controller' => 'App\\Controller\\submission\\ResponseController::index'], null, ['GET' => 0], null, false, false, null]],
@@ -125,121 +140,136 @@ return [
                             .'|item/([^/]++)/quantity(*:417)'
                         .')'
                     .')'
-                    .'|vatar/default/([^/]++)/([^/]++)(*:458)'
+                    .'|ssignment/(?'
+                        .'|([^/]++)(?'
+                            .'|(*:451)'
+                            .'|/edit(*:464)'
+                            .'|(*:472)'
+                        .')'
+                        .'|transcribe(*:491)'
+                    .')'
+                    .'|vatar/default/([^/]++)/([^/]++)(*:531)'
                 .')'
-                .'|/js/routing(?:\\.(js|json))?(*:494)'
+                .'|/js/routing(?:\\.(js|json))?(*:567)'
                 .'|/_(?'
-                    .'|error/(\\d+)(?:\\.([^/]++))?(*:533)'
-                    .'|wdt/([^/]++)(*:553)'
+                    .'|error/(\\d+)(?:\\.([^/]++))?(*:606)'
+                    .'|wdt/([^/]++)(*:626)'
                     .'|profiler/(?'
-                        .'|font/([^/\\.]++)\\.woff2(*:595)'
+                        .'|font/([^/\\.]++)\\.woff2(*:668)'
                         .'|([^/]++)(?'
                             .'|/(?'
-                                .'|search/results(*:632)'
-                                .'|router(*:646)'
+                                .'|search/results(*:705)'
+                                .'|router(*:719)'
                                 .'|exception(?'
-                                    .'|(*:666)'
-                                    .'|\\.css(*:679)'
+                                    .'|(*:739)'
+                                    .'|\\.css(*:752)'
                                 .')'
                             .')'
-                            .'|(*:689)'
+                            .'|(*:762)'
                         .')'
                     .')'
                 .')'
-                .'|/media/cache/resolve/(?'
-                    .'|([A-z0-9_-]*)/rc/([^/]++)/(.+)(*:754)'
-                    .'|([A-z0-9_-]*)/(.+)(*:780)'
+                .'|/me(?'
+                    .'|dia/cache/resolve/(?'
+                        .'|([A-z0-9_-]*)/rc/([^/]++)/(.+)(*:830)'
+                        .'|([A-z0-9_-]*)/(.+)(*:856)'
+                    .')'
+                    .'|chanic/([^/]++)/(?'
+                        .'|edit(*:888)'
+                        .'|show(*:900)'
+                        .'|delete(*:914)'
+                    .')'
                 .')'
                 .'|/item(?'
-                    .'|/([^/]++)/edit(*:811)'
-                    .'|s/delete/([^/]++)(*:836)'
+                    .'|/([^/]++)/edit(*:946)'
+                    .'|s/delete/([^/]++)(*:971)'
                 .')'
                 .'|/order(?'
                     .'|/(?'
                         .'|item(?'
-                            .'|s/([^/]++)(*:875)'
+                            .'|s/([^/]++)(*:1010)'
                             .'|/(?'
-                                .'|update/([^/]++)(*:902)'
-                                .'|delete/([^/]++)(*:925)'
+                                .'|update/([^/]++)(*:1038)'
+                                .'|delete/([^/]++)(*:1062)'
                             .')'
                         .')'
-                        .'|delete/([^/]++)(*:950)'
-                        .'|update/([^/]++)(*:973)'
+                        .'|delete/([^/]++)(*:1088)'
+                        .'|update/([^/]++)(*:1112)'
                     .')'
-                    .'|s/by\\-month/([^/]++)(*:1002)'
+                    .'|s/by\\-month/([^/]++)(*:1142)'
                 .')'
-                .'|/reset\\-password/reset(?:/([^/]++))?(*:1048)'
+                .'|/reset\\-password/reset(?:/([^/]++))?(*:1188)'
                 .'|/d(?'
                     .'|ashboard/(?'
                         .'|bill/(?'
-                            .'|delete([^/]++)(*:1096)'
-                            .'|update([^/]++)(*:1119)'
+                            .'|delete([^/]++)(*:1236)'
+                            .'|update([^/]++)(*:1259)'
                         .')'
                         .'|car/(?'
-                            .'|delete([^/]++)(*:1150)'
-                            .'|update([^/]++)(*:1173)'
+                            .'|delete([^/]++)(*:1290)'
+                            .'|update([^/]++)(*:1313)'
                         .')'
                         .'|warehouse/(?'
-                            .'|delete([^/]++)(*:1210)'
-                            .'|update([^/]++)(*:1233)'
+                            .'|delete([^/]++)(*:1350)'
+                            .'|update([^/]++)(*:1373)'
                         .')'
                         .'|response/([^/]++)(?'
-                            .'|(*:1263)'
-                            .'|/edit(*:1277)'
-                            .'|(*:1286)'
+                            .'|(*:1403)'
+                            .'|/edit(*:1417)'
+                            .'|(*:1426)'
                         .')'
                         .'|submission/(?'
                             .'|([^/]++)(?'
-                                .'|(*:1321)'
+                                .'|(*:1461)'
                                 .'|/(?'
                                     .'|e(?'
-                                        .'|dit(*:1341)'
-                                        .'|xtract\\-keyterms(*:1366)'
+                                        .'|dit(*:1481)'
+                                        .'|xtract\\-keyterms(*:1506)'
                                     .')'
-                                    .'|status(*:1382)'
-                                    .'|predict\\-priority(*:1408)'
-                                    .'|update\\-priority(*:1433)'
+                                    .'|status(*:1522)'
+                                    .'|predict\\-priority(*:1548)'
+                                    .'|update\\-priority(*:1573)'
                                 .')'
-                                .'|(*:1443)'
+                                .'|(*:1583)'
                             .')'
                             .'|submission/(?'
-                                .'|delete/([^/]++)(*:1482)'
-                                .'|edit/([^/]++)(*:1504)'
+                                .'|delete/([^/]++)(*:1622)'
+                                .'|edit/([^/]++)(*:1644)'
                             .')'
                             .'|dashboard/(?'
                                 .'|response/([^/]++)(?'
-                                    .'|(*:1547)'
-                                    .'|/edit(*:1561)'
-                                    .'|(*:1570)'
+                                    .'|(*:1687)'
+                                    .'|/edit(*:1701)'
+                                    .'|(*:1710)'
                                 .')'
                                 .'|submission/([^/]++)(?'
-                                    .'|(*:1602)'
+                                    .'|(*:1742)'
                                     .'|/(?'
                                         .'|e(?'
-                                            .'|dit(*:1622)'
-                                            .'|xtract\\-keyterms(*:1647)'
+                                            .'|dit(*:1762)'
+                                            .'|xtract\\-keyterms(*:1787)'
                                         .')'
-                                        .'|status(*:1663)'
-                                        .'|predict\\-priority(*:1689)'
-                                        .'|update\\-priority(*:1714)'
+                                        .'|status(*:1803)'
+                                        .'|predict\\-priority(*:1829)'
+                                        .'|update\\-priority(*:1854)'
                                     .')'
-                                    .'|(*:1724)'
+                                    .'|(*:1864)'
                                 .')'
                             .')'
                         .')'
                     .')'
                     .'|elete(?'
-                        .'|Feedback/([^/]++)(*:1762)'
-                        .'|/([^/]++)(*:1780)'
+                        .'|Feedback/([^/]++)(*:1902)'
+                        .'|/([^/]++)(*:1920)'
                     .')'
                 .')'
                 .'|/submission/(?'
-                    .'|delete/([^/]++)(*:1821)'
-                    .'|edit/([^/]++)(*:1843)'
+                    .'|delete/([^/]++)(*:1961)'
+                    .'|edit/([^/]++)(*:1983)'
                 .')'
-                .'|/feedback/delete/([^/]++)(*:1878)'
-                .'|/ban/([^/]++)(*:1900)'
-                .'|/unban/([^/]++)(*:1924)'
+                .'|/feedback/delete/([^/]++)(*:2018)'
+                .'|/ban/([^/]++)(*:2040)'
+                .'|/unban/([^/]++)(*:2064)'
             .')/?$}sDu',
     ],
     [ // $dynamicRoutes
@@ -258,62 +288,69 @@ return [
         362 => [[['_route' => 'api_submission_predict_priority', '_controller' => 'App\\Controller\\Api\\PriorityController::predictPriority'], ['id'], ['POST' => 0], null, false, false, null]],
         386 => [[['_route' => 'api_submission_update_priority', '_controller' => 'App\\Controller\\Api\\PriorityController::updatePriority'], ['id'], ['POST' => 0], null, false, false, null]],
         417 => [[['_route' => 'api_item_quantity', '_controller' => 'App\\Controller\\Order\\ItemsController::getQuantity'], ['id'], ['GET' => 0], null, false, false, null]],
-        458 => [[['_route' => 'app_default_avatar', '_controller' => 'App\\Controller\\user\\AvatarController::defaultAvatar'], ['seed', 'size'], null, null, false, true, null]],
-        494 => [[['_route' => 'fos_js_routing_js', '_controller' => 'fos_js_routing.controller::indexAction', '_format' => 'js'], ['_format'], ['GET' => 0], null, false, true, null]],
-        533 => [[['_route' => '_preview_error', '_controller' => 'error_controller::preview', '_format' => 'html'], ['code', '_format'], null, null, false, true, null]],
-        553 => [[['_route' => '_wdt', '_controller' => 'web_profiler.controller.profiler::toolbarAction'], ['token'], null, null, false, true, null]],
-        595 => [[['_route' => '_profiler_font', '_controller' => 'web_profiler.controller.profiler::fontAction'], ['fontName'], null, null, false, false, null]],
-        632 => [[['_route' => '_profiler_search_results', '_controller' => 'web_profiler.controller.profiler::searchResultsAction'], ['token'], null, null, false, false, null]],
-        646 => [[['_route' => '_profiler_router', '_controller' => 'web_profiler.controller.router::panelAction'], ['token'], null, null, false, false, null]],
-        666 => [[['_route' => '_profiler_exception', '_controller' => 'web_profiler.controller.exception_panel::body'], ['token'], null, null, false, false, null]],
-        679 => [[['_route' => '_profiler_exception_css', '_controller' => 'web_profiler.controller.exception_panel::stylesheet'], ['token'], null, null, false, false, null]],
-        689 => [[['_route' => '_profiler', '_controller' => 'web_profiler.controller.profiler::panelAction'], ['token'], null, null, false, true, null]],
-        754 => [[['_route' => 'liip_imagine_filter_runtime', '_controller' => 'Liip\\ImagineBundle\\Controller\\ImagineController::filterRuntimeAction'], ['filter', 'hash', 'path'], ['GET' => 0], null, false, true, null]],
-        780 => [[['_route' => 'liip_imagine_filter', '_controller' => 'Liip\\ImagineBundle\\Controller\\ImagineController::filterAction'], ['filter', 'path'], ['GET' => 0], null, false, true, null]],
-        811 => [[['_route' => 'edit_item', '_controller' => 'App\\Controller\\Order\\ItemsController::editItem'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        836 => [[['_route' => 'item_delete', '_controller' => 'App\\Controller\\Order\\ItemsController::deleteItem'], ['idItem'], ['GET' => 0], null, false, true, null]],
-        875 => [[['_route' => 'order_items', '_controller' => 'App\\Controller\\Order\\OrdersController::getOrderItems'], ['orderId'], null, null, false, true, null]],
-        902 => [[['_route' => 'update_item_quantity', '_controller' => 'App\\Controller\\Order\\OrdersController::updateItemQuantity'], ['itemId'], ['POST' => 0], null, false, true, null]],
-        925 => [[['_route' => 'delete_item', '_controller' => 'App\\Controller\\Order\\OrdersController::deleteItem'], ['itemId'], ['DELETE' => 0], null, false, true, null]],
-        950 => [[['_route' => 'order_delete', '_controller' => 'App\\Controller\\Order\\OrdersController::deleteOrder'], ['idOrder'], ['GET' => 0], null, false, true, null]],
-        973 => [[['_route' => 'order_update', '_controller' => 'App\\Controller\\Order\\OrdersController::updateOrder'], ['idOrder'], ['POST' => 0], null, false, true, null]],
-        1002 => [[['_route' => 'orders_by_month', '_controller' => 'App\\Controller\\Order\\OrdersController::getOrdersByMonth'], ['month'], null, null, false, true, null]],
-        1048 => [[['_route' => 'app_reset_password', 'token' => null, '_controller' => 'App\\Controller\\ResetPasswordController::reset'], ['token'], null, null, false, true, null]],
-        1096 => [[['_route' => 'deleteBill', '_controller' => 'App\\Controller\\Warehouse\\BillController::deleteBill'], ['id'], null, null, false, true, null]],
-        1119 => [[['_route' => 'updateBill', '_controller' => 'App\\Controller\\Warehouse\\BillController::updateBill'], ['id'], null, null, false, true, null]],
-        1150 => [[['_route' => 'deleteCar', '_controller' => 'App\\Controller\\Warehouse\\CarController::deleteCar'], ['id'], null, null, false, true, null]],
-        1173 => [[['_route' => 'updateCar', '_controller' => 'App\\Controller\\Warehouse\\CarController::updateCar'], ['id'], null, null, false, true, null]],
-        1210 => [[['_route' => 'deleteWarehouse', '_controller' => 'App\\Controller\\Warehouse\\WarehouseController::deleteWarehouse'], ['id'], null, null, false, true, null]],
-        1233 => [[['_route' => 'updateWarehouse', '_controller' => 'App\\Controller\\Warehouse\\WarehouseController::updateWarehouse'], ['id'], null, null, false, true, null]],
-        1263 => [[['_route' => 'app_response_show', '_controller' => 'App\\Controller\\submission\\ResponseController::show'], ['idResponse'], ['GET' => 0], null, false, true, null]],
-        1277 => [[['_route' => 'app_response_edit', '_controller' => 'App\\Controller\\submission\\ResponseController::edit'], ['idResponse'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        1286 => [[['_route' => 'app_response_delete', '_controller' => 'App\\Controller\\submission\\ResponseController::delete'], ['idResponse'], ['POST' => 0], null, false, true, null]],
-        1321 => [[['_route' => 'app_submission_show', '_controller' => 'App\\Controller\\submission\\SubmissionController::show'], ['idSubmission'], ['GET' => 0], null, false, true, null]],
-        1341 => [[['_route' => 'app_submission_edit', '_controller' => 'App\\Controller\\submission\\SubmissionController::edit'], ['idSubmission'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        1366 => [[['_route' => 'app_submission_extract_keyterms', '_controller' => 'App\\Controller\\submission\\SubmissionController::extractKeyTerms'], ['idSubmission'], ['GET' => 0], null, false, false, null]],
-        1382 => [[['_route' => 'app_submission_update_status', '_controller' => 'App\\Controller\\submission\\SubmissionController::updateStatus'], ['idSubmission'], ['PUT' => 0], null, false, false, null]],
-        1408 => [[['_route' => 'app_submission_predict_priority', '_controller' => 'App\\Controller\\submission\\SubmissionController::predictPriority'], ['idSubmission'], ['POST' => 0], null, false, false, null]],
-        1433 => [[['_route' => 'app_submission_update_priority', '_controller' => 'App\\Controller\\submission\\SubmissionController::updatePriority'], ['idSubmission'], ['POST' => 0], null, false, false, null]],
-        1443 => [[['_route' => 'app_submission_delete', '_controller' => 'App\\Controller\\submission\\SubmissionController::delete'], ['idSubmission'], ['POST' => 0], null, false, true, null]],
-        1482 => [[['_route' => 'app_submission_Front_Submission_delete', '_controller' => 'App\\Controller\\submission\\FrontSubmissionController::delete'], ['idSubmission'], ['POST' => 0], null, false, true, null]],
-        1504 => [[['_route' => 'app_submission_Front_Submission_edit', '_controller' => 'App\\Controller\\submission\\FrontSubmissionController::edit'], ['idSubmission'], ['GET' => 0, 'POST' => 1], null, false, true, null]],
-        1547 => [[['_route' => 'app_submission_app_response_show', '_controller' => 'App\\Controller\\submission\\ResponseController::show'], ['idResponse'], ['GET' => 0], null, false, true, null]],
-        1561 => [[['_route' => 'app_submission_app_response_edit', '_controller' => 'App\\Controller\\submission\\ResponseController::edit'], ['idResponse'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        1570 => [[['_route' => 'app_submission_app_response_delete', '_controller' => 'App\\Controller\\submission\\ResponseController::delete'], ['idResponse'], ['POST' => 0], null, false, true, null]],
-        1602 => [[['_route' => 'app_submission_app_submission_show', '_controller' => 'App\\Controller\\submission\\SubmissionController::show'], ['idSubmission'], ['GET' => 0], null, false, true, null]],
-        1622 => [[['_route' => 'app_submission_app_submission_edit', '_controller' => 'App\\Controller\\submission\\SubmissionController::edit'], ['idSubmission'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
-        1647 => [[['_route' => 'app_submission_app_submission_extract_keyterms', '_controller' => 'App\\Controller\\submission\\SubmissionController::extractKeyTerms'], ['idSubmission'], ['GET' => 0], null, false, false, null]],
-        1663 => [[['_route' => 'app_submission_app_submission_update_status', '_controller' => 'App\\Controller\\submission\\SubmissionController::updateStatus'], ['idSubmission'], ['PUT' => 0], null, false, false, null]],
-        1689 => [[['_route' => 'app_submission_app_submission_predict_priority', '_controller' => 'App\\Controller\\submission\\SubmissionController::predictPriority'], ['idSubmission'], ['POST' => 0], null, false, false, null]],
-        1714 => [[['_route' => 'app_submission_app_submission_update_priority', '_controller' => 'App\\Controller\\submission\\SubmissionController::updatePriority'], ['idSubmission'], ['POST' => 0], null, false, false, null]],
-        1724 => [[['_route' => 'app_submission_app_submission_delete', '_controller' => 'App\\Controller\\submission\\SubmissionController::delete'], ['idSubmission'], ['POST' => 0], null, false, true, null]],
-        1762 => [[['_route' => 'feedbackdelete', '_controller' => 'App\\Controller\\user\\FeedbackManagementController::delete'], ['idFeedback'], null, null, false, true, null]],
-        1780 => [[['_route' => 'user_delete', '_controller' => 'App\\Controller\\user\\UserManagementController::delete'], ['idUser'], null, null, false, true, null]],
-        1821 => [[['_route' => 'Front_Submission_delete', '_controller' => 'App\\Controller\\submission\\FrontSubmissionController::delete'], ['idSubmission'], ['POST' => 0], null, false, true, null]],
-        1843 => [[['_route' => 'Front_Submission_edit', '_controller' => 'App\\Controller\\submission\\FrontSubmissionController::edit'], ['idSubmission'], ['GET' => 0, 'POST' => 1], null, false, true, null]],
-        1878 => [[['_route' => 'feedback_delete', '_controller' => 'App\\Controller\\user\\FeedbackController::delFeedback'], ['id'], ['POST' => 0], null, false, true, null]],
-        1900 => [[['_route' => 'user_ban', '_controller' => 'App\\Controller\\user\\UserManagementController::ban'], ['idUser'], ['GET' => 0, 'POST' => 1], null, false, true, null]],
-        1924 => [
+        451 => [[['_route' => 'app_assignment_show', '_controller' => 'App\\Controller\\assignment\\AssignmentController::show'], ['idAssignment'], ['GET' => 0], null, false, true, null]],
+        464 => [[['_route' => 'app_assignment_edit', '_controller' => 'App\\Controller\\assignment\\AssignmentController::edit'], ['idAssignment'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        472 => [[['_route' => 'app_assignment_delete', '_controller' => 'App\\Controller\\assignment\\AssignmentController::delete'], ['idAssignment'], ['POST' => 0], null, false, true, null]],
+        491 => [[['_route' => 'app_assignment_transcribe', '_controller' => 'App\\Controller\\assignment\\AssignmentController::transcribe'], [], ['POST' => 0], null, false, false, null]],
+        531 => [[['_route' => 'app_default_avatar', '_controller' => 'App\\Controller\\user\\AvatarController::defaultAvatar'], ['seed', 'size'], null, null, false, true, null]],
+        567 => [[['_route' => 'fos_js_routing_js', '_controller' => 'fos_js_routing.controller::indexAction', '_format' => 'js'], ['_format'], ['GET' => 0], null, false, true, null]],
+        606 => [[['_route' => '_preview_error', '_controller' => 'error_controller::preview', '_format' => 'html'], ['code', '_format'], null, null, false, true, null]],
+        626 => [[['_route' => '_wdt', '_controller' => 'web_profiler.controller.profiler::toolbarAction'], ['token'], null, null, false, true, null]],
+        668 => [[['_route' => '_profiler_font', '_controller' => 'web_profiler.controller.profiler::fontAction'], ['fontName'], null, null, false, false, null]],
+        705 => [[['_route' => '_profiler_search_results', '_controller' => 'web_profiler.controller.profiler::searchResultsAction'], ['token'], null, null, false, false, null]],
+        719 => [[['_route' => '_profiler_router', '_controller' => 'web_profiler.controller.router::panelAction'], ['token'], null, null, false, false, null]],
+        739 => [[['_route' => '_profiler_exception', '_controller' => 'web_profiler.controller.exception_panel::body'], ['token'], null, null, false, false, null]],
+        752 => [[['_route' => '_profiler_exception_css', '_controller' => 'web_profiler.controller.exception_panel::stylesheet'], ['token'], null, null, false, false, null]],
+        762 => [[['_route' => '_profiler', '_controller' => 'web_profiler.controller.profiler::panelAction'], ['token'], null, null, false, true, null]],
+        830 => [[['_route' => 'liip_imagine_filter_runtime', '_controller' => 'Liip\\ImagineBundle\\Controller\\ImagineController::filterRuntimeAction'], ['filter', 'hash', 'path'], ['GET' => 0], null, false, true, null]],
+        856 => [[['_route' => 'liip_imagine_filter', '_controller' => 'Liip\\ImagineBundle\\Controller\\ImagineController::filterAction'], ['filter', 'path'], ['GET' => 0], null, false, true, null]],
+        888 => [[['_route' => 'app_mechanic_edit', '_controller' => 'App\\Controller\\mechanic\\MechanicController::edit'], ['idMechanic'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        900 => [[['_route' => 'app_mechanic_show', '_controller' => 'App\\Controller\\mechanic\\MechanicController::show'], ['idMechanic'], ['GET' => 0], null, false, false, null]],
+        914 => [[['_route' => 'app_mechanic_delete', '_controller' => 'App\\Controller\\mechanic\\MechanicController::delete'], ['idMechanic'], ['POST' => 0], null, false, false, null]],
+        946 => [[['_route' => 'edit_item', '_controller' => 'App\\Controller\\Order\\ItemsController::editItem'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        971 => [[['_route' => 'item_delete', '_controller' => 'App\\Controller\\Order\\ItemsController::deleteItem'], ['idItem'], ['GET' => 0], null, false, true, null]],
+        1010 => [[['_route' => 'order_items', '_controller' => 'App\\Controller\\Order\\OrdersController::getOrderItems'], ['orderId'], null, null, false, true, null]],
+        1038 => [[['_route' => 'update_item_quantity', '_controller' => 'App\\Controller\\Order\\OrdersController::updateItemQuantity'], ['itemId'], ['POST' => 0], null, false, true, null]],
+        1062 => [[['_route' => 'delete_item', '_controller' => 'App\\Controller\\Order\\OrdersController::deleteItem'], ['itemId'], ['DELETE' => 0], null, false, true, null]],
+        1088 => [[['_route' => 'order_delete', '_controller' => 'App\\Controller\\Order\\OrdersController::deleteOrder'], ['idOrder'], ['GET' => 0], null, false, true, null]],
+        1112 => [[['_route' => 'order_update', '_controller' => 'App\\Controller\\Order\\OrdersController::updateOrder'], ['idOrder'], ['POST' => 0], null, false, true, null]],
+        1142 => [[['_route' => 'orders_by_month', '_controller' => 'App\\Controller\\Order\\OrdersController::getOrdersByMonth'], ['month'], null, null, false, true, null]],
+        1188 => [[['_route' => 'app_reset_password', 'token' => null, '_controller' => 'App\\Controller\\ResetPasswordController::reset'], ['token'], null, null, false, true, null]],
+        1236 => [[['_route' => 'deleteBill', '_controller' => 'App\\Controller\\Warehouse\\BillController::deleteBill'], ['id'], null, null, false, true, null]],
+        1259 => [[['_route' => 'updateBill', '_controller' => 'App\\Controller\\Warehouse\\BillController::updateBill'], ['id'], null, null, false, true, null]],
+        1290 => [[['_route' => 'deleteCar', '_controller' => 'App\\Controller\\Warehouse\\CarController::deleteCar'], ['id'], null, null, false, true, null]],
+        1313 => [[['_route' => 'updateCar', '_controller' => 'App\\Controller\\Warehouse\\CarController::updateCar'], ['id'], null, null, false, true, null]],
+        1350 => [[['_route' => 'deleteWarehouse', '_controller' => 'App\\Controller\\Warehouse\\WarehouseController::deleteWarehouse'], ['id'], null, null, false, true, null]],
+        1373 => [[['_route' => 'updateWarehouse', '_controller' => 'App\\Controller\\Warehouse\\WarehouseController::updateWarehouse'], ['id'], null, null, false, true, null]],
+        1403 => [[['_route' => 'app_response_show', '_controller' => 'App\\Controller\\submission\\ResponseController::show'], ['idResponse'], ['GET' => 0], null, false, true, null]],
+        1417 => [[['_route' => 'app_response_edit', '_controller' => 'App\\Controller\\submission\\ResponseController::edit'], ['idResponse'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        1426 => [[['_route' => 'app_response_delete', '_controller' => 'App\\Controller\\submission\\ResponseController::delete'], ['idResponse'], ['POST' => 0], null, false, true, null]],
+        1461 => [[['_route' => 'app_submission_show', '_controller' => 'App\\Controller\\submission\\SubmissionController::show'], ['idSubmission'], ['GET' => 0], null, false, true, null]],
+        1481 => [[['_route' => 'app_submission_edit', '_controller' => 'App\\Controller\\submission\\SubmissionController::edit'], ['idSubmission'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        1506 => [[['_route' => 'app_submission_extract_keyterms', '_controller' => 'App\\Controller\\submission\\SubmissionController::extractKeyTerms'], ['idSubmission'], ['GET' => 0], null, false, false, null]],
+        1522 => [[['_route' => 'app_submission_update_status', '_controller' => 'App\\Controller\\submission\\SubmissionController::updateStatus'], ['idSubmission'], ['PUT' => 0], null, false, false, null]],
+        1548 => [[['_route' => 'app_submission_predict_priority', '_controller' => 'App\\Controller\\submission\\SubmissionController::predictPriority'], ['idSubmission'], ['POST' => 0], null, false, false, null]],
+        1573 => [[['_route' => 'app_submission_update_priority', '_controller' => 'App\\Controller\\submission\\SubmissionController::updatePriority'], ['idSubmission'], ['POST' => 0], null, false, false, null]],
+        1583 => [[['_route' => 'app_submission_delete', '_controller' => 'App\\Controller\\submission\\SubmissionController::delete'], ['idSubmission'], ['POST' => 0], null, false, true, null]],
+        1622 => [[['_route' => 'app_submission_Front_Submission_delete', '_controller' => 'App\\Controller\\submission\\FrontSubmissionController::delete'], ['idSubmission'], ['POST' => 0], null, false, true, null]],
+        1644 => [[['_route' => 'app_submission_Front_Submission_edit', '_controller' => 'App\\Controller\\submission\\FrontSubmissionController::edit'], ['idSubmission'], ['GET' => 0, 'POST' => 1], null, false, true, null]],
+        1687 => [[['_route' => 'app_submission_app_response_show', '_controller' => 'App\\Controller\\submission\\ResponseController::show'], ['idResponse'], ['GET' => 0], null, false, true, null]],
+        1701 => [[['_route' => 'app_submission_app_response_edit', '_controller' => 'App\\Controller\\submission\\ResponseController::edit'], ['idResponse'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        1710 => [[['_route' => 'app_submission_app_response_delete', '_controller' => 'App\\Controller\\submission\\ResponseController::delete'], ['idResponse'], ['POST' => 0], null, false, true, null]],
+        1742 => [[['_route' => 'app_submission_app_submission_show', '_controller' => 'App\\Controller\\submission\\SubmissionController::show'], ['idSubmission'], ['GET' => 0], null, false, true, null]],
+        1762 => [[['_route' => 'app_submission_app_submission_edit', '_controller' => 'App\\Controller\\submission\\SubmissionController::edit'], ['idSubmission'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        1787 => [[['_route' => 'app_submission_app_submission_extract_keyterms', '_controller' => 'App\\Controller\\submission\\SubmissionController::extractKeyTerms'], ['idSubmission'], ['GET' => 0], null, false, false, null]],
+        1803 => [[['_route' => 'app_submission_app_submission_update_status', '_controller' => 'App\\Controller\\submission\\SubmissionController::updateStatus'], ['idSubmission'], ['PUT' => 0], null, false, false, null]],
+        1829 => [[['_route' => 'app_submission_app_submission_predict_priority', '_controller' => 'App\\Controller\\submission\\SubmissionController::predictPriority'], ['idSubmission'], ['POST' => 0], null, false, false, null]],
+        1854 => [[['_route' => 'app_submission_app_submission_update_priority', '_controller' => 'App\\Controller\\submission\\SubmissionController::updatePriority'], ['idSubmission'], ['POST' => 0], null, false, false, null]],
+        1864 => [[['_route' => 'app_submission_app_submission_delete', '_controller' => 'App\\Controller\\submission\\SubmissionController::delete'], ['idSubmission'], ['POST' => 0], null, false, true, null]],
+        1902 => [[['_route' => 'feedbackdelete', '_controller' => 'App\\Controller\\user\\FeedbackManagementController::delete'], ['idFeedback'], null, null, false, true, null]],
+        1920 => [[['_route' => 'user_delete', '_controller' => 'App\\Controller\\user\\UserManagementController::delete'], ['idUser'], null, null, false, true, null]],
+        1961 => [[['_route' => 'Front_Submission_delete', '_controller' => 'App\\Controller\\submission\\FrontSubmissionController::delete'], ['idSubmission'], ['POST' => 0], null, false, true, null]],
+        1983 => [[['_route' => 'Front_Submission_edit', '_controller' => 'App\\Controller\\submission\\FrontSubmissionController::edit'], ['idSubmission'], ['GET' => 0, 'POST' => 1], null, false, true, null]],
+        2018 => [[['_route' => 'feedback_delete', '_controller' => 'App\\Controller\\user\\FeedbackController::delFeedback'], ['id'], ['POST' => 0], null, false, true, null]],
+        2040 => [[['_route' => 'user_ban', '_controller' => 'App\\Controller\\user\\UserManagementController::ban'], ['idUser'], ['GET' => 0, 'POST' => 1], null, false, true, null]],
+        2064 => [
             [['_route' => 'user_unban', '_controller' => 'App\\Controller\\user\\UserManagementController::unban'], ['idUser'], ['GET' => 0, 'POST' => 1], null, false, true, null],
             [null, null, null, null, false, false, 0],
         ],

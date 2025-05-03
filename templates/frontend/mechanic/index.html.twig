@@ -1,0 +1,80 @@
+{% extends 'frontend/baseFront.html.twig' %}
+
+{% block title %}Meet Our Team{% endblock %}
+
+{% block mechanics %}
+    {# Debug to check if template is rendered #}
+    {% dump('Template rendered!') %}
+    
+    <section id="mechanic" class="mechanic">
+        <div class="container">
+            <div class="new-cars-content">
+                <h2>Meet Our Team</h2>
+                <p class="section-subtitle">Our skilled mechanics are ready to serve you</p>
+                
+                <div class="row">
+                    {% for mechanic in mechanics %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card mechanic-card h-100">
+                                <div class="card-body text-center">
+                                    <div class="mechanic-avatar mb-3">
+                                        <img src="{{ asset('images/mechanic-placeholder.jpg') }}" alt="{{ mechanic.nameMechanic }}" class="rounded-circle">
+                                    </div>
+                                    <h5 class="card-title">{{ mechanic.nameMechanic }}</h5>
+                                    <p class="card-text text-muted">{{ mechanic.specialityMechanic }}</p>
+                                    <div class="mechanic-info">
+                                        <p><i class="fas fa-envelope"></i> {{ mechanic.emailMechanic }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col-12 text-center">
+                            <p class="text-muted">No mechanics available at the moment.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .mechanic-card {
+            transition: transform 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .mechanic-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .mechanic-avatar img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .mechanic-info {
+            margin-top: 1rem;
+        }
+
+        .mechanic-info i {
+            margin-right: 0.5rem;
+            color: #4e73df;
+        }
+    </style>
+{% endblock %} 

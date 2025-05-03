@@ -1,0 +1,10 @@
+# config/packages/messenger_mailer.yaml
+messenger_mailer:
+    # the built-in filesystem handler persists attachments under var/email-attachments
+    attachment_handler: Fusonic\MessengerMailerBundle\EmailAttachmentHandler\FilesystemAttachmentHandler
+
+services:
+    # configure where the filesystem handler will write your attachments
+    Fusonic\MessengerMailerBundle\EmailAttachmentHandler\FilesystemAttachmentHandler:
+        arguments:
+            $attachmentsDirectory: '%kernel.project_dir%/var/email-attachments'

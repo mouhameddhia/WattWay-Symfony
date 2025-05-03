@@ -21,9 +21,10 @@
   ),
   'chart.js' => 
   array (
-    'version' => '3.9.1',
+    'version' => '4.4.9',
     'dependencies' => 
     array (
+      0 => '@kurkle/color',
     ),
     'extraFiles' => 
     array (
@@ -39,13 +40,11 @@
     array (
     ),
   ),
-  '@symfony/ux-chartjs' => 
+  '@symfony/stimulus-bridge' => 
   array (
-    'version' => '2.24.0',
+    'version' => '3.2.2',
     'dependencies' => 
     array (
-      0 => '@hotwired/stimulus',
-      1 => 'chart.js',
     ),
     'extraFiles' => 
     array (

@@ -232,8 +232,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         $this->passwordUser = $password;
         return $this;
     }
+    #[ORM\OneToMany(mappedBy: "idUser", targetEntity: Car::class)]
+    private Collection $cars;
+    public function getCars(): Collection
+    {
+        return $this->cars;
+    }
 
+    public function addCar(Car $car): self
+    {
+        if (!$this->cars->contains($car)) {
+            $this->cars->add($car);
+            $car->setUser($this);
+        }
+        return $this;
+    }
 
+    public function removeCar(Car $car): self
+    {
+        if ($this->cars->removeElement($car)) {
+            if ($car->getUser() === $this) {
+                $car->setUser(null);
+    }
+        }
+        return $this;
+    }
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Bill::class)]
     private Collection $bills;
@@ -269,7 +292,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         }
         return $this;
     }
-
     #[ORM\Column(name: "face_descriptor", type: 'json', nullable: true)]
 private ?array $faceDescriptor = null;
 

@@ -174,22 +174,11 @@ class TwigExtraConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
     }
 
     /**
-     * @template TValue
-     * @param TValue $value
-     * @default {"enabled":false}
-     * @return \Symfony\Config\TwigExtra\StringConfig|$this
-     * @psalm-return (TValue is array ? \Symfony\Config\TwigExtra\StringConfig : static)
-     */
-    public function string(array $value = []): \Symfony\Config\TwigExtra\StringConfig|static
+     * @default {"enabled":true}
+    */
+    public function string(array $value = []): \Symfony\Config\TwigExtra\StringConfig
     {
-        if (!\is_array($value)) {
-            $this->_usedProperties['string'] = true;
-            $this->string = $value;
-
-            return $this;
-        }
-
-        if (!$this->string instanceof \Symfony\Config\TwigExtra\StringConfig) {
+        if (null === $this->string) {
             $this->_usedProperties['string'] = true;
             $this->string = new \Symfony\Config\TwigExtra\StringConfig($value);
         } elseif (0 < \func_num_args()) {
@@ -256,7 +245,7 @@ class TwigExtraConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
 
         if (array_key_exists('string', $value)) {
             $this->_usedProperties['string'] = true;
-            $this->string = \is_array($value['string']) ? new \Symfony\Config\TwigExtra\StringConfig($value['string']) : $value['string'];
+            $this->string = new \Symfony\Config\TwigExtra\StringConfig($value['string']);
             unset($value['string']);
         }
 
@@ -293,7 +282,7 @@ class TwigExtraConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
             $output['inky'] = $this->inky instanceof \Symfony\Config\TwigExtra\InkyConfig ? $this->inky->toArray() : $this->inky;
         }
         if (isset($this->_usedProperties['string'])) {
-            $output['string'] = $this->string instanceof \Symfony\Config\TwigExtra\StringConfig ? $this->string->toArray() : $this->string;
+            $output['string'] = $this->string->toArray();
         }
         if (isset($this->_usedProperties['commonmark'])) {
             $output['commonmark'] = $this->commonmark->toArray();

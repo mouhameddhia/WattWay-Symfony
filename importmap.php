@@ -19,22 +19,16 @@ return [
     '@hotwired/stimulus' => [
         'version' => '3.2.2',
     ],
-    '@symfony/stimulus-bundle' => [
-        'path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js',
-    ],
     '@hotwired/turbo' => [
         'version' => '8.0.13',
     ],
-    'chart.js' => [
-        'version' => '4.4.9',
-    ],
-    '@kurkle/color' => [
-        'version' => '0.3.4',
-    ],
-    'chart.js' => [
-        'version' => '3.9.1',
+    '@symfony/stimulus-bundle' => [
+        'path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js',
     ],
     '@symfony/ux-chartjs' => [
-        'version' => '2.24.0',
-    ]
+        'path' => './vendor/symfony/ux-chartjs/assets/dist/controller.js',
+    ],
+    'chart.js' => [
+        'path' => './node_modules/chart.js/dist/chart.js',
+    ],
 ];

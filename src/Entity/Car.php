@@ -121,6 +121,9 @@ class Car
         return $this;
     }
 
+    #[ORM\OneToMany(mappedBy: "car", targetEntity: Assignment::class)]
+    private Collection $assignments;
+
     #[ORM\ManyToOne(targetEntity: Warehouse::class, inversedBy: 'cars')]
     #[ORM\JoinColumn(name: 'idWarehouse', referencedColumnName: 'idWarehouse')]
     #[Groups(['car:read'])]
@@ -213,6 +216,29 @@ class Car
                 $bill->setCar(null);
             }
         }
+        return $this;
+    }
+        public function getAssignments(): Collection
+    {
+        return $this->assignments;
+    }
+
+    public function addAssignment(Assignment $assignment): self
+    {
+        if (!$this->assignments->contains($assignment)) {
+            $this->assignments[] = $assignment;
+            $assignment->setCar($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAssignment(Assignment $assignment): self
+    {
+        if ($this->assignments->removeElement($assignment)) {
+            // no additional action needed here
+        }
+
         return $this;
     }
 

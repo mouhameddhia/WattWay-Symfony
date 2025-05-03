@@ -1,14 +1,20 @@
 parameters:
-  profile_pictures_directory: '%kernel.project_dir%/public/uploads/profile_pictures'
-  warehouse_images_directory: '%kernel.project_dir%/public/images/Warehouse'
-  avatar_directory: '%kernel.project_dir%/public/uploads/avatars'
-  sendgrid.api_key: '%env(SENDGRID_API_KEY)%'
-  sendgrid.template_id: '%env(SENDGRID_TEMPLATE_ID)%'
-  pdfgeneratorapi.api_key: '%env(PDFGENERATORAPI_API_KEY)%'
-  pdfgeneratorapi.api_secret: '%env(PDFGENERATORAPI_API_SECRET)%'
-  pdfgeneratorapi.template_id: '%env(PDFGENERATORAPI_TEMPLATE_ID)%'
-  images_directory: '%kernel.project_dir%/public/images'
-  locale: 'en'
+        profile_pictures_directory: '%kernel.project_dir%/public/uploads/profile_pictures'
+        warehouse_images_directory: '%kernel.project_dir%/public/images/Warehouse'
+        avatar_directory: '%kernel.project_dir%/public/uploads/avatars'
+        sendgrid.api_key: '%env(SENDGRID_API_KEY)%'
+        sendgrid.template_id: '%env(SENDGRID_TEMPLATE_ID)%'
+        pdfgeneratorapi.api_key: '%env(PDFGENERATORAPI_API_KEY)%'
+        pdfgeneratorapi.api_secret: '%env(PDFGENERATORAPI_API_SECRET)%'
+        pdfgeneratorapi.template_id: '%env(PDFGENERATORAPI_TEMPLATE_ID)%'
+        images_directory: '%kernel.project_dir%/public/images'
+        locale: 'en'
+        mechanics_directory: '%kernel.project_dir%/public/uploads/mechanics'
+        assemblyai.api_key: '%env(ASSEMBLYAI_API_KEY)%'
+        google_client_id: '%env(GOOGLE_CLIENT_ID)%'
+        google_client_secret: '%env(GOOGLE_CLIENT_SECRET)%'
+        google_redirect_uri: '%env(GOOGLE_REDIRECT_URI)%'
+        google_calendar_id: 'primary'
 services:
     App\Security\UserChecker:
         arguments:
@@ -24,7 +30,9 @@ services:
         autowire: true
         autoconfigure: true
         public: false
-
+    Fusonic\MessengerMailerBundle\EmailAttachmentHandler\FilesystemAttachmentHandler:
+        arguments:
+            $attachmentsDirectory: '%kernel.project_dir%/var/email-attachments'
     # Explicitly configure the SentimentAnalysisService
     App\Service\SentimentAnalysisService:
         arguments:
@@ -62,5 +70,17 @@ services:
     App\Services\GeminiService:
         public: true
 
+    App\Service\AssemblyAiService:
+        arguments:
+            $assemblyAiApiKey: '%assemblyai.api_key%'
+            $logger: '@logger'
+
+    App\Service\GoogleCalendarService:
+        arguments:
+            $clientId: '%google_client_id%'
+            $clientSecret: '%google_client_secret%'
+            $redirectUri: '%env(APP_URL)%/assignment/google/callback'
+            $calendarId: '%google_calendar_id%'
+            $projectDir: '%kernel.project_dir%'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -1,0 +1,286 @@
+{% extends 'backend/baseBack.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <style>
+        #recordButton.recording {
+        animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    </style>
+{% endblock %}
+
+{% block title %}New Assignment{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Create New Assignment</h1>
+            <a href="{{ path('app_assignment_index') }}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to List
+            </a>
+        </div>
+
+        <!-- Card -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Assignment Details</h6>
+            </div>
+            <div class="card-body">
+            {% if isGoogleConnected %}
+            <div class="alert alert-success">
+                ✅ Google Calendar is already connected.
+            </div>
+            {% else %}
+            <a href="{{ path('google_auth') }}"
+                class="btn btn-primary mb-3">
+                Connect Google Calendar
+            </a>
+            {% endif %}
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group position-relative">
+                            {{ form_label(form.descriptionAssignment) }}
+
+                            <button
+                                type="button"
+                                id="recordBtn"
+                                class="btn btn-outline-secondary btn-sm position-absolute top-0 end-0"
+                                style="z-index:2; padding:2px 6px; font-size:0.75rem;"
+                            >
+                                <i class="bi bi-mic"></i>
+                                <span id="recordStatus" style="font-size:0.75rem;">Start</span>
+                            </button>
+
+                            {{ form_widget(form.descriptionAssignment, {
+                                'attr': {
+                                    'id':    'descriptionAssignment',
+                                    'class': 'form-control pe-5',
+                                    'rows':  4
+                                }
+                            }) }}
+
+                            <div class="invalid-feedback">
+                                {{ form_errors(form.descriptionAssignment) }}
+                            </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.statusAssignment) }}
+                                {{ form_widget(form.statusAssignment, {'attr': {'class': 'form-control'}}) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.statusAssignment) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.dateAssignment) }}
+                                {{ form_widget(form.dateAssignment, {'attr': {'class': 'form-control'}}) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.dateAssignment) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.car) }}
+                                {{ form_widget(form.car, {'attr': {'class': 'form-control'}}) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.car) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mechanics Selection -->
+                    <div class="form-group">
+                        <label for="assignment_mechanics">Select Mechanics</label>
+                        <select name="assignment[mechanics][]" id="assignment_mechanics" class="form-control select2" multiple="multiple">
+                            {% for mechanic in mechanics %}
+                                <option value="{{ mechanic.idMechanic }}" 
+                                        {% if assignment.getMechanics() is defined and mechanic in assignment.getMechanics() %}selected{% endif %}>
+                                    {{ mechanic.nameMechanic }} ({{ mechanic.specialityMechanic }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                        {# Hidden field for mechanics collection #}
+                        <div id="mechanics_collection" style="display:none">
+                            {{ form_widget(form.assignmentMechanics) }}
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save fa-sm text-white-50"></i> Save Assignment
+                            </button>
+                        </div>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script defer>
+        // Form validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+        try{
+            $(document).ready(function() {
+            // Initialize Select2
+            $('.select2').select2({
+                placeholder: "Select mechanics",
+                allowClear: true,
+                width: '100%'
+            });
+            
+            // Trigger change event on page load to initialize hidden inputs
+            $('#assignment_mechanics').trigger('change');
+            
+            // Handle form submission to ensure mechanics are selected
+            $('form').on('submit', function(e) {
+                // Make sure mechanics are synced before submit
+                $('#assignment_mechanics').trigger('change');
+            });
+            
+            // Sync selected mechanics with the hidden collection field
+            $('#assignment_mechanics').on('change', function() {
+                const selectedMechanics = $(this).val() || [];
+                console.log('Selected mechanics:', selectedMechanics);
+                
+                // Clear existing mechanics collection
+                $('#mechanics_collection').empty();
+                
+                // Add new hidden inputs for each selected mechanic
+                selectedMechanics.forEach(function(mechanicId) {
+                    const newInput = $('<input>')
+                        .attr('type', 'hidden')
+                        .attr('name', 'assignment[mechanics][]')
+                        .val(mechanicId);
+                    $('#mechanics_collection').append(newInput);
+                });
+            });
+        });
+
+        } catch (e) {
+            console.warn('jQuery not available, skipping Select2 init');
+        }
+        // Initialize Select2 for mechanics selection
+        
+
+        console.log('🛠️ Recorder script loaded');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🛠️ DOMContentLoaded fired');
+        let isRecording = false;
+        let recorder, stream;
+        const recordBtn    = document.getElementById('recordBtn');
+        const recordStatus = document.getElementById('recordStatus');
+        const descField = document.getElementById('descriptionAssignment') || 
+                 document.getElementById('assignment_descriptionAssignment');
+        console.log('Description field:', document.getElementById('descriptionAssignment'));
+        console.log('Alternative ID field:', document.getElementById('assignment_descriptionAssignment'));
+        if (!recordBtn || !recordStatus || !descField) {
+            console.error('❌ Missing elements, aborting recorder setup');
+            return;
+        }
+
+        recordBtn.addEventListener('click', async () => {
+            console.log('🎤 recordBtn clicked');
+            if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
+            return alert("Audio recording not supported in this browser.");
+            }
+            if (isRecording) {
+            return alert("Recording already in progress.");
+            }
+
+            try {
+            stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+            const chunks = [];
+
+            recorder.ondataavailable = e => e.data.size && chunks.push(e.data);
+
+            recorder.onstop = async () => {
+                isRecording = false;
+                recordBtn.disabled = false;
+                recordStatus.textContent = 'Start';
+                stream.getTracks().forEach(t => t.stop());
+
+                // 1. Create FormData properly
+                const formData = new FormData(); // <-- This was missing
+                
+                // 2. Add the audio blob
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                formData.append('audio', blob, 'recording.webm'); // <-- Give it a filename
+                
+                try {
+                    const res = await fetch('{{ path('app_assignment_transcribe') }}', {
+                        method: 'POST',
+                        body: formData, // <-- Use the formData we created
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                    
+                    const json = await res.json();
+                    if (json.text) {
+                        descField.value = json.text;
+                    } else {
+                        throw new Error("No text in response");
+                    }
+                } catch (err) {
+                    console.error('Transcription error:', err);
+                    alert("Error during transcription: " + err.message);
+                }
+            };
+
+            recorder.start();
+            isRecording      = true;
+            recordBtn.disabled= true;
+            recordStatus.textContent = 'Recording…';
+
+            // auto‐stop after 5s
+            setTimeout(() => {
+                if (isRecording) recorder.stop();
+            }, 5000);
+
+            } catch (err) {
+            console.error(err);
+            alert("Could not start audio recording.");
+            }
+        });
+        });
+        
+    </script>
+{% endblock %}

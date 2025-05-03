@@ -1,8 +1,24 @@
 import './bootstrap.js';
 import './styles/app.css';
+
+//import 'select2/dist/js/select2.full.min';
+//import 'select2/dist/css/select2.min.css';
+
+//import Chart from 'chart.js/auto';
+//import './styles/app.scss'; // if you have SCSS
 import { Application } from '@hotwired/stimulus';
 import '@symfony/ux-chartjs';  // Ensure this is needed for your setup
+import '@hotwired/turbo';
+import { startStimulusApp } from '@symfony/stimulus-bundle';
 
+import 'chart.js'; // needed for tree-shaking sometimes
+
+
+
+startStimulusApp();
+
+import Chart from 'chart.js';
+// etc
 const application = Application.start();
 //import { definitionsFromContext } from 'stimulus/webpack-helpers';
 //const context = require.context('./controllers', true, /_controller\.js$/);
@@ -16,4 +32,3 @@ const application = Application.start();
 
 //import Routing from 'fos-router';
 
-//console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');

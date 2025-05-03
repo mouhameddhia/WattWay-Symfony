@@ -1,0 +1,119 @@
+{% extends 'backend/baseBack.html.twig' %}
+
+{% block title %}Mechanic Details{% endblock %}
+
+{% block css %}
+    {{ parent() }}
+    <style>
+        .mechanic-image {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+        .list-group-item {
+            padding: 1rem 1.5rem;
+        }
+        .action-buttons {
+            margin-top: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Mechanic Details</h1>
+        <a href="{{ path('app_mechanic_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50 mr-2"></i> Back to List
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Mechanic Information</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>ID</strong>
+                            <span>{{ mechanic.idMechanic }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Name</strong>
+                            <span>{{ mechanic.nameMechanic }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Speciality</strong>
+                            <span class="badge badge-primary">{{ mechanic.specialityMechanic }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Email</strong>
+                            <span>{{ mechanic.emailMechanic }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Cars Repaired</strong>
+                            <span class="badge badge-info">{{ mechanic.carsRepaired }}</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="mb-3">
+                        {% if mechanic.imgMechanic %}
+                            <img src="{{ asset('uploads/mechanics/' ~ mechanic.imgMechanic) }}" 
+                                 alt="{{ mechanic.nameMechanic }}" 
+                                 class="mechanic-image img-fluid">
+                        {% else %}
+                            <div class="text-muted">No image available</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Current Assignments</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for assignmentMechanic in mechanic.assignmentMechanics %}
+                            <a href="{{ path('app_assignment_show', {'idAssignment': assignmentMechanic.idAssignment.idAssignment}) }}" 
+                            class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">
+                                        {{ assignmentMechanic.idAssignment.descriptionAssignment|u.truncate(50, '...') }}
+                                    </h6>
+                                    <span class="badge badge-{{ assignmentMechanic.idAssignment.statusAssignment == 'Completed' ? 'success' : (assignmentMechanic.idAssignment.statusAssignment == 'In Progress' ? 'warning' : 'secondary') }}">
+                                        {{ assignmentMechanic.idAssignment.statusAssignment }}
+                                    </span>
+                                </div>
+                                <small>Assigned on: {{ assignmentMechanic.idAssignment.dateAssignment|date('Y-m-d') }}</small>
+                                <div class="mt-2">
+                                    <span class="badge badge-light">
+                                        {{ assignmentMechanic.idAssignment.car.brandCar }} {{ assignmentMechanic.idAssignment.car.modelCar }}
+                                    </span>
+                                </div>
+                            </a>
+                        {% else %}
+                            <div class="text-center text-muted py-3">No current assignments</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons mt-4">
+                <a href="{{ path('app_mechanic_edit', {'idMechanic': mechanic.idMechanic}) }}" 
+                   class="btn btn-primary mr-2">
+                    <i class="fas fa-edit mr-2"></i> Edit Mechanic
+                </a>
+                
+                {{ include('backend/mechanic/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,190 @@
+{% extends 'backend/baseBack.html.twig' %}
+
+{% block title %}Edit Assignment{% endblock %}
+
+{% block css %}
+    {{ parent() }}
+    <style>
+        .assignment-details {
+            background-color: #f8f9fc;
+            padding: 1.5rem;
+            border-radius: 0.35rem;
+            margin-bottom: 1.5rem;
+        }
+        .assignment-image {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
+        .status-pending {
+            color: #856404;
+            background-color: #fff3cd;
+        }
+        .status-in-progress {
+            color: #0c5460;
+            background-color: #d1ecf1;
+        }
+        .status-completed {
+            color: #155724;
+            background-color: #d4edda;
+        }
+        .datetime-picker {
+            position: relative;
+        }
+        .datetime-picker .fa-calendar {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            color: #6e707e;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Edit Assignment</h1>
+        <a href="{{ path('app_assignment_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50 mr-2"></i> Back to List
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Assignment Details</h6>
+        </div>
+        <div class="card-body">
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+            
+            <div class="assignment-details">
+                <div class="form-group row">
+                    <div class="col-md-6 mb-3">
+                        {{ form_label(form.car, 'Assigned Car') }}
+                        {{ form_widget(form.car, {
+                            'attr': {
+                                'class': 'form-control',
+                            }
+                        }) }}
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        {{ form_label(form.statusAssignment, 'Status') }}
+                        {{ form_widget(form.statusAssignment, {
+                            'attr': {
+                                'class': 'form-control',
+                            }
+                        }) }}
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <div class="col-md-6 mb-3 datetime-picker">
+                        {{ form_label(form.dateAssignment, 'Assignment Date') }}
+                        {{ form_widget(form.dateAssignment, {
+                            'attr': {
+                                'class': 'form-control',
+                            }
+                        }) }}
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <!-- Custom mechanics selection -->
+                        <label for="assignment_mechanics">Select Mechanics</label>
+                        <select name="assignment[mechanics][]" id="assignment_mechanics" class="form-control select2" multiple="multiple">
+                            {% for mechanic in mechanics %}
+                                <option value="{{ mechanic.idMechanic }}" 
+                                        {% if mechanic in assignment.getMechanics() %}selected{% endif %}>
+                                    {{ mechanic.nameMechanic }} ({{ mechanic.specialityMechanic }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                        {# Hidden field for mechanics collection #}
+                        <div id="mechanics_collection" style="display:none">
+                            {{ form_widget(form.assignmentMechanics) }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    {{ form_label(form.descriptionAssignment, 'Description') }}
+                    {{ form_widget(form.descriptionAssignment, {
+                        'attr': {
+                            'class': 'form-control',
+                            'rows': 4,
+                            'placeholder': 'Enter detailed assignment description...'
+                        }
+                    }) }}
+                </div>
+            </div>
+            
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary mr-2">
+                    <i class="fas fa-save mr-2"></i> Update Assignment
+                </button>
+                <a href="{{ path('app_assignment_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-times mr-2"></i> Cancel
+                </a>
+            </div>
+            
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Initialize Select2 for mechanics selection
+        $(document).ready(function() {
+            // Initialize Select2
+            $('.select2').select2({
+                placeholder: "Select mechanics",
+                allowClear: true,
+                width: '100%'
+            });
+            
+            // Trigger change event on page load to initialize hidden inputs
+            $('#assignment_mechanics').trigger('change');
+            
+            // Handle form submission to ensure mechanics are selected
+            $('form').on('submit', function(e) {
+                // Make sure mechanics are synced before submit
+                $('#assignment_mechanics').trigger('change');
+            });
+            
+            // Sync selected mechanics with the hidden collection field
+            $('#assignment_mechanics').on('change', function() {
+                const selectedMechanics = $(this).val() || [];
+                console.log('Selected mechanics:', selectedMechanics);
+                
+                // Clear existing mechanics collection
+                $('#mechanics_collection').empty();
+                
+                // Add new hidden inputs for each selected mechanic
+                selectedMechanics.forEach(function(mechanicId) {
+                    const newInput = $('<input>')
+                        .attr('type', 'hidden')
+                        .attr('name', 'assignment[mechanics][]')
+                        .val(mechanicId);
+                    $('#mechanics_collection').append(newInput);
+                });
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,17 @@
+Array
+(
+    [assignment] => Array
+        (
+            [descriptionAssignment] => dfkgjufugegd
+            [statusAssignment] => pending
+            [dateAssignment] => 2025-04-26T15:16
+            [car] => 0
+            [mechanics] => Array
+                (
+                    [0] => 1
+                )
+
+            [_token] => 828b83312728d5aa9b9.MsPtlbZWRv7Atv9UR_O8wLbQOlYGFDltzzBPPsrzj-8.RIXe5tN7CMyG38YdAqzvuMCmWT9cX38BpnUbUKS_-KMApKH0gSFzkLj7kA
+        )
+
+)

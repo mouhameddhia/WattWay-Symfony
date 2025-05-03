@@ -3,7 +3,12 @@
     "app": {
       "js": [
         "/build/runtime.js",
+        "/build/vendors-assets_node_modules_hotwired_stimulus_dist_stimulus_js-assets_node_modules_select2_di-5c628e.js",
         "/build/app.js"
+      ],
+      "css": [
+        "/build/vendors-assets_node_modules_hotwired_stimulus_dist_stimulus_js-assets_node_modules_select2_di-5c628e.css",
+        "/build/app.css"
       ]
     }
   }

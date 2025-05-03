@@ -31,4 +31,5 @@ return [
     MercurySeries\FlashyBundle\MercurySeriesFlashyBundle::class => ['all' => true],
     Symfony\WebpackEncoreBundle\WebpackEncoreBundle::class => ['all' => true],
     Liip\ImagineBundle\LiipImagineBundle::class => ['all' => true],
+    Fusonic\MessengerMailerBundle\MessengerMailerBundle::class => ['all' => true],
 ];

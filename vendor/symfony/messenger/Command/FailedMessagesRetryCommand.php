@@ -39,19 +39,21 @@ use Symfony\Contracts\Service\ServiceProviderInterface;
 #[AsCommand(name: 'messenger:failed:retry', description: 'Retry one or more messages from the failure transport')]
 class FailedMessagesRetryCommand extends AbstractFailedMessagesCommand implements SignalableCommandInterface
 {
+    private EventDispatcherInterface $eventDispatcher;
+    private MessageBusInterface $messageBus;
+    private ?LoggerInterface $logger;
+    private ?array $signals;
     private bool $shouldStop = false;
     private bool $forceExit = false;
     private ?Worker $worker = null;
 
-    public function __construct(
-        ?string $globalReceiverName,
-        ServiceProviderInterface $failureTransports,
-        private MessageBusInterface $messageBus,
-        private EventDispatcherInterface $eventDispatcher,
-        private ?LoggerInterface $logger = null,
-        ?PhpSerializer $phpSerializer = null,
-        private ?array $signals = null,
-    ) {
+    public function __construct(?string $globalReceiverName, ServiceProviderInterface $failureTransports, MessageBusInterface $messageBus, EventDispatcherInterface $eventDispatcher, ?LoggerInterface $logger = null, ?PhpSerializer $phpSerializer = null, ?array $signals = null)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+        $this->messageBus = $messageBus;
+        $this->logger = $logger;
+        $this->signals = $signals;
+
         parent::__construct($globalReceiverName, $failureTransports, $phpSerializer);
     }
 
@@ -132,7 +134,7 @@ EOF
 
     public function getSubscribedSignals(): array
     {
-        return $this->signals ?? (\extension_loaded('pcntl') ? [\SIGTERM, \SIGINT, \SIGQUIT] : []);
+        return $this->signals ?? (\extension_loaded('pcntl') ? [\SIGTERM, \SIGINT] : []);
     }
 
     public function handleSignal(int $signal, int|false $previousExitCode = 0): int|false

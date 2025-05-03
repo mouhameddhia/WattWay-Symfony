@@ -1,5 +1,7 @@
 {
-  "build/app.js": "/build/app.d11a02d3.js",
-  "build/runtime.js": "/build/runtime.7b7fe445.js",
-  "build/891.e7477ee5.js": "/build/891.e7477ee5.js"
+  "build/app.css": "/build/app.css",
+  "build/app.js": "/build/app.js",
+  "build/runtime.js": "/build/runtime.js",
+  "build/vendors-assets_node_modules_hotwired_stimulus_dist_stimulus_js-assets_node_modules_select2_di-5c628e.css": "/build/vendors-assets_node_modules_hotwired_stimulus_dist_stimulus_js-assets_node_modules_select2_di-5c628e.css",
+  "build/vendors-assets_node_modules_hotwired_stimulus_dist_stimulus_js-assets_node_modules_select2_di-5c628e.js": "/build/vendors-assets_node_modules_hotwired_stimulus_dist_stimulus_js-assets_node_modules_select2_di-5c628e.js"
 }

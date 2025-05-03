@@ -1,0 +1,292 @@
+{% extends 'backend/baseBack.html.twig' %}
+
+{% block title %}Mechanics{% endblock %}
+
+{% block css %}
+    {{ parent() }}
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <style>
+        /* Custom badge colors for specialities */
+        .btn-group-sm > .btn,
+            .btn-group-sm > form {
+            margin-right: .25rem;
+            }
+
+        .badge-engine {
+            background-color: #4e73df; /* Primary blue */
+            color: white;
+        }
+        
+        .badge-electrical {
+            background-color: #36b9cc; /* Light blue */
+            color: white;
+        }
+        
+        .badge-body {
+            background-color: #1c4f9c; /* Dark blue */
+            color: white;
+        }
+
+        /* Compact table styles */
+        .table {
+            font-size: 0.85rem;
+        }
+        
+        .table td, .table th {
+            padding: 0.5rem;
+            vertical-align: middle;
+        }
+
+        /* Smaller buttons */
+        .btn-sm {
+            padding: 0.2rem 0.5rem;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+
+        /* Mechanic icon */
+        .mechanic-icon {
+            width: 28px;
+            height: 28px;
+            padding: 6px;
+        }
+
+        .mechanic-icon svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Status badges */
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25em 0.6em;
+        }
+
+        /* Action buttons group */
+        .btn-group-sm > .btn {
+            padding: 0.2rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .action-column {
+            white-space: nowrap;
+            width: 120px;
+        }
+
+        /* Table header - blue style */
+        #mechanicsTable thead tr {
+            background: linear-gradient(180deg, #4e73df 0%, #224abe 100%);
+            color: white;
+        }
+
+        #mechanicsTable thead th {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            padding: 0.75rem;
+            vertical-align: middle;
+        }
+
+        /* Image thumbnail */
+        .img-thumbnail {
+            max-height: 60px;
+            object-fit: cover;
+        }
+
+        /* Hover effects */
+        .mechanic-icon {
+            cursor: pointer;
+            color: #4e73df;
+            transition: all 0.3s ease;
+            padding: 8px;
+            border-radius: 50%;
+            background: #f8f9fc;
+            margin-right: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border: 1px solid #e3e6f0;
+        }
+
+        .mechanic-icon:hover {
+            color: white;
+            background: #4e73df;
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(78, 115, 223, 0.3);
+            border-color: #4e73df;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ asset('css/MechanicAssignment/crudTable.css') }}">
+    <div class="container-fluid">
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Mechanics</h1>
+            <a href="{{ path('app_mechanic_new') }}" class="d-none d-sm-inline-block btn btn-primary shadow-sm">
+                <i class="fas fa-plus fa-sm text-white-50 mr-2"></i> Create New Mechanic
+            </a>
+        </div>    
+    </div>
+    <div class="row mb-3">
+            <div class="col-12 col-md-8 offset-md-2">
+                <form method="get" class="form-inline mb-3">
+                            <input
+                                type="text"
+                                name="q"
+                                class="form-control form-control-sm mr-2"
+                                placeholder="Search mechanics…"
+                                value="{{ currentSearch }}"
+                            />
+
+                            <select name="sort" class="form-control form-control-sm mr-2">
+                                <option value="">Sort by…</option>
+                                <option value="name"         {{ currentSort=='name'         ? 'selected' }}>Name</option>
+                                <option value="speciality"   {{ currentSort=='speciality'   ? 'selected' }}>Speciality</option>
+                                <option value="carsRepaired" {{ currentSort=='carsRepaired' ? 'selected' }}>Cars Repaired</option>
+                            </select>
+
+                            <select name="dir" class="form-control form-control-sm mr-2">
+                                <option value="ASC"  {{ currentDir=='ASC'  ? 'selected' }}>↑ ASC</option>
+                                <option value="DESC" {{ currentDir=='DESC' ? 'selected' }}>↓ DESC</option>
+                            </select>
+
+                            <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+                            <a href="{{ path('app_mechanic_index') }}" class="btn btn-secondary btn-sm ml-2">Reset</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">All Mechanics</h6>
+        </div>
+        
+        <!-- Flash Messages (Backup Display) -->
+        {% if app.flashes.error is defined and app.flashes.error|length > 0 %}
+            {% for message in app.flashes.error %}
+                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <strong>Error:</strong> {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <!-- Page Heading -->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="mechanicsTable">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th>Speciality</th>
+                                <th>Email</th>
+                                <th>Cars Repaired</th>
+                                <th>Image</th>
+                                <th class="action-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for mechanic in mechanics %}
+                            <tr>
+                                <td class="text-center">
+                                    <div class="mechanic-icon" title="Mechanic Profile">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                            <path d="M184 48H328c4.4 0 8 3.6 8 8V96H176V56c0-4.4 3.6-8 8-8zm-56 8V96H64C28.7 96 0 124.7 0 160v96H192 320 512V160c0-35.3-28.7-64-64-64H384V56c0-30.9-25.1-56-56-56H184c-30.9 0-56 25.1-56 56zM512 288H320v32c0 17.7-14.3 32-32 32H224c-17.7 0-32-14.3-32-32V288H0V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V288zM144 400a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm224-32a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/>
+                                        </svg>
+                                    </div>
+                                </td>
+                                <td>{{ mechanic.nameMechanic }}</td>
+                                <td>
+                                    <span class="badge {% if mechanic.specialityMechanic == 'Engine' %}badge-engine{% elseif mechanic.specialityMechanic == 'Electrical' %}badge-electrical{% else %}badge-body{% endif %}">
+                                        {{ mechanic.specialityMechanic }}
+                                    </span>
+                                </td>
+                                <td>{{ mechanic.emailMechanic }}</td>
+                                <td>{{ mechanic.carsRepaired }}</td>
+                                <td>
+                                    {% if mechanic.imgMechanic %}
+                                        <img src="{{ asset('uploads/mechanics/' ~ mechanic.imgMechanic) }}" 
+                                             alt="{{ mechanic.nameMechanic }}" 
+                                             class="img-thumbnail"
+                                             loading="lazy">
+                                    {% else %}
+                                        <span class="text-muted">No image</span>
+                                    {% endif %}
+                                </td>
+                                <td class="action-column">
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ path('app_mechanic_show', {'idMechanic': mechanic.idMechanic}) }}" class="btn btn-info btn-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="14" height="14" fill="currentColor">
+                                                <path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"/>
+                                            </svg>
+                                        </a>
+                                        <a href="{{ path('app_mechanic_edit', {'idMechanic': mechanic.idMechanic}) }}" class="btn btn-warning btn-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="14" height="14" fill="currentColor">
+                                                <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"/>
+                                            </svg>
+                                        </a>
+                                         <form 
+                                            method="post" 
+                                            action="{{ path('app_mechanic_delete', {'idMechanic': mechanic.idMechanic}) }}" 
+                                            onsubmit="return confirm('Are you sure you want to delete this mechanic?');"
+                                            style="display:inline-block"
+                                        >
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ mechanic.idMechanic) }}">
+                                            <button type="submit" class="btn btn-danger btn-sm" title="Delete">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="14" height="14" fill="currentColor">
+                                                    <!-- Trash can icon from FontAwesome Free -->
+                                                    <path d="M268 416h24a12 12 0 0 0 12-12V204a12 12 0 0 0-12-12h-24a12 12 0 0 0-12 12v200a12 12 0 0 0 12 12zm-88 0h24a12 12 0 0 0 12-12V204a12 12 0 0 0-12-12h-24a12 12 0 0 0-12 12v200a12 12 0 0 0 12 12zM432 80h-82.4l-34-56.7A48 48 0 0 0 274.5 0H173.5a48 48 0 0 0-40.9 23.3L98.6 80H16A16 16 0 0 0 0 96v32a16 16 0 0 0 16 16h16v304a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V144h16a16 16 0 0 0 16-16V96a16 16 0 0 0-16-16zM173.5 48h101l19.6 32H153.9z"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-3">No mechanics found</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow mb-4" style="width:600px; height:400px;">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Cars Repaired per Mechanic</h6>
+    </div>
+    <div class="card-body" style="width:600px; height:400px;">
+        <canvas id="mechanicsChart"></canvas>
+    </div>
+</div>
+    
+
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    {# 1) load Chart.js from CDN #}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+
+    {# 2) draw the bar chart #}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('mechanicsChart').getContext('2d');
+        // chartConfig is a JSON string ready for use
+        const config = {{ chartConfig | raw }};
+
+        new Chart(ctx, config);
+    });
+    </script>
+    
+{% endblock %}

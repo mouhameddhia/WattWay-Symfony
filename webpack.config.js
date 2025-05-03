@@ -8,9 +8,9 @@ Encore
     .setOutputPath('public/build/')
     .setPublicPath('/build')
     .addEntry('app', './assets/app.js')
-    .enableStimulusController('./assets/controllers/')
+    //.enableStimulusController('./assets/controllers/')
     .splitEntryChunks()
-    .enableStimulusBridge()
+    .enableStimulusBridge('./assets/controllers.json')
     .enableSassLoader()
     .enableVueLoader()
     .enableReactPreset()
@@ -22,6 +22,8 @@ Encore
     .enableBuildNotifications()
     .enableSourceMaps(!Encore.isProduction())
     .enableVersioning(Encore.isProduction())
+    .enableSassLoader()
+
     .configureBabel((config) => {
         config.plugins.push('@babel/plugin-proposal-class-properties');
     })

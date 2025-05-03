@@ -43,6 +43,7 @@
       <parameter key="MercurySeriesFlashyBundle">MercurySeries\FlashyBundle\MercurySeriesFlashyBundle</parameter>
       <parameter key="WebpackEncoreBundle">Symfony\WebpackEncoreBundle\WebpackEncoreBundle</parameter>
       <parameter key="LiipImagineBundle">Liip\ImagineBundle\LiipImagineBundle</parameter>
+      <parameter key="MessengerMailerBundle">Fusonic\MessengerMailerBundle\MessengerMailerBundle</parameter>
     </parameter>
     <parameter key="kernel.bundles_metadata" type="collection">
       <parameter key="FrameworkBundle" type="collection">
@@ -165,6 +166,10 @@
         <parameter key="path">C:\Users\harou\WarehouseManagement\vendor\liip\imagine-bundle</parameter>
         <parameter key="namespace">Liip\ImagineBundle</parameter>
       </parameter>
+      <parameter key="MessengerMailerBundle" type="collection">
+        <parameter key="path">C:\Users\harou\WarehouseManagement\vendor\fusonic\messenger-mailer-bundle\src</parameter>
+        <parameter key="namespace">Fusonic\MessengerMailerBundle</parameter>
+      </parameter>
     </parameter>
     <parameter key="kernel.charset">UTF-8</parameter>
     <parameter key="kernel.container_class">App_KernelDevDebugContainer</parameter>
@@ -178,6 +183,12 @@
     <parameter key="pdfgeneratorapi.template_id">%env(PDFGENERATORAPI_TEMPLATE_ID)%</parameter>
     <parameter key="images_directory">C:\Users\harou\WarehouseManagement/public/images</parameter>
     <parameter key="locale">en</parameter>
+    <parameter key="mechanics_directory">C:\Users\harou\WarehouseManagement/public/uploads/mechanics</parameter>
+    <parameter key="assemblyai.api_key">%env(ASSEMBLYAI_API_KEY)%</parameter>
+    <parameter key="google_client_id">%env(GOOGLE_CLIENT_ID)%</parameter>
+    <parameter key="google_client_secret">%env(GOOGLE_CLIENT_SECRET)%</parameter>
+    <parameter key="google_redirect_uri">%env(GOOGLE_REDIRECT_URI)%</parameter>
+    <parameter key="google_calendar_id">primary</parameter>
     <parameter key="event_dispatcher.event_aliases" type="collection">
       <parameter key="Symfony\Component\Console\Event\ConsoleCommandEvent">console.command</parameter>
       <parameter key="Symfony\Component\Console\Event\ConsoleErrorEvent">console.error</parameter>
@@ -322,6 +333,7 @@
     <parameter key="twig.form.resources" type="collection">
       <parameter>form_div_layout.html.twig</parameter>
       <parameter>@LiipImagine/Form/form_div_layout.html.twig</parameter>
+      <parameter>bootstrap_5_layout.html.twig</parameter>
     </parameter>
     <parameter key="twig.default_path">C:\Users\harou\WarehouseManagement/templates</parameter>
     <parameter key="web_profiler.debug_toolbar.intercept_redirects">false</parameter>
@@ -567,7 +579,7 @@
     <parameter key="time.datetime_formatter.class">Knp\Bundle\TimeBundle\DateTimeFormatter</parameter>
     <parameter key="time.twig.extension.time.class">Knp\Bundle\TimeBundle\Twig\Extension\TimeExtension</parameter>
     <parameter key="cmen_google_charts.version">current</parameter>
-    <parameter key="cmen_google_charts.language"></parameter>
+    <parameter key="cmen_google_charts.language">en</parameter>
     <parameter key="liip_imagine.resolvers" type="collection">
       <parameter key="default" type="collection">
         <parameter key="web_path" type="collection">
@@ -779,6 +791,9 @@
         <argument key="isRemoteEnabled">true</argument>
       </argument>
     </service>
+    <service id="Fusonic\MessengerMailerBundle\EmailAttachmentHandler\FilesystemAttachmentHandler" class="Fusonic\MessengerMailerBundle\EmailAttachmentHandler\FilesystemAttachmentHandler" autowire="true" autoconfigure="true">
+      <argument>C:\Users\harou\WarehouseManagement/var/email-attachments</argument>
+    </service>
     <service id="App\Security\UserChecker" class="App\Security\UserChecker" autowire="true" autoconfigure="true"/>
     <service id="App\Service\AvatarService" class="App\Service\AvatarService" autowire="true" autoconfigure="true"/>
     <service id="App\Twig\AvatarExtension" class="App\Twig\AvatarExtension" autowire="true" autoconfigure="true">
@@ -793,6 +808,29 @@
       <tag name="container.excluded" source="in &quot;config/services.yaml&quot;"/>
     </service>
     <service id="App\ApiResource\SentimentAnalysis" class="App\ApiResource\SentimentAnalysis" autowire="true" autoconfigure="true"/>
+    <service id="App\Command\GenerateEntitiesCommand" class="App\Command\GenerateEntitiesCommand" autowire="true" autoconfigure="true">
+      <tag name="console.command"/>
+      <tag name="container.no_preload"/>
+      <argument type="service" id="doctrine.dbal.default_connection"/>
+      <argument type="service" id="filesystem"/>
+      <call method="setName">
+        <argument>app:generate:entities</argument>
+      </call>
+      <call method="setDescription">
+        <argument>Automatically generates entity classes from the database schema</argument>
+      </call>
+    </service>
+    <service id="App\Command\GenerateRepositoriesCommand" class="App\Command\GenerateRepositoriesCommand" autowire="true" autoconfigure="true">
+      <tag name="console.command"/>
+      <tag name="container.no_preload"/>
+      <argument type="service" id="filesystem"/>
+      <call method="setName">
+        <argument>app:generate-repositories</argument>
+      </call>
+      <call method="setDescription">
+        <argument>Generates repository classes for all entities.</argument>
+      </call>
+    </service>
     <service id="App\Command\TrainPriorityModelCommand" class="App\Command\TrainPriorityModelCommand" autowire="true" autoconfigure="true">
       <tag name="console.command"/>
       <tag name="container.no_preload"/>
@@ -803,6 +841,14 @@
       </call>
       <call method="setDescription">
         <argument>Train the priority scoring model with existing submissions</argument>
+      </call>
+    </service>
+    <service id="App\Command\VerifyCalendarAuthCommand" class="App\Command\VerifyCalendarAuthCommand" autowire="true" autoconfigure="true">
+      <tag name="console.command"/>
+      <tag name="container.no_preload"/>
+      <argument type="service" id="App\Service\GoogleCalendarService"/>
+      <call method="setName">
+        <argument>app:verify-calendar-auth</argument>
       </call>
     </service>
     <service id="App\Controller\Api\PriorityController" class="App\Controller\Api\PriorityController" public="true" autowire="true" autoconfigure="true">
@@ -836,6 +882,20 @@
       <tag name="container.service_subscriber"/>
       <call method="setContainer">
         <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\FrontController"/>
+      </call>
+    </service>
+    <service id="App\Controller\FrontendController" class="App\Controller\FrontendController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\FrontendController"/>
+      </call>
+    </service>
+    <service id="App\Controller\GoogleCalendarController" class="App\Controller\GoogleCalendarController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\GoogleCalendarController"/>
       </call>
     </service>
     <service id="App\Controller\Order\ImageWatermarkService" class="App\Controller\Order\ImageWatermarkService" autowire="true" autoconfigure="true"/>
@@ -883,6 +943,21 @@
       <tag name="container.service_subscriber"/>
       <call method="setContainer">
         <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\Warehouse\WarehouseController"/>
+      </call>
+    </service>
+    <service id="App\Controller\assignment\AssignmentController" class="App\Controller\assignment\AssignmentController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\assignment\AssignmentController"/>
+      </call>
+    </service>
+    <service id="App\Controller\mechanic\MechanicController" class="App\Controller\mechanic\MechanicController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\mechanic\MechanicController"/>
       </call>
     </service>
     <service id="App\Controller\submission\FrontSubmissionController" class="App\Controller\submission\FrontSubmissionController" public="true" autowire="true" autoconfigure="true">
@@ -993,6 +1068,13 @@
     <service id="App\DataFixtures\AppFixtures" class="App\DataFixtures\AppFixtures" autowire="true" autoconfigure="true">
       <tag name="doctrine.fixture.orm"/>
     </service>
+    <service id="App\Form\AssignmentMechanicsType" class="App\Form\AssignmentMechanicsType" autowire="true" autoconfigure="true">
+      <tag name="form.type"/>
+    </service>
+    <service id="App\Form\AssignmentType" class="App\Form\AssignmentType" autowire="true" autoconfigure="true">
+      <tag name="form.type"/>
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+    </service>
     <service id="App\Form\BanUserType" class="App\Form\BanUserType" autowire="true" autoconfigure="true">
       <tag name="form.type"/>
     </service>
@@ -1018,6 +1100,9 @@
       <tag name="form.type"/>
       <argument type="service" id="translator.data_collector"/>
     </service>
+    <service id="App\Form\MechanicType" class="App\Form\MechanicType" autowire="true" autoconfigure="true">
+      <tag name="form.type"/>
+    </service>
     <service id="App\Form\ProfileType" class="App\Form\ProfileType" autowire="true" autoconfigure="true">
       <tag name="form.type"/>
     </service>
@@ -1033,11 +1118,11 @@
     <service id="App\Form\UserType" class="App\Form\UserType" autowire="true" autoconfigure="true">
       <tag name="form.type"/>
     </service>
-    <service id="App\Repository\AdminRepository" class="App\Repository\AdminRepository" autowire="true" autoconfigure="true">
+    <service id="App\Repository\AssignmentMechanicRepository" class="App\Repository\AssignmentMechanicRepository" autowire="true" autoconfigure="true">
       <tag name="doctrine.repository_service"/>
       <argument type="service" id="doctrine"/>
     </service>
-    <service id="App\Repository\AssignmentMechanicRepository" class="App\Repository\AssignmentMechanicRepository" autowire="true" autoconfigure="true">
+    <service id="App\Repository\AssignmentMechanicsRepository" class="App\Repository\AssignmentMechanicsRepository" autowire="true" autoconfigure="true">
       <tag name="doctrine.repository_service"/>
       <argument type="service" id="doctrine"/>
     </service>
@@ -1115,6 +1200,16 @@
     <service id="App\Security\LoginSuccessHandler" class="App\Security\LoginSuccessHandler" autowire="true" autoconfigure="true">
       <argument type="service" id="router.default"/>
     </service>
+    <service id="App\Service\AssemblyAIService" class="App\Service\AssemblyAIService" autowire="true" autoconfigure="true">
+      <tag name="container.error" message="Cannot autowire service &quot;App\Service\AssemblyAIService&quot;: argument &quot;$assemblyAiApiKey&quot; of method &quot;__construct()&quot; is type-hinted &quot;string&quot;, you should configure its value explicitly."/>
+    </service>
+    <service id="App\Service\GoogleCalendarService" class="App\Service\GoogleCalendarService" autowire="true" autoconfigure="true">
+      <argument>%env(GOOGLE_CLIENT_ID)%</argument>
+      <argument>%env(GOOGLE_CLIENT_SECRET)%</argument>
+      <argument>%env(APP_URL)%/assignment/google/callback</argument>
+      <argument>primary</argument>
+      <argument>C:\Users\harou\WarehouseManagement</argument>
+    </service>
     <service id="App\Service\ML\PriorityScoringService" class="App\Service\ML\PriorityScoringService" autowire="true" autoconfigure="true">
       <argument type="service" id="parameter_bag"/>
     </service>
@@ -1123,6 +1218,11 @@
     </service>
     <service id="App\Services\GeminiService" class="App\Services\GeminiService" public="true" autowire="true" autoconfigure="true"/>
     <service id="App\Services\KeyTermExtractor" class="App\Services\KeyTermExtractor" public="true" autowire="true" autoconfigure="true"/>
+    <service id="App\Service\AssemblyAiService" class="App\Service\AssemblyAiService" autowire="true" autoconfigure="true">
+      <argument type="service" id="Symfony\Contracts\HttpClient\HttpClientInterface"/>
+      <argument>%env(ASSEMBLYAI_API_KEY)%</argument>
+      <argument type="service" id="monolog.logger"/>
+    </service>
     <service id="argument_metadata_factory" class="Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactory"/>
     <service id="argument_resolver.backed_enum_resolver" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\BackedEnumValueResolver">
       <tag priority="100" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\BackedEnumValueResolver">controller.argument_value_resolver</tag>
@@ -1153,7 +1253,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
       <tag priority="-50" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">controller.argument_value_resolver</tag>
-      <argument type="service" id=".service_locator.wvXfBhF"/>
+      <argument type="service" id=".service_locator.D7gbukq"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver">
       <tag priority="-100" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver">controller.argument_value_resolver</tag>
@@ -1835,7 +1935,6 @@
       <argument type="collection">
         <argument>async</argument>
         <argument>failed</argument>
-        <argument>sync</argument>
       </argument>
       <argument type="service" id="messenger.listener.reset_services" on-invalid="null"/>
       <argument type="collection">
@@ -2174,6 +2273,8 @@
         <argument>Liip\ImagineBundle\Form\Type</argument>
       </argument>
       <argument type="collection">
+        <argument>App\Form\AssignmentMechanicsType</argument>
+        <argument>App\Form\AssignmentType</argument>
         <argument>App\Form\BanUserType</argument>
         <argument>App\Form\ChangePasswordFormType</argument>
         <argument>App\Form\CreateItemType</argument>
@@ -2182,6 +2283,7 @@
         <argument>App\Form\FormAddWarehouseType</argument>
         <argument>App\Form\FormUpdateBillType</argument>
         <argument>App\Form\FrontSubmissionType</argument>
+        <argument>App\Form\MechanicType</argument>
         <argument>App\Form\ProfileType</argument>
         <argument>App\Form\ResetPasswordRequestFormType</argument>
         <argument>App\Form\ResponseType</argument>
@@ -2834,7 +2936,7 @@
     </service>
     <service id="mailer.transports" class="Symfony\Component\Mailer\Transport\Transports">
       <argument type="collection">
-        <argument key="main">%env(MAILER_DSN)%</argument>
+        <argument key="main">%env(MAILER_DSN)%/%env(MAILER_DSN_MEC)%</argument>
       </argument>
       <factory service="mailer.transport_factory" method="fromStrings"/>
     </service>
@@ -3436,6 +3538,7 @@
           <argument>C:\Users\harou\WarehouseManagement\vendor\mercuryseries\flashy-bundle\src/translations</argument>
           <argument>C:\Users\harou\WarehouseManagement\vendor\symfony\webpack-encore-bundle\src/translations</argument>
           <argument>C:\Users\harou\WarehouseManagement\vendor\liip\imagine-bundle/translations</argument>
+          <argument>C:\Users\harou\WarehouseManagement\vendor\fusonic\messenger-mailer-bundle\src/translations</argument>
         </argument>
         <argument key="cache_vary" type="collection">
           <argument key="scanned_directories" type="collection">
@@ -3473,6 +3576,7 @@
             <argument>C:\Users\harou\WarehouseManagement\vendor\mercuryseries\flashy-bundle\src/translations</argument>
             <argument>C:\Users\harou\WarehouseManagement\vendor\symfony\webpack-encore-bundle\src/translations</argument>
             <argument>C:\Users\harou\WarehouseManagement\vendor\liip\imagine-bundle/translations</argument>
+            <argument>C:\Users\harou\WarehouseManagement\vendor\fusonic\messenger-mailer-bundle\src/translations</argument>
           </argument>
         </argument>
       </argument>
@@ -4301,14 +4405,6 @@
         <argument>0</argument>
       </call>
       <call method="addListener">
-        <argument>kernel.request</argument>
-        <argument type="collection">
-          <argument type="service_closure" id="doctrine.dbal.idle_connection_listener"/>
-          <argument>onKernelRequest</argument>
-        </argument>
-        <argument>192</argument>
-      </call>
-      <call method="addListener">
         <argument>Symfony\Component\Messenger\Event\WorkerMessageHandledEvent</argument>
         <argument type="collection">
           <argument type="service_closure" id="doctrine.orm.messenger.event_subscriber.doctrine_clear_entity_manager"/>
@@ -4578,7 +4674,7 @@
     </service>
     <service id="argument_resolver.not_tagged_controller" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
       <tag name="controller.argument_value_resolver" priority="-200"/>
-      <argument type="service" id=".service_locator.wvXfBhF"/>
+      <argument type="service" id=".service_locator.D7gbukq"/>
     </service>
     <service id="debug.log_processor" class="Symfony\Bridge\Monolog\Processor\DebugProcessor">
       <tag name="kernel.reset" method="reset"/>
@@ -5126,7 +5222,7 @@
       <argument type="service" id="form.registry"/>
     </service>
     <service id="form.extension" class="Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension">
-      <argument type="service" id=".service_locator.6x3_X2Z"/>
+      <argument type="service" id=".service_locator.23Qb_tC"/>
       <argument type="collection">
         <argument key="Symfony\Component\Form\Extension\Core\Type\FormType" type="iterator">
           <argument type="service" id="form.type_extension.form.transformation_failure_handling"/>
@@ -5685,6 +5781,12 @@
       <tag name="kernel.event_subscriber"/>
       <argument type="service" id="cache.messenger.restart_workers_signal"/>
       <argument type="service" id="monolog.logger.messenger" on-invalid="ignore"/>
+    </service>
+    <service id="messenger.listener.stop_worker_signals_listener" class="Symfony\Component\Messenger\EventListener\StopWorkerOnSignalsListener">
+      <tag name="monolog.logger" channel="messenger"/>
+      <argument>null</argument>
+      <argument type="service" id="monolog.logger.messenger" on-invalid="ignore"/>
+      <deprecated package="6.4" version="symfony/messenger">The "%service_id%" service is deprecated, use the "Symfony\Component\Console\Command\SignalableCommandInterface" instead.</deprecated>
     </service>
     <service id="messenger.listener.stop_worker_on_stop_exception_listener" class="Symfony\Component\Messenger\EventListener\StopWorkerOnCustomStopExceptionListener">
       <tag name="kernel.event_subscriber"/>
@@ -6296,12 +6398,6 @@
       <argument type="service" id="doctrine"/>
       <argument type="service" id="profiler"/>
     </service>
-    <service id="doctrine.dbal.idle_connection_listener" class="Symfony\Bridge\Doctrine\Middleware\IdleConnection\Listener">
-      <tag name="kernel.event_subscriber"/>
-      <tag name="container.hot_path"/>
-      <argument type="service" id="doctrine.dbal.connection_expiries"/>
-      <argument type="service" id="service_container"/>
-    </service>
     <service id="doctrine.dbal.default_schema_manager_factory" class="Doctrine\DBAL\Schema\DefaultSchemaManagerFactory"/>
     <service id="doctrine.dbal.legacy_schema_manager_factory" class="Doctrine\DBAL\Schema\LegacySchemaManagerFactory"/>
     <service id="doctrine.dbal.default_connection.configuration" class="Doctrine\DBAL\Configuration">
@@ -6315,7 +6411,6 @@
         <argument type="collection">
           <argument type="service" id="doctrine.dbal.logging_middleware.default"/>
           <argument type="service" id="doctrine.dbal.debug_middleware.default"/>
-          <argument type="service" id="doctrine.dbal.idle_connection_middleware.default"/>
         </argument>
       </call>
     </service>
@@ -6442,13 +6537,6 @@
       <argument type="service" id="doctrine.debug_data_holder"/>
       <argument type="service" id="debug.stopwatch" on-invalid="null"/>
     </service>
-    <service id="doctrine.dbal.idle_connection_middleware" class="Doctrine\Bundle\DoctrineBundle\Middleware\IdleConnectionMiddleware" abstract="true">
-      <tag name="doctrine.middleware" connection="default" priority="10"/>
-      <argument type="service" id="doctrine.dbal.connection_expiries"/>
-      <argument type="collection">
-        <argument key="default">600</argument>
-      </argument>
-    </service>
     <service id="messenger.middleware.doctrine_transaction" class="Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddleware" abstract="true">
       <argument type="service" id="doctrine"/>
     </service>
@@ -6495,7 +6583,7 @@
     <service id="doctrine.orm.configuration" class="Doctrine\ORM\Configuration" abstract="true"/>
     <service id="doctrine.orm.entity_manager.abstract" class="Doctrine\ORM\EntityManager" lazy="true" abstract="true"/>
     <service id="doctrine.orm.container_repository_factory" class="Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory">
-      <argument type="service" id=".service_locator.IjcxP4w"/>
+      <argument type="service" id=".service_locator.WNhwRna"/>
     </service>
     <service id="doctrine.orm.manager_configurator.abstract" class="Doctrine\Bundle\DoctrineBundle\ManagerConfigurator" abstract="true">
       <argument type="collection"/>
@@ -7089,10 +7177,10 @@
       <argument type="service" id="twig.loader.native_filesystem"/>
       <argument type="collection">
         <argument key="debug">true</argument>
+        <argument key="strict_variables">true</argument>
         <argument key="autoescape">name</argument>
         <argument key="cache">C:\Users\harou\WarehouseManagement\var\cache\dev/twig</argument>
         <argument key="charset">UTF-8</argument>
-        <argument key="strict_variables">true</argument>
       </argument>
       <call method="addExtension">
         <argument type="service" id="twig.extension.security_csrf"/>
@@ -7165,6 +7253,9 @@
       </call>
       <call method="addExtension">
         <argument type="service" id="twig.extension.html"/>
+      </call>
+      <call method="addExtension">
+        <argument type="service" id="twig.extension.string"/>
       </call>
       <call method="addExtension">
         <argument type="service" id="knp_paginator.twig.extension.pagination"/>
@@ -7676,6 +7767,9 @@
     </service>
     <service id="twig.missing_extension_suggestor" class="Twig\Extra\TwigExtraBundle\MissingExtensionSuggestor"/>
     <service id="twig.extension.html" class="Twig\Extra\Html\HtmlExtension">
+      <tag name="twig.extension"/>
+    </service>
+    <service id="twig.extension.string" class="Twig\Extra\String\StringExtension">
       <tag name="twig.extension"/>
     </service>
     <service id="security.authorization_checker" class="Symfony\Component\Security\Core\Authorization\AuthorizationChecker">
@@ -10657,7 +10751,7 @@
     <service id="CMEN\GoogleChartsBundle\Output\Javascript\EventsOutput" class="CMEN\GoogleChartsBundle\Output\Javascript\EventsOutput"/>
     <service id="CMEN\GoogleChartsBundle\Output\Javascript\ChartOutput" class="CMEN\GoogleChartsBundle\Output\Javascript\ChartOutput">
       <argument>current</argument>
-      <argument></argument>
+      <argument>en</argument>
       <argument type="service" id="CMEN\GoogleChartsBundle\Output\Javascript\OptionsOutput"/>
       <argument type="service" id="CMEN\GoogleChartsBundle\Output\Javascript\DataOutput"/>
       <argument type="service" id="CMEN\GoogleChartsBundle\Output\Javascript\EventsOutput"/>
@@ -11202,13 +11296,22 @@
       <argument type="service" id="liip_imagine.cache.manager"/>
       <deprecated package="liip/imagine-bundle" version="2.2">The "%service_id%" service is deprecated since LiipImagineBundle 2.2 and will be removed in 3.0.</deprecated>
     </service>
+    <service id="Fusonic\MessengerMailerBundle\Middleware\AttachmentEmailMiddleware" class="Fusonic\MessengerMailerBundle\Middleware\AttachmentEmailMiddleware">
+      <argument type="service" id="Fusonic\MessengerMailerBundle\EmailAttachmentHandler\FilesystemAttachmentHandler"/>
+    </service>
     <service id="Symfony\Contracts\HttpClient\HttpClientInterface" class="Symfony\Contracts\HttpClient\HttpClientInterface" autowire="true" autoconfigure="true">
       <factory class="Symfony\Component\HttpClient\HttpClient" method="create"/>
     </service>
     <service id=".instanceof.Twig\Extension\ExtensionInterface.0.App\Twig\AvatarExtension" class="App\Twig\AvatarExtension" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Twig\AvatarExtension" class="App\Twig\AvatarExtension" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Console\Command\Command.0.App\Command\GenerateEntitiesCommand" class="App\Command\GenerateEntitiesCommand" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Command\GenerateEntitiesCommand" class="App\Command\GenerateEntitiesCommand" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Console\Command\Command.0.App\Command\GenerateRepositoriesCommand" class="App\Command\GenerateRepositoriesCommand" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Command\GenerateRepositoriesCommand" class="App\Command\GenerateRepositoriesCommand" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Console\Command\Command.0.App\Command\TrainPriorityModelCommand" class="App\Command\TrainPriorityModelCommand" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Command\TrainPriorityModelCommand" class="App\Command\TrainPriorityModelCommand" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Console\Command\Command.0.App\Command\VerifyCalendarAuthCommand" class="App\Command\VerifyCalendarAuthCommand" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Command\VerifyCalendarAuthCommand" class="App\Command\VerifyCalendarAuthCommand" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\Api\PriorityController" class="App\Controller\Api\PriorityController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\Api\PriorityController" class="App\Controller\Api\PriorityController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\Api\PriorityController" class="App\Controller\Api\PriorityController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -11221,6 +11324,12 @@
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\FrontController" class="App\Controller\FrontController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\FrontController" class="App\Controller\FrontController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\FrontController" class="App\Controller\FrontController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\FrontendController" class="App\Controller\FrontendController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\FrontendController" class="App\Controller\FrontendController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\FrontendController" class="App\Controller\FrontendController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\GoogleCalendarController" class="App\Controller\GoogleCalendarController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\GoogleCalendarController" class="App\Controller\GoogleCalendarController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\GoogleCalendarController" class="App\Controller\GoogleCalendarController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\Order\ItemsController" class="App\Controller\Order\ItemsController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\Order\ItemsController" class="App\Controller\Order\ItemsController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\Order\ItemsController" class="App\Controller\Order\ItemsController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -11239,6 +11348,12 @@
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\Warehouse\WarehouseController" class="App\Controller\Warehouse\WarehouseController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\Warehouse\WarehouseController" class="App\Controller\Warehouse\WarehouseController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\Warehouse\WarehouseController" class="App\Controller\Warehouse\WarehouseController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\assignment\AssignmentController" class="App\Controller\assignment\AssignmentController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\assignment\AssignmentController" class="App\Controller\assignment\AssignmentController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\assignment\AssignmentController" class="App\Controller\assignment\AssignmentController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\mechanic\MechanicController" class="App\Controller\mechanic\MechanicController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\mechanic\MechanicController" class="App\Controller\mechanic\MechanicController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\mechanic\MechanicController" class="App\Controller\mechanic\MechanicController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\submission\FrontSubmissionController" class="App\Controller\submission\FrontSubmissionController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\submission\FrontSubmissionController" class="App\Controller\submission\FrontSubmissionController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\submission\FrontSubmissionController" class="App\Controller\submission\FrontSubmissionController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -11280,6 +11395,10 @@
     <service id=".abstract.instanceof.App\Controller\user\UserManagementController" class="App\Controller\user\UserManagementController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\FixturesBundle\ORMFixtureInterface.0.App\DataFixtures\AppFixtures" class="App\DataFixtures\AppFixtures" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\DataFixtures\AppFixtures" class="App\DataFixtures\AppFixtures" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\AssignmentMechanicsType" class="App\Form\AssignmentMechanicsType" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Form\AssignmentMechanicsType" class="App\Form\AssignmentMechanicsType" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\AssignmentType" class="App\Form\AssignmentType" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Form\AssignmentType" class="App\Form\AssignmentType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\BanUserType" class="App\Form\BanUserType" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Form\BanUserType" class="App\Form\BanUserType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\ChangePasswordFormType" class="App\Form\ChangePasswordFormType" autowire="true" abstract="true"/>
@@ -11296,6 +11415,8 @@
     <service id=".abstract.instanceof.App\Form\FormUpdateBillType" class="App\Form\FormUpdateBillType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\FrontSubmissionType" class="App\Form\FrontSubmissionType" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Form\FrontSubmissionType" class="App\Form\FrontSubmissionType" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\MechanicType" class="App\Form\MechanicType" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Form\MechanicType" class="App\Form\MechanicType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\ProfileType" class="App\Form\ProfileType" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Form\ProfileType" class="App\Form\ProfileType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\ResetPasswordRequestFormType" class="App\Form\ResetPasswordRequestFormType" autowire="true" abstract="true"/>
@@ -11306,10 +11427,10 @@
     <service id=".abstract.instanceof.App\Form\SubmissionType" class="App\Form\SubmissionType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\UserType" class="App\Form\UserType" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Form\UserType" class="App\Form\UserType" autowire="true" autoconfigure="true" abstract="true"/>
-    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\AdminRepository" class="App\Repository\AdminRepository" autowire="true" abstract="true"/>
-    <service id=".abstract.instanceof.App\Repository\AdminRepository" class="App\Repository\AdminRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\AssignmentMechanicRepository" class="App\Repository\AssignmentMechanicRepository" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Repository\AssignmentMechanicRepository" class="App\Repository\AssignmentMechanicRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\AssignmentMechanicsRepository" class="App\Repository\AssignmentMechanicsRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\AssignmentMechanicsRepository" class="App\Repository\AssignmentMechanicsRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\AssignmentRepository" class="App\Repository\AssignmentRepository" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Repository\AssignmentRepository" class="App\Repository\AssignmentRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\BillRepository" class="App\Repository\BillRepository" autowire="true" abstract="true"/>
@@ -11859,13 +11980,14 @@
         <argument key="loader" type="service_closure" id=".errored..service_locator.y4_Zrx..Symfony\Component\Config\Loader\LoaderInterface"/>
       </argument>
     </service>
-    <service id=".service_locator.DIWEsCp" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.Va4nKd3" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="billRepository" type="service_closure" id="App\Repository\BillRepository"/>
         <argument key="carRepository" type="service_closure" id="App\Repository\CarRepository"/>
         <argument key="client" type="service_closure" id="Symfony\Contracts\HttpClient\HttpClientInterface"/>
         <argument key="doctrine" type="service_closure" id="doctrine"/>
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
         <argument key="feedbackRepository" type="service_closure" id="App\Repository\FeedbackRepository"/>
         <argument key="itemRepository" type="service_closure" id="App\Repository\ItemRepository"/>
         <argument key="orderRepository" type="service_closure" id="App\Repository\OrderRepository"/>
@@ -11881,6 +12003,12 @@
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+      </argument>
+    </service>
+    <service id=".service_locator.sUk48Fj" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="calendarService" type="service_closure" id="App\Service\GoogleCalendarService"/>
       </argument>
     </service>
     <service id=".service_locator.WdW2zRH" class="Symfony\Component\DependencyInjection\ServiceLocator">
@@ -12038,6 +12166,66 @@
         <argument key="warehouseRepository" type="service_closure" id="App\Repository\WarehouseRepository"/>
       </argument>
     </service>
+    <service id=".service_locator.dMg_f4y" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="repo" type="service_closure" id="App\Repository\AssignmentRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.I6sJhdH" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="calendarService" type="service_closure" id="App\Service\GoogleCalendarService"/>
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="mailer" type="service_closure" id="mailer.mailer"/>
+      </argument>
+    </service>
+    <service id=".service_locator.KOrh5dU" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="assignment" type="service_closure" id=".errored..service_locator.KOrh5dU.App\Entity\Assignment"/>
+      </argument>
+    </service>
+    <service id=".service_locator.Gc3.7Rb" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="assignment" type="service_closure" id=".errored..service_locator.Gc3.7Rb.App\Entity\Assignment"/>
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+      </argument>
+    </service>
+    <service id=".service_locator.JOXOOE3" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="logger" type="service_closure" id="monolog.logger"/>
+        <argument key="service" type="service_closure" id="App\Service\AssemblyAIService"/>
+      </argument>
+    </service>
+    <service id=".service_locator.habPdRA" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="chartBuilder" type="service_closure" id="chartjs.builder"/>
+        <argument key="repo" type="service_closure" id="App\Repository\MechanicRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.e0VdKdx" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="mechanic" type="service_closure" id=".errored..service_locator.e0VdKdx.App\Entity\Mechanic"/>
+      </argument>
+    </service>
+    <service id=".service_locator.JaM5rEJ" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="mechanic" type="service_closure" id=".errored..service_locator.JaM5rEJ.App\Entity\Mechanic"/>
+      </argument>
+    </service>
+    <service id=".service_locator.as79OIK" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="repo" type="service_closure" id="App\Repository\MechanicRepository"/>
+      </argument>
+    </service>
     <service id=".service_locator.VNgzaus" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -12182,11 +12370,15 @@
         <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
       </argument>
     </service>
-    <service id=".service_locator.wvXfBhF" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.D7gbukq" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\FrontController::checkout" type="service_closure" id=".service_locator.CsMkqUa"/>
-        <argument key="App\Controller\FrontController::index" type="service_closure" id=".service_locator.DIWEsCp"/>
+        <argument key="App\Controller\FrontController::index" type="service_closure" id=".service_locator.Va4nKd3"/>
+        <argument key="App\Controller\FrontController::mechanics" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\FrontendController::mechanics" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\GoogleCalendarController::auth" type="service_closure" id=".service_locator.sUk48Fj"/>
+        <argument key="App\Controller\GoogleCalendarController::callback" type="service_closure" id=".service_locator.sUk48Fj"/>
         <argument key="App\Controller\Order\ItemsController::checkCarRelevance" type="service_closure" id=".service_locator.uiXCCiA"/>
         <argument key="App\Controller\Order\ItemsController::checkItemName" type="service_closure" id=".service_locator.wCNelc_"/>
         <argument key="App\Controller\Order\ItemsController::deleteItem" type="service_closure" id=".service_locator.CsMkqUa"/>
@@ -12243,6 +12435,21 @@
         <argument key="App\Controller\Warehouse\WarehouseController::sortByCityDESC" type="service_closure" id=".service_locator.tAgBFG3"/>
         <argument key="App\Controller\Warehouse\WarehouseController::storageWarehouse" type="service_closure" id=".service_locator.tAgBFG3"/>
         <argument key="App\Controller\Warehouse\WarehouseController::updateWarehouse" type="service_closure" id=".service_locator.N1ryE5S"/>
+        <argument key="App\Controller\assignment\AssignmentController::delete" type="service_closure" id=".service_locator.Gc3.7Rb"/>
+        <argument key="App\Controller\assignment\AssignmentController::edit" type="service_closure" id=".service_locator.Gc3.7Rb"/>
+        <argument key="App\Controller\assignment\AssignmentController::index" type="service_closure" id=".service_locator.dMg_f4y"/>
+        <argument key="App\Controller\assignment\AssignmentController::new" type="service_closure" id=".service_locator.I6sJhdH"/>
+        <argument key="App\Controller\assignment\AssignmentController::show" type="service_closure" id=".service_locator.KOrh5dU"/>
+        <argument key="App\Controller\assignment\AssignmentController::transcribe" type="service_closure" id=".service_locator.JOXOOE3"/>
+        <argument key="App\Controller\mechanic\MechanicController::delete" type="service_closure" id=".service_locator.JaM5rEJ"/>
+        <argument key="App\Controller\mechanic\MechanicController::edit" type="service_closure" id=".service_locator.e0VdKdx"/>
+        <argument key="App\Controller\mechanic\MechanicController::frontendIndex" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\mechanic\MechanicController::index" type="service_closure" id=".service_locator.habPdRA"/>
+        <argument key="App\Controller\mechanic\MechanicController::search" type="service_closure" id=".service_locator.as79OIK"/>
+        <argument key="App\Controller\mechanic\MechanicController::show" type="service_closure" id=".service_locator.e0VdKdx"/>
+        <argument key="App\Controller\mechanic\MechanicController::sortByCarsRepaired" type="service_closure" id=".service_locator.as79OIK"/>
+        <argument key="App\Controller\mechanic\MechanicController::sortByName" type="service_closure" id=".service_locator.as79OIK"/>
+        <argument key="App\Controller\mechanic\MechanicController::sortBySpeciality" type="service_closure" id=".service_locator.as79OIK"/>
         <argument key="App\Controller\submission\FrontSubmissionController::create" type="service_closure" id=".service_locator.VNgzaus"/>
         <argument key="App\Controller\submission\FrontSubmissionController::delete" type="service_closure" id=".service_locator.cfE8SPz"/>
         <argument key="App\Controller\submission\FrontSubmissionController::edit" type="service_closure" id=".service_locator.uP379._"/>
@@ -12284,7 +12491,11 @@
         <argument key="kernel::loadRoutes" type="service_closure" id=".service_locator.y4_Zrx."/>
         <argument key="kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.y4_Zrx."/>
         <argument key="App\Controller\FrontController:checkout" type="service_closure" id=".service_locator.CsMkqUa"/>
-        <argument key="App\Controller\FrontController:index" type="service_closure" id=".service_locator.DIWEsCp"/>
+        <argument key="App\Controller\FrontController:index" type="service_closure" id=".service_locator.Va4nKd3"/>
+        <argument key="App\Controller\FrontController:mechanics" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\FrontendController:mechanics" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\GoogleCalendarController:auth" type="service_closure" id=".service_locator.sUk48Fj"/>
+        <argument key="App\Controller\GoogleCalendarController:callback" type="service_closure" id=".service_locator.sUk48Fj"/>
         <argument key="App\Controller\Order\ItemsController:checkCarRelevance" type="service_closure" id=".service_locator.uiXCCiA"/>
         <argument key="App\Controller\Order\ItemsController:checkItemName" type="service_closure" id=".service_locator.wCNelc_"/>
         <argument key="App\Controller\Order\ItemsController:deleteItem" type="service_closure" id=".service_locator.CsMkqUa"/>
@@ -12341,6 +12552,21 @@
         <argument key="App\Controller\Warehouse\WarehouseController:sortByCityDESC" type="service_closure" id=".service_locator.tAgBFG3"/>
         <argument key="App\Controller\Warehouse\WarehouseController:storageWarehouse" type="service_closure" id=".service_locator.tAgBFG3"/>
         <argument key="App\Controller\Warehouse\WarehouseController:updateWarehouse" type="service_closure" id=".service_locator.N1ryE5S"/>
+        <argument key="App\Controller\assignment\AssignmentController:delete" type="service_closure" id=".service_locator.Gc3.7Rb"/>
+        <argument key="App\Controller\assignment\AssignmentController:edit" type="service_closure" id=".service_locator.Gc3.7Rb"/>
+        <argument key="App\Controller\assignment\AssignmentController:index" type="service_closure" id=".service_locator.dMg_f4y"/>
+        <argument key="App\Controller\assignment\AssignmentController:new" type="service_closure" id=".service_locator.I6sJhdH"/>
+        <argument key="App\Controller\assignment\AssignmentController:show" type="service_closure" id=".service_locator.KOrh5dU"/>
+        <argument key="App\Controller\assignment\AssignmentController:transcribe" type="service_closure" id=".service_locator.JOXOOE3"/>
+        <argument key="App\Controller\mechanic\MechanicController:delete" type="service_closure" id=".service_locator.JaM5rEJ"/>
+        <argument key="App\Controller\mechanic\MechanicController:edit" type="service_closure" id=".service_locator.e0VdKdx"/>
+        <argument key="App\Controller\mechanic\MechanicController:frontendIndex" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\mechanic\MechanicController:index" type="service_closure" id=".service_locator.habPdRA"/>
+        <argument key="App\Controller\mechanic\MechanicController:search" type="service_closure" id=".service_locator.as79OIK"/>
+        <argument key="App\Controller\mechanic\MechanicController:show" type="service_closure" id=".service_locator.e0VdKdx"/>
+        <argument key="App\Controller\mechanic\MechanicController:sortByCarsRepaired" type="service_closure" id=".service_locator.as79OIK"/>
+        <argument key="App\Controller\mechanic\MechanicController:sortByName" type="service_closure" id=".service_locator.as79OIK"/>
+        <argument key="App\Controller\mechanic\MechanicController:sortBySpeciality" type="service_closure" id=".service_locator.as79OIK"/>
         <argument key="App\Controller\submission\FrontSubmissionController:create" type="service_closure" id=".service_locator.VNgzaus"/>
         <argument key="App\Controller\submission\FrontSubmissionController:delete" type="service_closure" id=".service_locator.cfE8SPz"/>
         <argument key="App\Controller\submission\FrontSubmissionController:edit" type="service_closure" id=".service_locator.uP379._"/>
@@ -12626,9 +12852,11 @@
       <argument type="service" id="argument_resolver.query_parameter_value_resolver"/>
       <argument type="service" id="debug.stopwatch"/>
     </service>
-    <service id=".service_locator.6x3_X2Z" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.23Qb_tC" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
+        <argument key="App\Form\AssignmentMechanicsType" type="service_closure" id="App\Form\AssignmentMechanicsType"/>
+        <argument key="App\Form\AssignmentType" type="service_closure" id="App\Form\AssignmentType"/>
         <argument key="App\Form\BanUserType" type="service_closure" id="App\Form\BanUserType"/>
         <argument key="App\Form\ChangePasswordFormType" type="service_closure" id="App\Form\ChangePasswordFormType"/>
         <argument key="App\Form\CreateItemType" type="service_closure" id="App\Form\CreateItemType"/>
@@ -12637,6 +12865,7 @@
         <argument key="App\Form\FormAddWarehouseType" type="service_closure" id="App\Form\FormAddWarehouseType"/>
         <argument key="App\Form\FormUpdateBillType" type="service_closure" id="App\Form\FormUpdateBillType"/>
         <argument key="App\Form\FrontSubmissionType" type="service_closure" id="App\Form\FrontSubmissionType"/>
+        <argument key="App\Form\MechanicType" type="service_closure" id="App\Form\MechanicType"/>
         <argument key="App\Form\ProfileType" type="service_closure" id="App\Form\ProfileType"/>
         <argument key="App\Form\ResetPasswordRequestFormType" type="service_closure" id="App\Form\ResetPasswordRequestFormType"/>
         <argument key="App\Form\ResponseType" type="service_closure" id="App\Form\ResponseType"/>
@@ -12779,11 +13008,11 @@
         <argument key="turbo.doctrine.event_listener" type="service_closure" id="turbo.doctrine.event_listener"/>
       </argument>
     </service>
-    <service id=".service_locator.IjcxP4w" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.WNhwRna" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
-        <argument key="App\Repository\AdminRepository" type="service_closure" id="App\Repository\AdminRepository"/>
         <argument key="App\Repository\AssignmentMechanicRepository" type="service_closure" id="App\Repository\AssignmentMechanicRepository"/>
+        <argument key="App\Repository\AssignmentMechanicsRepository" type="service_closure" id="App\Repository\AssignmentMechanicsRepository"/>
         <argument key="App\Repository\AssignmentRepository" type="service_closure" id="App\Repository\AssignmentRepository"/>
         <argument key="App\Repository\BillRepository" type="service_closure" id="App\Repository\BillRepository"/>
         <argument key="App\Repository\CarRepository" type="service_closure" id="App\Repository\CarRepository"/>
@@ -12825,15 +13054,6 @@
     <service id="doctrine.dbal.debug_middleware.default" class="Doctrine\Bundle\DoctrineBundle\Middleware\DebugMiddleware">
       <argument type="service" id="doctrine.debug_data_holder"/>
       <argument type="service" id="debug.stopwatch" on-invalid="null"/>
-      <call method="setConnectionName">
-        <argument>default</argument>
-      </call>
-    </service>
-    <service id="doctrine.dbal.idle_connection_middleware.default" class="Doctrine\Bundle\DoctrineBundle\Middleware\IdleConnectionMiddleware">
-      <argument type="service" id="doctrine.dbal.connection_expiries"/>
-      <argument type="collection">
-        <argument key="default">600</argument>
-      </argument>
       <call method="setConnectionName">
         <argument>default</argument>
       </call>
@@ -13228,6 +13448,18 @@
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.O2p6Lk7" method="withContext"/>
     </service>
+    <service id=".service_locator.O2p6Lk7.App\Controller\FrontendController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\FrontendController"/>
+      <argument>App\Controller\FrontendController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.O2p6Lk7" method="withContext"/>
+    </service>
+    <service id=".service_locator.O2p6Lk7.App\Controller\GoogleCalendarController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\GoogleCalendarController"/>
+      <argument>App\Controller\GoogleCalendarController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.O2p6Lk7" method="withContext"/>
+    </service>
     <service id=".service_locator.O2p6Lk7.App\Controller\Order\ItemsController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Controller\Order\ItemsController"/>
       <argument>App\Controller\Order\ItemsController</argument>
@@ -13261,6 +13493,18 @@
     <service id=".service_locator.O2p6Lk7.App\Controller\Warehouse\WarehouseController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Controller\Warehouse\WarehouseController"/>
       <argument>App\Controller\Warehouse\WarehouseController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.O2p6Lk7" method="withContext"/>
+    </service>
+    <service id=".service_locator.O2p6Lk7.App\Controller\assignment\AssignmentController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\assignment\AssignmentController"/>
+      <argument>App\Controller\assignment\AssignmentController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.O2p6Lk7" method="withContext"/>
+    </service>
+    <service id=".service_locator.O2p6Lk7.App\Controller\mechanic\MechanicController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\mechanic\MechanicController"/>
+      <argument>App\Controller\mechanic\MechanicController</argument>
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.O2p6Lk7" method="withContext"/>
     </service>
@@ -13596,12 +13840,16 @@
           <argument>App\Controller\Api\SentimentAnalysisController</argument>
           <argument>App\Controller\DashboardController</argument>
           <argument>App\Controller\FrontController</argument>
+          <argument>App\Controller\FrontendController</argument>
+          <argument>App\Controller\GoogleCalendarController</argument>
           <argument>App\Controller\Order\ItemsController</argument>
           <argument>App\Controller\Order\OrdersController</argument>
           <argument>App\Controller\ResetPasswordController</argument>
           <argument>App\Controller\Warehouse\BillController</argument>
           <argument>App\Controller\Warehouse\CarController</argument>
           <argument>App\Controller\Warehouse\WarehouseController</argument>
+          <argument>App\Controller\assignment\AssignmentController</argument>
+          <argument>App\Controller\mechanic\MechanicController</argument>
           <argument>App\Controller\submission\FrontSubmissionController</argument>
           <argument>App\Controller\submission\ResponseController</argument>
           <argument>App\Controller\submission\SentimentController</argument>
@@ -13977,6 +14225,7 @@
         <argument type="service" id="messenger.middleware.reject_redelivered_message_middleware"/>
         <argument type="service" id="messenger.middleware.dispatch_after_current_bus"/>
         <argument type="service" id="messenger.middleware.failed_message_processing_middleware"/>
+        <argument type="service" id="Fusonic\MessengerMailerBundle\Middleware\AttachmentEmailMiddleware"/>
         <argument type="service" id="messenger.bus.default.middleware.send_message"/>
         <argument type="service" id="messenger.bus.default.middleware.handle_message"/>
       </argument>
@@ -14004,6 +14253,18 @@
     <service id=".errored..service_locator.WdW2zRH.App\Entity\Item" class="App\Entity\Item">
       <tag name="container.error" message="Cannot autowire service &quot;.service_locator.WdW2zRH&quot;: it needs an instance of &quot;App\Entity\Item&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
     </service>
+    <service id=".errored..service_locator.KOrh5dU.App\Entity\Assignment" class="App\Entity\Assignment">
+      <tag name="container.error" message="Cannot autowire service &quot;.service_locator.KOrh5dU&quot;: it needs an instance of &quot;App\Entity\Assignment&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
+    </service>
+    <service id=".errored..service_locator.Gc3.7Rb.App\Entity\Assignment" class="App\Entity\Assignment">
+      <tag name="container.error" message="Cannot autowire service &quot;.service_locator.Gc3.7Rb&quot;: it needs an instance of &quot;App\Entity\Assignment&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
+    </service>
+    <service id=".errored..service_locator.e0VdKdx.App\Entity\Mechanic" class="App\Entity\Mechanic">
+      <tag name="container.error" message="Cannot autowire service &quot;.service_locator.e0VdKdx&quot;: it needs an instance of &quot;App\Entity\Mechanic&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
+    </service>
+    <service id=".errored..service_locator.JaM5rEJ.App\Entity\Mechanic" class="App\Entity\Mechanic">
+      <tag name="container.error" message="Cannot autowire service &quot;.service_locator.JaM5rEJ&quot;: it needs an instance of &quot;App\Entity\Mechanic&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
+    </service>
     <service id=".errored..service_locator.cfE8SPz.App\Entity\Submission" class="App\Entity\Submission">
       <tag name="container.error" message="Cannot autowire service &quot;.service_locator.cfE8SPz&quot;: it needs an instance of &quot;App\Entity\Submission&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
     </service>
@@ -14021,6 +14282,20 @@
     </service>
     <service id=".errored..service_locator.5ffhAhu.App\Entity\Feedback" class="App\Entity\Feedback">
       <tag name="container.error" message="Cannot autowire service &quot;.service_locator.5ffhAhu&quot;: it needs an instance of &quot;App\Entity\Feedback&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
+    </service>
+    <service id=".App\Command\GenerateEntitiesCommand.lazy" class="Symfony\Component\Console\Command\LazyCommand">
+      <argument>app:generate:entities</argument>
+      <argument type="collection"/>
+      <argument>Automatically generates entity classes from the database schema</argument>
+      <argument>false</argument>
+      <argument type="service_closure" id="App\Command\GenerateEntitiesCommand"/>
+    </service>
+    <service id=".App\Command\GenerateRepositoriesCommand.lazy" class="Symfony\Component\Console\Command\LazyCommand">
+      <argument>app:generate-repositories</argument>
+      <argument type="collection"/>
+      <argument>Generates repository classes for all entities.</argument>
+      <argument>false</argument>
+      <argument type="service_closure" id="App\Command\GenerateRepositoriesCommand"/>
     </service>
     <service id=".App\Command\TrainPriorityModelCommand.lazy" class="Symfony\Component\Console\Command\LazyCommand">
       <argument>app:train-priority-model</argument>
@@ -14771,9 +15046,12 @@
     </service>
     <service id="console.command_loader" class="Symfony\Component\Console\CommandLoader\ContainerCommandLoader" public="true">
       <tag name="container.no_preload"/>
-      <argument type="service" id=".service_locator.MHWrO8y"/>
+      <argument type="service" id=".service_locator.Fle0SYy"/>
       <argument type="collection">
+        <argument key="app:generate:entities">App\Command\GenerateEntitiesCommand</argument>
+        <argument key="app:generate-repositories">App\Command\GenerateRepositoriesCommand</argument>
         <argument key="app:train-priority-model">App\Command\TrainPriorityModelCommand</argument>
+        <argument key="app:verify-calendar-auth">App\Command\VerifyCalendarAuthCommand</argument>
         <argument key="about">console.command.about</argument>
         <argument key="assets:install">console.command.assets_install</argument>
         <argument key="cache:clear">console.command.cache_clear</argument>
@@ -14907,10 +15185,13 @@
         <argument key="make:state-provider">maker.auto_command.make_state_provider</argument>
       </argument>
     </service>
-    <service id=".service_locator.MHWrO8y" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.Fle0SYy" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
+        <argument key="App\Command\GenerateEntitiesCommand" type="service_closure" id=".App\Command\GenerateEntitiesCommand.lazy"/>
+        <argument key="App\Command\GenerateRepositoriesCommand" type="service_closure" id=".App\Command\GenerateRepositoriesCommand.lazy"/>
         <argument key="App\Command\TrainPriorityModelCommand" type="service_closure" id=".App\Command\TrainPriorityModelCommand.lazy"/>
+        <argument key="App\Command\VerifyCalendarAuthCommand" type="service_closure" id="App\Command\VerifyCalendarAuthCommand"/>
         <argument key="console.command.about" type="service_closure" id=".console.command.about.lazy"/>
         <argument key="console.command.assets_install" type="service_closure" id=".console.command.assets_install.lazy"/>
         <argument key="console.command.cache_clear" type="service_closure" id=".console.command.cache_clear.lazy"/>
@@ -15489,9 +15770,10 @@
     <service id="liip_imagine.controller" alias="Liip\ImagineBundle\Controller\ImagineController" public="true"/>
     <service id="liip_imagine" alias="liip_imagine.gd"/>
     <service id="Imagine\Image\ImagineInterface" alias="liip_imagine.gd"/>
+    <service id="messenger_mailer.attachment_handler" alias="Fusonic\MessengerMailerBundle\EmailAttachmentHandler\FilesystemAttachmentHandler"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.w7.f4fT" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.wvXfBhF"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.D7gbukq"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="Psr\Log\LoggerInterface $requestLogger" alias="monolog.logger.request"/>
@@ -15524,7 +15806,7 @@
     <service id=".service_locator.bnaLdkn" alias="api_platform.serializer_locator"/>
     <service id=".service_locator.XDGmiR3" alias=".1_ServiceLocator~8sQZY9H"/>
     <service id=".service_locator.bJ.4HC5" alias=".service_locator.w7.f4fT"/>
-    <service id=".service_locator.9HHfFhM" alias=".service_locator.DIWEsCp"/>
+    <service id=".service_locator.Kn3D4h3" alias=".service_locator.Va4nKd3"/>
     <service id=".service_locator.PpS7vjf" alias=".service_locator.WdW2zRH"/>
     <service id=".service_locator.OWaOgcU" alias=".service_locator.Z74ZQan"/>
     <service id=".service_locator.5mSKjHm" alias=".service_locator.3TE2pMc"/>
@@ -15533,6 +15815,10 @@
     <service id=".service_locator.lihSWQN" alias=".service_locator.zEQ_qAS"/>
     <service id=".service_locator.wFpB3dp" alias=".service_locator.7Ogq5pd"/>
     <service id=".service_locator.CCfXt6l" alias=".service_locator.N1ryE5S"/>
+    <service id=".service_locator.rhrG2b6" alias=".service_locator.I6sJhdH"/>
+    <service id=".service_locator.oijofvR" alias=".service_locator.JOXOOE3"/>
+    <service id=".service_locator..eNYlvu" alias=".service_locator.habPdRA"/>
+    <service id=".service_locator.j8eWmpk" alias=".service_locator.JaM5rEJ"/>
     <service id=".service_locator.lcSWAhL" alias=".service_locator.VNgzaus"/>
     <service id=".service_locator.Rxg1EGI" alias=".service_locator.cfE8SPz"/>
     <service id=".service_locator.AE__Rar" alias=".service_locator.uP379._"/>
@@ -15545,9 +15831,9 @@
     <service id=".service_locator.9A_qgEI" alias=".service_locator.avLZmv1"/>
     <service id=".service_locator.RtCGHrO" alias=".service_locator.lDw5jgg"/>
     <service id=".service_locator.djBiB42" alias=".service_locator.XhaxMWK"/>
-    <service id=".service_locator.bjkmB_9" alias=".service_locator.wvXfBhF"/>
+    <service id=".service_locator.1To19fc" alias=".service_locator.D7gbukq"/>
     <service id=".service_locator.BFrsqsn" alias=".service_locator.F9PKc.7"/>
-    <service id=".service_locator.sa6xva0" alias=".service_locator.6x3_X2Z"/>
+    <service id=".service_locator.Ila_Jdv" alias=".service_locator.23Qb_tC"/>
     <service id=".service_locator.kUfWnkZ" alias=".service_locator..ZrOtsY"/>
     <service id=".service_locator.KQS8tm0" alias=".service_locator.nIg6JWH"/>
     <service id=".service_locator.O24_MAy" alias=".service_locator.yY.p4P7"/>
@@ -15642,8 +15928,9 @@
     <service id="api_platform.metadata.resource.metadata_collection_factory.cached.inner" alias="api_platform.doctrine.orm.metadata.resource.metadata_collection_factory"/>
     <service id=".service_locator.Xbsa8iG" alias="api_platform.filter_locator"/>
     <service id=".service_locator.gFlme_s" alias=".service_locator.y4_Zrx."/>
-    <service id=".service_locator.abLUito" alias=".service_locator.DIWEsCp"/>
+    <service id=".service_locator.sAQpMNl" alias=".service_locator.Va4nKd3"/>
     <service id=".service_locator.9e2t_lq" alias=".service_locator.CsMkqUa"/>
+    <service id=".service_locator.A3pAsoh" alias=".service_locator.sUk48Fj"/>
     <service id=".service_locator.cU_v595" alias=".service_locator.WdW2zRH"/>
     <service id=".service_locator.dKdYvD9" alias=".service_locator.wCNelc_"/>
     <service id=".service_locator.WMOUiUu" alias=".service_locator.uiXCCiA"/>
@@ -15666,6 +15953,15 @@
     <service id=".service_locator._NCL0ix" alias=".service_locator.7Ogq5pd"/>
     <service id=".service_locator.qd0GvOs" alias=".service_locator.N1ryE5S"/>
     <service id=".service_locator.ZcRAvqz" alias=".service_locator.tAgBFG3"/>
+    <service id=".service_locator.AnPJFQc" alias=".service_locator.dMg_f4y"/>
+    <service id=".service_locator.c_rT98M" alias=".service_locator.I6sJhdH"/>
+    <service id=".service_locator.LgWseri" alias=".service_locator.KOrh5dU"/>
+    <service id=".service_locator.IuQUIiz" alias=".service_locator.Gc3.7Rb"/>
+    <service id=".service_locator.Bjtdu3a" alias=".service_locator.JOXOOE3"/>
+    <service id=".service_locator..MPnlap" alias=".service_locator.habPdRA"/>
+    <service id=".service_locator.vncfroV" alias=".service_locator.e0VdKdx"/>
+    <service id=".service_locator..MhNh9d" alias=".service_locator.JaM5rEJ"/>
+    <service id=".service_locator.HJUTe36" alias=".service_locator.as79OIK"/>
     <service id=".service_locator.ABdGCPh" alias=".service_locator.VNgzaus"/>
     <service id=".service_locator.B.OAWzz" alias=".service_locator.cfE8SPz"/>
     <service id=".service_locator.RdxhYal" alias=".service_locator.uP379._"/>

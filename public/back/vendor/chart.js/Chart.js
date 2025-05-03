@@ -21,6 +21,9 @@ function getCjsExportFromNamespace (n) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 var colorName = {
 	"aliceblue": [240, 248, 255],
 	"antiquewhite": [250, 235, 215],
@@ -170,6 +173,7 @@ var colorName = {
 	"whitesmoke": [245, 245, 245],
 	"yellow": [255, 255, 0],
 	"yellowgreen": [154, 205, 50]
+<<<<<<< HEAD
 =======
 var colorName = {
 	"aliceblue": [240, 248, 255],
@@ -321,6 +325,8 @@ var colorName = {
 	"yellow": [255, 255, 0],
 	"yellowgreen": [154, 205, 50]
 >>>>>>> 7bf07a5064643563162ffd5f224dcf29261c4b00
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 };
 
 var conversions = createCommonjsModule(function (module) {
@@ -1381,6 +1387,9 @@ models.forEach(function (fromModel) {
 var colorConvert = convert;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 var colorName$1 = {
 	"aliceblue": [240, 248, 255],
 	"antiquewhite": [250, 235, 215],
@@ -1530,6 +1539,7 @@ var colorName$1 = {
 	"whitesmoke": [245, 245, 245],
 	"yellow": [255, 255, 0],
 	"yellowgreen": [154, 205, 50]
+<<<<<<< HEAD
 =======
 var colorName$1 = {
 	"aliceblue": [240, 248, 255],
@@ -1681,6 +1691,8 @@ var colorName$1 = {
 	"yellow": [255, 255, 0],
 	"yellowgreen": [154, 205, 50]
 >>>>>>> 7bf07a5064643563162ffd5f224dcf29261c4b00
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 };
 
 /* MIT license */
@@ -2408,6 +2420,9 @@ if (typeof window !== 'undefined') {
 var chartjsColor = Color;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 function isValidKey(key) {
 	return ['__proto__', 'prototype', 'constructor'].indexOf(key) === -1;
 }
@@ -3582,6 +3597,7 @@ var easing = helpers_easing;
 var canvas = helpers_canvas;
 var options = helpers_options;
 var math = helpers_math;
+<<<<<<< HEAD
 =======
 function isValidKey(key) {
 	return ['__proto__', 'prototype', 'constructor'].indexOf(key) === -1;
@@ -4758,6 +4774,8 @@ var canvas = helpers_canvas;
 var options = helpers_options;
 var math = helpers_math;
 >>>>>>> 7bf07a5064643563162ffd5f224dcf29261c4b00
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 var rtl = helpers_rtl;
 helpers$1.easing = easing;
 helpers$1.canvas = canvas;
@@ -4766,6 +4784,9 @@ helpers$1.math = math;
 helpers$1.rtl = rtl;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 function interpolate(start, view, model, ease) {
 	var keys = Object.keys(model);
 	var i, ilen, key, actual, origin, target, type, c0, c1;
@@ -6218,6 +6239,7 @@ var elements = {};
 var Arc = element_arc;
 var Line = element_line;
 var Point = element_point;
+<<<<<<< HEAD
 =======
 function interpolate(start, view, model, ease) {
 	var keys = Object.keys(model);
@@ -7672,6 +7694,8 @@ var Arc = element_arc;
 var Line = element_line;
 var Point = element_point;
 >>>>>>> 7bf07a5064643563162ffd5f224dcf29261c4b00
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 var Rectangle = element_rectangle;
 elements.Arc = Arc;
 elements.Line = Line;
@@ -7679,6 +7703,9 @@ elements.Point = Point;
 elements.Rectangle = Rectangle;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 var deprecated = helpers$1._deprecated;
 var valueOrDefault$3 = helpers$1.valueOrDefault;
 
@@ -10338,6 +10365,7 @@ var platform_basic = {
 
 		return item && item.getContext('2d') || null;
 	}
+<<<<<<< HEAD
 =======
 var deprecated = helpers$1._deprecated;
 var valueOrDefault$3 = helpers$1.valueOrDefault;
@@ -12999,6 +13027,8 @@ var platform_basic = {
 		return item && item.getContext('2d') || null;
 	}
 >>>>>>> 7bf07a5064643563162ffd5f224dcf29261c4b00
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 };
 
 var platform_dom = "/*\r\n * DOM element rendering detection\r\n * https://davidwalsh.name/detect-node-insertion\r\n */\r\n@keyframes chartjs-render-animation {\r\n\tfrom { opacity: 0.99; }\r\n\tto { opacity: 1; }\r\n}\r\n\r\n.chartjs-render-monitor {\r\n\tanimation: chartjs-render-animation 0.001s;\r\n}\r\n\r\n/*\r\n * DOM element resizing detection\r\n * https://github.com/marcj/css-element-queries\r\n */\r\n.chartjs-size-monitor,\r\n.chartjs-size-monitor-expand,\r\n.chartjs-size-monitor-shrink {\r\n\tposition: absolute;\r\n\tdirection: ltr;\r\n\tleft: 0;\r\n\ttop: 0;\r\n\tright: 0;\r\n\tbottom: 0;\r\n\toverflow: hidden;\r\n\tpointer-events: none;\r\n\tvisibility: hidden;\r\n\tz-index: -1;\r\n}\r\n\r\n.chartjs-size-monitor-expand > div {\r\n\tposition: absolute;\r\n\twidth: 1000000px;\r\n\theight: 1000000px;\r\n\tleft: 0;\r\n\ttop: 0;\r\n}\r\n\r\n.chartjs-size-monitor-shrink > div {\r\n\tposition: absolute;\r\n\twidth: 200%;\r\n\theight: 200%;\r\n\tleft: 0;\r\n\ttop: 0;\r\n}\r\n";
@@ -13011,6 +13041,9 @@ __proto__: null,
 var stylesheet = getCjsExportFromNamespace(platform_dom$1);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 var EXPANDO_KEY = '$chartjs';
 var CSS_PREFIX = 'chartjs-';
 var CSS_SIZE_MONITOR = CSS_PREFIX + 'size-monitor';
@@ -16619,6 +16652,7 @@ DateAdapter.override = function(members) {
 	helpers$1.extend(DateAdapter.prototype, members);
 };
 
+<<<<<<< HEAD
 =======
 var EXPANDO_KEY = '$chartjs';
 var CSS_PREFIX = 'chartjs-';
@@ -20229,6 +20263,8 @@ DateAdapter.override = function(members) {
 };
 
 >>>>>>> 7bf07a5064643563162ffd5f224dcf29261c4b00
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 var _date = DateAdapter;
 
 var core_adapters = {
@@ -20236,6 +20272,9 @@ var core_adapters = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 /**
  * Namespace to hold static tick generation functions
  * @namespace Chart.Ticks
@@ -25221,6 +25260,7 @@ var plugin_title = {
 var plugins = {};
 var filler = plugin_filler;
 var legend = plugin_legend;
+<<<<<<< HEAD
 =======
 /**
  * Namespace to hold static tick generation functions
@@ -30208,12 +30248,17 @@ var plugins = {};
 var filler = plugin_filler;
 var legend = plugin_legend;
 >>>>>>> 7bf07a5064643563162ffd5f224dcf29261c4b00
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 var title = plugin_title;
 plugins.filler = filler;
 plugins.legend = legend;
 plugins.title = title;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 /**
  * @namespace Chart
  */
@@ -30363,6 +30408,7 @@ core_controller.helpers.each(
 			}));
 		};
 	}
+<<<<<<< HEAD
 =======
 /**
  * @namespace Chart
@@ -30514,6 +30560,8 @@ core_controller.helpers.each(
 		};
 	}
 >>>>>>> 7bf07a5064643563162ffd5f224dcf29261c4b00
+=======
+>>>>>>> f7ce50b0e0979279ec895880ae6a4d77ae8ae59a
 );
 
 return src;
