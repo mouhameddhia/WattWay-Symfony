@@ -23,11 +23,7 @@ WattWay is a web application developed as part of **Esprit University** projects
 ### Problem Statement ❗
 Internal combustion vehicles significantly contribute to environmental pollution. Businesses struggle to efficiently transition to electric vehicles due to logistical challenges, maintenance, and infrastructure tracking.
 
-### Solution 💡
-WattWay uses **artificial intelligence** to optimize:
-- EV fleet management 🚚
-- Infrastructure organization (charging stations, warehouses) 🔌
-- Predictive vehicle maintenance 🛠️
+
 
 **University Project Context**  
 This project is developed under the academic framework of **Esprit University**, focusing on real-world problem-solving and sustainable technology integration.
