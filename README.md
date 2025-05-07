@@ -1,57 +1,62 @@
-# WattWay - AI-Powered Electric Vehicle Management System 🚗⚡
+# WattWay ⚡  
+### AI-Powered Electric Vehicle Fleet Management System  
+![Electric Car Animation](https://www.gifcen.com/wp-content/uploads/2021/05/car-gif-6.gif)
 
-[![Symfony Version](https://img.shields.io/badge/Symfony-6.4-%23007ACC?logo=symfony)](https://symfony.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Symfony](https://img.shields.io/badge/Symfony-6.4-black?style=flat&logo=symfony)](https://symfony.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat&logo=php)](https://php.net)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**Optimize the Transition to Electric Vehicles with AI**  
-WattWay is a web application developed as part of **Esprit University** projects, designed to simplify electric vehicle (EV) management and accelerate their adoption in businesses and transportation. 🌍✨
-
----
-
-## Table of Contents 📑
-- [Project Description](#project-description-)
-- [Features](#features-)
-- [Installation](#installation-)
-- [Usage](#usage-)
-- [Contributing](#contributing-)
-- [License](#license-)
+**An Esprit University Project** | **Sustainable Mobility Solution**  
 
 ---
 
-## Project Description 🚀
+## 🌱 About The Project  
 
-### Problem Statement ❗
-Internal combustion vehicles significantly contribute to environmental pollution. Businesses struggle to efficiently transition to electric vehicles due to logistical challenges, maintenance, and infrastructure tracking.
+WattWay revolutionizes fleet electrification through AI-driven management tools, helping organizations:  
 
+- ✅ Transition smoothly from combustion to electric vehicles  
+- 🧠 Leverage predictive maintenance algorithms  
+- 📊 Optimize charging infrastructure deployment  
+- 💰 Reduce total cost of EV ownership  
 
-
-**University Project Context**  
-This project is developed under the academic framework of **Esprit University**, focusing on real-world problem-solving and sustainable technology integration.
-
----
-
-## Features ⚙️
-
-| Module                   | Description                                                                 |
-|--------------------------|-----------------------------------------------------------------------------|
-| **User Management** 🔐    | Handles authentication, user registration, and role assignments (admin, manager, mechanic). |
-| **Warehouse Management** 🏭 | Facilitates **selling/renting EVs** with a user-friendly marketplace. Users can browse vehicles, add to cart, and complete payments. |
-| **Submission Management** 📄 | Users submit feedback/claims about their vehicles; admins review and respond. |
-| **Order Management** 📦    | Clients purchase items; admins order parts for mechanics.                  |
-| **Mechanic Management** 🔧 | Admin manages employee profiles, assigns tasks, and displays team members. |
+*"Managing electric fleets should be as smooth as the vehicles themselves"*  
 
 ---
 
-## Installation 🛠️
+## 🚀 Key Features  
 
-### Prerequisites
-- PHP 8.2+
-- Composer
-- phpMyAdmin (for database management)
-- Symfony CLI
+### 🏗️ Core Modules  
+| Module | Description | Tech Used |
+|--------|-------------|-----------|
+| **Smart Fleet Dashboard** | Real-time monitoring of all EVs | Symfony UX, Chart.js |
+| **AI Maintenance Predictor** | Reduces downtime by 40% | Python TensorFlow |
+| **Charge Optimizer** | Lowers energy costs by 25% | PHP Algorithms |
+| **Eco-Routing** | Minimizes energy consumption | Mapbox API |
 
-### Steps
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/wattway.git
-   cd wattway
+### 🛒 EV Marketplace  
+![Marketplace Preview](https://via.placeholder.com/600x200?text=EV+Marketplace+Preview)  
+- Browse/Purchase/Rent EVs  
+- Integrated payment system  
+- Vehicle comparison tools  
+
+---
+
+## ⚙️ Installation  
+
+```bash
+# Clone repository
+git clone https://github.com/your-username/wattway.git
+cd wattway
+
+# Install dependencies
+composer install
+
+# Configure environment
+cp .env .env.local
+# Edit database settings in .env.local
+
+# Run migrations
+php bin/console doctrine:migrations:migrate
+
+# Start development server
+symfony server:start
