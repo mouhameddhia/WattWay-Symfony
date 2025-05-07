@@ -2,6 +2,7 @@
 namespace App\Controller\submission;
 
 use App\Entity\Submission;
+use App\Entity\User;
 use App\Form\FrontSubmissionType;
 use App\Repository\SubmissionRepository;
 use App\Services\GeminiService;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\ResponseRepository;
 use App\Repository\CarRepository;
+use App\Repository\UserRepository;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use MercurySeries\FlashyBundle\FlashyNotifier;
 
@@ -27,36 +29,28 @@ class FrontSubmissionController extends AbstractController
 
     #[Route('/submission/create', name: 'Front_Submission_create', methods: ['POST'])]
     public function create(
-        Request $request,
+        Request $request, 
         EntityManagerInterface $entityManager,
         CarRepository $carRepository,
-        ValidatorInterface $validator
+        UserRepository $userRepository
     ): JsonResponse {
         try {
-            // Create new submission and form
             $submission = new Submission();
-            $formSubmission = $this->createForm(FrontSubmissionType::class, $submission);
-            
-            // Handle the request
-            $formSubmission->handleRequest($request);
-            
-            if ($formSubmission->isSubmitted()) {
-                if (!$formSubmission->isValid()) {
-                    // Get form errors
-                    $errors = [];
-                    foreach ($formSubmission->getErrors(true) as $error) {
-                        $errors[] = $error->getMessage();
-                    }
-                    
+            $form = $this->createForm(FrontSubmissionType::class, $submission);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                // Get the logged-in user
+                $user = $this->getUser();
+                if (!$user) {
                     return $this->json([
                         'success' => false,
-                        'message' => 'Please check your input and try again',
-                        'errors' => $errors
-                    ], 400);
+                        'message' => 'You must be logged in to create a submission'
+                    ], 401);
                 }
 
                 // Get VIN from unmapped field
-                $vinCode = $formSubmission->get('vinCode')->getData();
+                $vinCode = $form->get('vinCode')->getData();
                 
                 // Find the Car
                 $car = $carRepository->findOneBy(['vinCode' => $vinCode]);
@@ -64,33 +58,22 @@ class FrontSubmissionController extends AbstractController
                 if (!$car) {
                     return $this->json([
                         'success' => false,
-                        'message' => 'Please verify the VIN code and try again'
+                        'message' => 'No car found with this VIN code'
                     ], 404);
                 }
 
-                // Check content for inappropriate language
-                try {
-                    $contentCheck = $this->geminiService->checkContent($submission->getDescription());
-                    
-                    if (!$contentCheck['is_appropriate']) {
-                        return $this->json([
-                            'success' => false,
-                            'message' => $contentCheck['message']
-                        ], 400);
-                    }
-                } catch (\Exception $e) {
-                    // Log the error but allow the submission to proceed
-                    error_log('Gemini API error: ' . $e->getMessage());
-                }
+                // Set the user ID from the logged-in user
+                $submission->setIdUser($userRepository->getLoggedInUser($this->getUser()->getUserIdentifier())->getIdUser());
                 
                 // Link Car to Submission
                 $submission->setCar($car);
                 
-                // Set default values
+                // Set default status and date
+                $submission->setStatus('PENDING');
                 $submission->setDateSubmission(new \DateTime());
-                $submission->setStatus('Pending');
-                $submission->setUrgencyLevel('Low');
-                
+                $submission->setLast_modified(new \DateTime());
+                $submission->setUrgencyLevel('LOW');
+
                 try {
                     $entityManager->persist($submission);
                     $entityManager->flush();
@@ -103,14 +86,21 @@ class FrontSubmissionController extends AbstractController
                     error_log('Database error: ' . $e->getMessage());
                     return $this->json([
                         'success' => false,
-                        'message' => 'Please try again in a moment'
+                        'message' => 'Failed to save submission: ' . $e->getMessage()
                     ], 500);
                 }
             }
 
+            // Get form errors
+            $errors = [];
+            foreach ($form->getErrors(true) as $error) {
+                $errors[] = $error->getMessage();
+            }
+
             return $this->json([
                 'success' => false,
-                'message' => 'Invalid form submission'
+                'message' => 'Invalid form data',
+                'errors' => $errors
             ], 400);
 
         } catch (\Exception $e) {
@@ -118,7 +108,7 @@ class FrontSubmissionController extends AbstractController
             error_log('Stack trace: ' . $e->getTraceAsString());
             return $this->json([
                 'success' => false,
-                'message' => 'Please try again in a moment'
+                'message' => 'An unexpected error occurred: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -127,9 +117,18 @@ class FrontSubmissionController extends AbstractController
     public function delete(
         Request $request,
         Submission $submission,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        UserRepository $userRepository
     ): JsonResponse {
         try {
+            // Check if user is logged in and owns the submission
+            if (!$this->getUser() || $userRepository->getLoggedInUser($this->getUser()->getUserIdentifier())->getIdUser() !== $submission->getIdUser()) {
+                return $this->json([
+                    'success' => false,
+                    'message' => 'You are not authorized to delete this submission'
+                ], 403);
+            }
+
             if (!$this->isCsrfTokenValid('delete'.$submission->getIdSubmission(), $request->request->get('_token'))) {
                 $this->addFlash('info', 'Please refresh the page and try again');
                 return $this->json([
@@ -162,8 +161,15 @@ class FrontSubmissionController extends AbstractController
         Submission $submission,
         EntityManagerInterface $entityManager,
         CarRepository $carRepository,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        UserRepository $userRepository
     ): Response {
+        // Check if user is logged in and owns the submission
+        if (!$this->getUser() || $userRepository->getLoggedInUser($this->getUser()->getUserIdentifier())->getIdUser() !== $submission->getIdUser()) {
+            $this->addFlash('error', 'You are not authorized to edit this submission');
+            return $this->redirectToRoute('Front');
+        }
+
         // Set the locale
         $locale = $request->getLocale();
         $request->setLocale($locale);

@@ -1,6 +1,7 @@
 {% extends 'backend/baseBack.html.twig' %}
 
 {% block content %}
+{{ encore_entry_script_tags('app') }}
 {{ importmap('app') }}
 <link rel="stylesheet" href="{{ asset('css/Warehouse/floatingContainer.css') }}">
 <div class="card shadow mb-4">

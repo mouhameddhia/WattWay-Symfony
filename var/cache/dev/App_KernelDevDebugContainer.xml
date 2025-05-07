@@ -994,14 +994,6 @@
         <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\submission\SubmissionController"/>
       </call>
     </service>
-    <service id="App\Controller\user\AvatarController" class="App\Controller\user\AvatarController" public="true" autowire="true" autoconfigure="true">
-      <tag name="controller.service_arguments"/>
-      <tag name="container.service_subscriber"/>
-      <argument type="service" id="App\Service\AvatarService"/>
-      <call method="setContainer">
-        <argument type="service" id=".service_locator.O2p6Lk7.App\Controller\user\AvatarController"/>
-      </call>
-    </service>
     <service id="App\Controller\user\ConnectGoogleController" class="App\Controller\user\ConnectGoogleController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
@@ -1253,7 +1245,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
       <tag priority="-50" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">controller.argument_value_resolver</tag>
-      <argument type="service" id=".service_locator.D7gbukq"/>
+      <argument type="service" id=".service_locator.poVZJ0T"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver">
       <tag priority="-100" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver">controller.argument_value_resolver</tag>
@@ -4674,7 +4666,7 @@
     </service>
     <service id="argument_resolver.not_tagged_controller" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
       <tag name="controller.argument_value_resolver" priority="-200"/>
-      <argument type="service" id=".service_locator.D7gbukq"/>
+      <argument type="service" id=".service_locator.poVZJ0T"/>
     </service>
     <service id="debug.log_processor" class="Symfony\Bridge\Monolog\Processor\DebugProcessor">
       <tag name="kernel.reset" method="reset"/>
@@ -11366,9 +11358,6 @@
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\submission\SubmissionController" class="App\Controller\submission\SubmissionController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\submission\SubmissionController" class="App\Controller\submission\SubmissionController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\submission\SubmissionController" class="App\Controller\submission\SubmissionController" autowire="true" autoconfigure="true" abstract="true"/>
-    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\user\AvatarController" class="App\Controller\user\AvatarController" autowire="true" abstract="true"/>
-    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\user\AvatarController" class="App\Controller\user\AvatarController" autowire="true" abstract="true"/>
-    <service id=".abstract.instanceof.App\Controller\user\AvatarController" class="App\Controller\user\AvatarController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\user\ConnectGoogleController" class="App\Controller\user\ConnectGoogleController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\user\ConnectGoogleController" class="App\Controller\user\ConnectGoogleController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\user\ConnectGoogleController" class="App\Controller\user\ConnectGoogleController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -12226,27 +12215,29 @@
         <argument key="repo" type="service_closure" id="App\Repository\MechanicRepository"/>
       </argument>
     </service>
-    <service id=".service_locator.VNgzaus" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.1yngbQo" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="carRepository" type="service_closure" id="App\Repository\CarRepository"/>
         <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
-        <argument key="validator" type="service_closure" id="debug.validator"/>
+        <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
       </argument>
     </service>
-    <service id=".service_locator.cfE8SPz" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.l70R6lH" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
-        <argument key="submission" type="service_closure" id=".errored..service_locator.cfE8SPz.App\Entity\Submission"/>
+        <argument key="submission" type="service_closure" id=".errored..service_locator.l70R6lH.App\Entity\Submission"/>
+        <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
       </argument>
     </service>
-    <service id=".service_locator.uP379._" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.ST79b.w" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="carRepository" type="service_closure" id="App\Repository\CarRepository"/>
         <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
-        <argument key="submission" type="service_closure" id=".errored..service_locator.uP379._.App\Entity\Submission"/>
+        <argument key="submission" type="service_closure" id=".errored..service_locator.ST79b.w.App\Entity\Submission"/>
+        <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
         <argument key="validator" type="service_closure" id="debug.validator"/>
       </argument>
     </service>
@@ -12292,6 +12283,13 @@
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="submission" type="service_closure" id=".errored..service_locator.9Bdbfcc.App\Entity\Submission"/>
+      </argument>
+    </service>
+    <service id=".service_locator.cfE8SPz" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="submission" type="service_closure" id=".errored..service_locator.cfE8SPz.App\Entity\Submission"/>
       </argument>
     </service>
     <service id=".service_locator.hokdgZZ" class="Symfony\Component\DependencyInjection\ServiceLocator">
@@ -12370,7 +12368,7 @@
         <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
       </argument>
     </service>
-    <service id=".service_locator.D7gbukq" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.poVZJ0T" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\FrontController::checkout" type="service_closure" id=".service_locator.CsMkqUa"/>
@@ -12450,9 +12448,9 @@
         <argument key="App\Controller\mechanic\MechanicController::sortByCarsRepaired" type="service_closure" id=".service_locator.as79OIK"/>
         <argument key="App\Controller\mechanic\MechanicController::sortByName" type="service_closure" id=".service_locator.as79OIK"/>
         <argument key="App\Controller\mechanic\MechanicController::sortBySpeciality" type="service_closure" id=".service_locator.as79OIK"/>
-        <argument key="App\Controller\submission\FrontSubmissionController::create" type="service_closure" id=".service_locator.VNgzaus"/>
-        <argument key="App\Controller\submission\FrontSubmissionController::delete" type="service_closure" id=".service_locator.cfE8SPz"/>
-        <argument key="App\Controller\submission\FrontSubmissionController::edit" type="service_closure" id=".service_locator.uP379._"/>
+        <argument key="App\Controller\submission\FrontSubmissionController::create" type="service_closure" id=".service_locator.1yngbQo"/>
+        <argument key="App\Controller\submission\FrontSubmissionController::delete" type="service_closure" id=".service_locator.l70R6lH"/>
+        <argument key="App\Controller\submission\FrontSubmissionController::edit" type="service_closure" id=".service_locator.ST79b.w"/>
         <argument key="App\Controller\submission\ResponseController::delete" type="service_closure" id=".service_locator.vygPk_0"/>
         <argument key="App\Controller\submission\ResponseController::edit" type="service_closure" id=".service_locator.vygPk_0"/>
         <argument key="App\Controller\submission\ResponseController::filter" type="service_closure" id=".service_locator.z.VK42H"/>
@@ -12567,9 +12565,9 @@
         <argument key="App\Controller\mechanic\MechanicController:sortByCarsRepaired" type="service_closure" id=".service_locator.as79OIK"/>
         <argument key="App\Controller\mechanic\MechanicController:sortByName" type="service_closure" id=".service_locator.as79OIK"/>
         <argument key="App\Controller\mechanic\MechanicController:sortBySpeciality" type="service_closure" id=".service_locator.as79OIK"/>
-        <argument key="App\Controller\submission\FrontSubmissionController:create" type="service_closure" id=".service_locator.VNgzaus"/>
-        <argument key="App\Controller\submission\FrontSubmissionController:delete" type="service_closure" id=".service_locator.cfE8SPz"/>
-        <argument key="App\Controller\submission\FrontSubmissionController:edit" type="service_closure" id=".service_locator.uP379._"/>
+        <argument key="App\Controller\submission\FrontSubmissionController:create" type="service_closure" id=".service_locator.1yngbQo"/>
+        <argument key="App\Controller\submission\FrontSubmissionController:delete" type="service_closure" id=".service_locator.l70R6lH"/>
+        <argument key="App\Controller\submission\FrontSubmissionController:edit" type="service_closure" id=".service_locator.ST79b.w"/>
         <argument key="App\Controller\submission\ResponseController:delete" type="service_closure" id=".service_locator.vygPk_0"/>
         <argument key="App\Controller\submission\ResponseController:edit" type="service_closure" id=".service_locator.vygPk_0"/>
         <argument key="App\Controller\submission\ResponseController:filter" type="service_closure" id=".service_locator.z.VK42H"/>
@@ -13532,12 +13530,6 @@
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.O2p6Lk7" method="withContext"/>
     </service>
-    <service id=".service_locator.O2p6Lk7.App\Controller\user\AvatarController" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator_context" id="App\Controller\user\AvatarController"/>
-      <argument>App\Controller\user\AvatarController</argument>
-      <argument type="service" id="service_container"/>
-      <factory service=".service_locator.O2p6Lk7" method="withContext"/>
-    </service>
     <service id=".service_locator.O2p6Lk7.App\Controller\user\ConnectGoogleController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Controller\user\ConnectGoogleController"/>
       <argument>App\Controller\user\ConnectGoogleController</argument>
@@ -13854,7 +13846,6 @@
           <argument>App\Controller\submission\ResponseController</argument>
           <argument>App\Controller\submission\SentimentController</argument>
           <argument>App\Controller\submission\SubmissionController</argument>
-          <argument>App\Controller\user\AvatarController</argument>
           <argument>App\Controller\user\ConnectGoogleController</argument>
           <argument>App\Controller\user\DeleteController</argument>
           <argument>App\Controller\user\FeedbackController</argument>
@@ -14265,11 +14256,11 @@
     <service id=".errored..service_locator.JaM5rEJ.App\Entity\Mechanic" class="App\Entity\Mechanic">
       <tag name="container.error" message="Cannot autowire service &quot;.service_locator.JaM5rEJ&quot;: it needs an instance of &quot;App\Entity\Mechanic&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
     </service>
-    <service id=".errored..service_locator.cfE8SPz.App\Entity\Submission" class="App\Entity\Submission">
-      <tag name="container.error" message="Cannot autowire service &quot;.service_locator.cfE8SPz&quot;: it needs an instance of &quot;App\Entity\Submission&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
+    <service id=".errored..service_locator.l70R6lH.App\Entity\Submission" class="App\Entity\Submission">
+      <tag name="container.error" message="Cannot autowire service &quot;.service_locator.l70R6lH&quot;: it needs an instance of &quot;App\Entity\Submission&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
     </service>
-    <service id=".errored..service_locator.uP379._.App\Entity\Submission" class="App\Entity\Submission">
-      <tag name="container.error" message="Cannot autowire service &quot;.service_locator.uP379._&quot;: it needs an instance of &quot;App\Entity\Submission&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
+    <service id=".errored..service_locator.ST79b.w.App\Entity\Submission" class="App\Entity\Submission">
+      <tag name="container.error" message="Cannot autowire service &quot;.service_locator.ST79b.w&quot;: it needs an instance of &quot;App\Entity\Submission&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
     </service>
     <service id=".errored..service_locator.tHxDZ0k.App\Entity\Response" class="App\Entity\Response">
       <tag name="container.error" message="Cannot autowire service &quot;.service_locator.tHxDZ0k&quot;: it needs an instance of &quot;App\Entity\Response&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
@@ -14279,6 +14270,9 @@
     </service>
     <service id=".errored..service_locator.9Bdbfcc.App\Entity\Submission" class="App\Entity\Submission">
       <tag name="container.error" message="Cannot autowire service &quot;.service_locator.9Bdbfcc&quot;: it needs an instance of &quot;App\Entity\Submission&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
+    </service>
+    <service id=".errored..service_locator.cfE8SPz.App\Entity\Submission" class="App\Entity\Submission">
+      <tag name="container.error" message="Cannot autowire service &quot;.service_locator.cfE8SPz&quot;: it needs an instance of &quot;App\Entity\Submission&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
     </service>
     <service id=".errored..service_locator.5ffhAhu.App\Entity\Feedback" class="App\Entity\Feedback">
       <tag name="container.error" message="Cannot autowire service &quot;.service_locator.5ffhAhu&quot;: it needs an instance of &quot;App\Entity\Feedback&quot; but this type has been excluded in &quot;config/services.yaml&quot;."/>
@@ -15773,7 +15767,7 @@
     <service id="messenger_mailer.attachment_handler" alias="Fusonic\MessengerMailerBundle\EmailAttachmentHandler\FilesystemAttachmentHandler"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.w7.f4fT" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.D7gbukq"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.poVZJ0T"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="Psr\Log\LoggerInterface $requestLogger" alias="monolog.logger.request"/>
@@ -15819,11 +15813,12 @@
     <service id=".service_locator.oijofvR" alias=".service_locator.JOXOOE3"/>
     <service id=".service_locator..eNYlvu" alias=".service_locator.habPdRA"/>
     <service id=".service_locator.j8eWmpk" alias=".service_locator.JaM5rEJ"/>
-    <service id=".service_locator.lcSWAhL" alias=".service_locator.VNgzaus"/>
-    <service id=".service_locator.Rxg1EGI" alias=".service_locator.cfE8SPz"/>
-    <service id=".service_locator.AE__Rar" alias=".service_locator.uP379._"/>
+    <service id=".service_locator.0x2c5FX" alias=".service_locator.1yngbQo"/>
+    <service id=".service_locator.JwVvPQA" alias=".service_locator.l70R6lH"/>
+    <service id=".service_locator.6QRDava" alias=".service_locator.ST79b.w"/>
     <service id=".service_locator.LgcJjV6" alias=".service_locator.3wMQiHh"/>
     <service id=".service_locator.Xjp.UXx" alias=".service_locator.vygPk_0"/>
+    <service id=".service_locator.Rxg1EGI" alias=".service_locator.cfE8SPz"/>
     <service id=".service_locator.2Y3qwtB" alias=".service_locator.RroSN3V"/>
     <service id=".service_locator.pxJ1zmw" alias=".service_locator.5ffhAhu"/>
     <service id=".service_locator.lPUPMxQ" alias=".service_locator.SPoJuN2"/>
@@ -15831,7 +15826,7 @@
     <service id=".service_locator.9A_qgEI" alias=".service_locator.avLZmv1"/>
     <service id=".service_locator.RtCGHrO" alias=".service_locator.lDw5jgg"/>
     <service id=".service_locator.djBiB42" alias=".service_locator.XhaxMWK"/>
-    <service id=".service_locator.1To19fc" alias=".service_locator.D7gbukq"/>
+    <service id=".service_locator.z1_kM3n" alias=".service_locator.poVZJ0T"/>
     <service id=".service_locator.BFrsqsn" alias=".service_locator.F9PKc.7"/>
     <service id=".service_locator.Ila_Jdv" alias=".service_locator.23Qb_tC"/>
     <service id=".service_locator.kUfWnkZ" alias=".service_locator..ZrOtsY"/>
@@ -15962,9 +15957,9 @@
     <service id=".service_locator.vncfroV" alias=".service_locator.e0VdKdx"/>
     <service id=".service_locator..MhNh9d" alias=".service_locator.JaM5rEJ"/>
     <service id=".service_locator.HJUTe36" alias=".service_locator.as79OIK"/>
-    <service id=".service_locator.ABdGCPh" alias=".service_locator.VNgzaus"/>
-    <service id=".service_locator.B.OAWzz" alias=".service_locator.cfE8SPz"/>
-    <service id=".service_locator.RdxhYal" alias=".service_locator.uP379._"/>
+    <service id=".service_locator.Os0ky5t" alias=".service_locator.1yngbQo"/>
+    <service id=".service_locator.3CPwS6b" alias=".service_locator.l70R6lH"/>
+    <service id=".service_locator.tNlVRMK" alias=".service_locator.ST79b.w"/>
     <service id=".service_locator.rsdHLIU" alias=".service_locator.z.VK42H"/>
     <service id=".service_locator.2B2hMew" alias=".service_locator.3wMQiHh"/>
     <service id=".service_locator.EIfNmL4" alias=".service_locator.tHxDZ0k"/>
@@ -15972,6 +15967,7 @@
     <service id=".service_locator.2nFOK6q" alias=".service_locator.IvUdUXI"/>
     <service id=".service_locator.SFC8t5Z" alias=".service_locator.xs8y51k"/>
     <service id=".service_locator.0pwgg7r" alias=".service_locator.9Bdbfcc"/>
+    <service id=".service_locator.B.OAWzz" alias=".service_locator.cfE8SPz"/>
     <service id=".service_locator.Yc1mPPx" alias=".service_locator.hokdgZZ"/>
     <service id=".service_locator.wFeJNRM" alias=".service_locator.RroSN3V"/>
     <service id=".service_locator.7o.OJrY" alias=".service_locator.5ffhAhu"/>

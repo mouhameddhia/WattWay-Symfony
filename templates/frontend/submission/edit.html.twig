@@ -147,35 +147,24 @@
                 'attr': {'class': 'form-field'}
             }) }}
         </div>
-
         <div class="form-row">
             {{ form_row(formSubmission.vinCode, {
                 'label': 'VIN Code',
                 'attr': {'class': 'form-field'}
             }) }}
         </div>
-
-        <div class="form-row">
-            {{ form_row(formSubmission.idUser, {
-                'label': 'User',
-                'attr': {'class': 'form-field'}
-            }) }}
-        </div>
-
         <div class="form-row">
             {{ form_row(formSubmission.preferredContactMethod, {
                 'label': 'Contact Method',
                 'attr': {'class': 'form-field'}
             }) }}
         </div>
-
         <div class="form-row">
             {{ form_row(formSubmission.preferredAppointmentDate, {
-                'label': 'Appointment Date',
+                'label': 'Preferred Appointment Date',
                 'attr': {'class': 'form-field'}
             }) }}
         </div>
-
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">{{ 'Save Changes' }}</button>
             <a href="{{ path('Front') }}" class="btn btn-secondary">{{ 'Cancel' }}</a>

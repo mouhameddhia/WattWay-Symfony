@@ -588,12 +588,6 @@
                     'attr': {'class': 'form-field'}
                 }) }}
             </div>
-            <div class="form-row" data-step="3">
-                {{ form_row(formSubmission.idUser, {
-                    'label': 'User',
-                    'attr': {'class': 'form-field'}
-                }) }}
-            </div>
             <div class="form-row" data-step="4">
                 {{ form_row(formSubmission.preferredContactMethod, {
                     'label': 'Contact Method',
@@ -623,8 +617,9 @@
                     <div class="card-header">
                         <span class="status-badge status-{{ submission.status|lower }}">{{ submission.status }}</span>
                         <span class="urgency-badge urgency-{{ submission.urgencyLevel|lower }}">{{ submission.urgencyLevel }}</span>
+                        {% if app.user is defined and app.user is not null and app.user.idUser == submission.idUser %}
                         <div class="card-actions">
-                            <a href="{{ path('Front_Submission_edit', {'idSubmission': submission.idSubmission}) }}" 
+                            <a href="{{ path('Front_Submission_edit', {'idSubmission': submission.idSubmission}) }}"
                                class="edit-icon"
                                title="Edit submission">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -642,6 +637,7 @@
                                 </button>
                             </form>
                         </div>
+                        {% endif %}
                     </div>
 
                     <div class="card-title">{{ submission.description }}</div>

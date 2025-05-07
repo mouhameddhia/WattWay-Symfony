@@ -30,14 +30,6 @@ class Submission
     }
 
     #[ORM\Column(name: 'description',type: 'text', nullable: false)]
-    #[Assert\NotBlank(message: 'Please provide a description of your service needs', groups: ['create'])]
-    #[Assert\Length(
-        min: 10,
-        max: 1000,
-        minMessage: 'Description must be at least {{ limit }} characters long',
-        maxMessage: 'Description cannot be longer than {{ limit }} characters',
-        groups: ['create']
-    )]
     private ?string $description = null;
 
     public function getDescription(): ?string
@@ -80,8 +72,6 @@ class Submission
     }
 
     #[ORM\Column(name: 'dateSubmission', type: 'date', nullable: false)]
-    #[AssertNotNull(message: 'Submission date is required', groups: ['create'])]
-    #[AssertLessThanOrEqual('today', message: 'Submission date cannot be in the future', groups: ['create'])]
     private ?\DateTimeInterface $dateSubmission = null;
 
     public function getDateSubmission(): ?\DateTimeInterface
@@ -109,8 +99,6 @@ class Submission
     
 
     #[ORM\Column(name: 'idUser', type: 'integer', nullable: false)]
-    #[AssertNotNull(message: 'User ID is required', groups: ['create'])]
-    #[AssertPositive(message: 'User ID must be a positive number', groups: ['create'])]
     private ?int $idUser = null;
 
     public function getIdUser(): ?int
@@ -139,8 +127,6 @@ class Submission
     }
 
     #[ORM\Column(name: 'preferredContactMethod', type: 'string', nullable: true)]
-    #[Assert\Choice(choices: ['sms', 'phone', 'email'], message: 'Invalid contact method', groups: ['create'])]
-    #[Assert\NotBlank(message: 'Type should not be blank.')]
     private ?string $preferredContactMethod = null;
 
     public function getPreferredContactMethod(): ?string
@@ -155,7 +141,6 @@ class Submission
     }
 
     #[ORM\Column(name: 'preferredAppointmentDate', type: 'datetime', nullable: false)]
-    #[Assert\GreaterThan('today', message: 'Appointment date must be in the future', groups: ['create'])]
     private ?\DateTimeInterface $preferredAppointmentDate = null;
 
     public function getPreferredAppointmentDate(): ?\DateTimeInterface

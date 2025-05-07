@@ -236,13 +236,15 @@ class FrontController extends AbstractController
                 'dateSubmission' => $submission->getDateSubmission(),
                 'preferredContactMethod' => $submission->getPreferredContactMethod(),
                 'preferredAppointmentDate' => $submission->getPreferredAppointmentDate(),
-                'responses' => $responses
+                'responses' => $responses,
+                'idUser' => $submission->getIdUser(),
             ];
         }
 
         $submission = new Submission();
         $formSubmission = $this->createForm(FrontSubmissionType::class, $submission);
-
+        $formSubmission->remove('idUser');
+        
         //ORDER CONTROLLER
         // Fetch all items from the database
         $items = $itemRepository->findAll();
@@ -257,13 +259,11 @@ class FrontController extends AbstractController
             ->getRepository(Mechanic::class)
             ->findAll();
             
-        dump($mechanics); // Debug
 
         $userCars = $entityManager
             ->getRepository(Car::class)
             ->findBy(['user' => 68]);
 
-        dump($userCars);
         return $this->render('frontend/baseFront.html.twig', [
             'mechanics' => $mechanics,
             'userCars' => $userCars,
