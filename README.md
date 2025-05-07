@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 **Optimize the Transition to Electric Vehicles with AI**  
-WattWay is a web application designed to simplify electric vehicle (EV) management and accelerate their adoption in businesses and transportation. 🌍✨
+WattWay is a web application developed as part of **Esprit University** projects, designed to simplify electric vehicle (EV) management and accelerate their adoption in businesses and transportation. 🌍✨
 
 ---
 
@@ -29,6 +29,9 @@ WattWay uses **artificial intelligence** to optimize:
 - Infrastructure organization (charging stations, warehouses) 🔌
 - Predictive vehicle maintenance 🛠️
 
+**University Project Context**  
+This project is developed under the academic framework of **Esprit University**, focusing on real-world problem-solving and sustainable technology integration.
+
 ---
 
 ## Features ⚙️
@@ -48,7 +51,7 @@ WattWay uses **artificial intelligence** to optimize:
 ### Prerequisites
 - PHP 8.2+
 - Composer
-- MySQL / PostgreSQL
+- phpMyAdmin (for database management)
 - Symfony CLI
 
 ### Steps
