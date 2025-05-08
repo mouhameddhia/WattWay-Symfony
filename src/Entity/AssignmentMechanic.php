@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use App\Repository\AssignmentMechanicRepository;
 
 #[ORM\Entity(repositoryClass: AssignmentMechanicRepository::class)]
-#[ORM\Table(name: 'assignment_mechanics')]
+//#[ORM\Table(name: 'assignment_mechanics')]
 class AssignmentMechanic
 {
     #[ORM\Id]

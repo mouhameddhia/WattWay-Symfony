@@ -29,8 +29,7 @@ class Bill
         $this->idBill = $idBill;
         return $this;
     }
-
-    #[ORM\Column(type: 'date', nullable: false, name: 'dateBill', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[ORM\Column(name:'dateBill',type: 'datetime', nullable: false)]
     #[Groups(['bill:read'])]
     private ?\DateTimeInterface $dateBill = null;
 
@@ -44,7 +43,10 @@ class Bill
         $this->dateBill = $dateBill;
         return $this;
     }
-
+    public function __construct()
+{
+    $this->dateBill = new \DateTimeImmutable(); // ensures it's always set
+}
     #[ORM\Column(type: 'float', nullable: false, name: 'totalAmountBill')]
     #[Groups(['bill:read'])]
     private ?float $totalAmountBill = null;

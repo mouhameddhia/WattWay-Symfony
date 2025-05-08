@@ -232,7 +232,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         $this->passwordUser = $password;
         return $this;
     }
-    #[ORM\OneToMany(mappedBy: "idUser", targetEntity: Car::class)]
+    #[ORM\OneToMany(mappedBy: "user", targetEntity: Car::class)]
     private Collection $cars;
     public function getCars(): Collection
     {

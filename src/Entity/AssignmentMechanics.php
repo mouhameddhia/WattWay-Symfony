@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Mechanic;
 
 #[ORM\Entity]
-#[ORM\Table(name: "assignment_mechanics")]
+//#[ORM\Table(name: "assignment_mechanics")]
 class AssignmentMechanics
 {
     #[ORM\Id]

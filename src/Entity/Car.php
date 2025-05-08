@@ -189,6 +189,7 @@ class Car
     public function __construct()
     {
         $this->bills = new ArrayCollection();
+        $this->submissions = new ArrayCollection();
     }
     /**
      * @return Collection<int, Bill>
@@ -241,5 +242,7 @@ class Car
 
         return $this;
     }
+    #[ORM\OneToMany(targetEntity: Submission::class, mappedBy: 'car')]
+    private Collection $submissions;
 
 }
