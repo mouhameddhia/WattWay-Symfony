@@ -1,3 +1,3 @@
 # WattWay ⚡  
 
-![Electric Car Animation](https://www.gifcen.com/wp-content/uploads/2021/05/car-gif-6.gif)
+![Tesla Roadster](https://media.giphy.com/media/l0HU7JIWcm8kOs7Mk/giphy.gif)
