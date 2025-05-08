@@ -37,7 +37,7 @@ class OrdersController extends AbstractController
 
     // Filter by admin/client
     if ($filter === 'client') {
-        $conditions[] = 'b.idAdmin = 12';
+        $conditions[] = 'b.idAdmin != 1';
     } elseif ($filter === 'admin') {
         $conditions[] = 'b.idAdmin != 12';
     }
@@ -507,6 +507,11 @@ class OrdersController extends AbstractController
                 'message' => 'Error deleting item: ' . $e->getMessage()
             ], 500);
         }
+    }
+    #[Route('/api/orders/by-admin/{id}', name: 'orders_by_admin', methods: ['GET'])]
+    public function getOrdersByAdmin(OrderRepository $repo, int $id): JsonResponse {
+        $orders = $repo->findBy(['idAdmin' => $id]); // Adapt to your entity
+        return $this->json($orders);
     }
 
     

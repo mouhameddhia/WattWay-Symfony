@@ -1245,7 +1245,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
       <tag priority="-50" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">controller.argument_value_resolver</tag>
-      <argument type="service" id=".service_locator.poVZJ0T"/>
+      <argument type="service" id=".service_locator.2Wmyg4o"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver">
       <tag priority="-100" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver">controller.argument_value_resolver</tag>
@@ -4666,7 +4666,7 @@
     </service>
     <service id="argument_resolver.not_tagged_controller" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
       <tag name="controller.argument_value_resolver" priority="-200"/>
-      <argument type="service" id=".service_locator.poVZJ0T"/>
+      <argument type="service" id=".service_locator.2Wmyg4o"/>
     </service>
     <service id="debug.log_processor" class="Symfony\Bridge\Monolog\Processor\DebugProcessor">
       <tag name="kernel.reset" method="reset"/>
@@ -7033,7 +7033,7 @@
       </call>
     </service>
     <service id="doctrine_migrations.schema_filter_listener" class="Doctrine\Bundle\MigrationsBundle\EventListener\SchemaFilterListener">
-      <tag name="doctrine.dbal.schema_filter"/>
+      <tag name="doctrine.dbal.schema_filter" connection="default"/>
       <tag name="kernel.event_listener" event="console.command" method="onConsoleCommand"/>
       <tag name="container.no_preload"/>
       <argument>doctrine_migration_versions</argument>
@@ -11988,6 +11988,13 @@
         <argument key="warehouseRepository" type="service_closure" id="App\Repository\WarehouseRepository"/>
       </argument>
     </service>
+    <service id=".service_locator.NjUBG3v" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
+      </argument>
+    </service>
     <service id=".service_locator.CsMkqUa" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -12057,6 +12064,12 @@
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+      </argument>
+    </service>
+    <service id=".service_locator.Da9mMN_" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="repo" type="service_closure" id="App\Repository\OrderRepository"/>
       </argument>
     </service>
     <service id=".service_locator.EE0.cm9" class="Symfony\Component\DependencyInjection\ServiceLocator">
@@ -12368,10 +12381,10 @@
         <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
       </argument>
     </service>
-    <service id=".service_locator.poVZJ0T" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.2Wmyg4o" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
-        <argument key="App\Controller\FrontController::checkout" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\FrontController::checkout" type="service_closure" id=".service_locator.NjUBG3v"/>
         <argument key="App\Controller\FrontController::index" type="service_closure" id=".service_locator.Va4nKd3"/>
         <argument key="App\Controller\FrontController::mechanics" type="service_closure" id=".service_locator.CsMkqUa"/>
         <argument key="App\Controller\FrontendController::mechanics" type="service_closure" id=".service_locator.CsMkqUa"/>
@@ -12387,6 +12400,7 @@
         <argument key="App\Controller\Order\OrdersController::deleteItem" type="service_closure" id=".service_locator.CsMkqUa"/>
         <argument key="App\Controller\Order\OrdersController::deleteOrder" type="service_closure" id=".service_locator.CsMkqUa"/>
         <argument key="App\Controller\Order\OrdersController::getOrderItems" type="service_closure" id=".service_locator.wCNelc_"/>
+        <argument key="App\Controller\Order\OrdersController::getOrdersByAdmin" type="service_closure" id=".service_locator.Da9mMN_"/>
         <argument key="App\Controller\Order\OrdersController::getOrdersByMonth" type="service_closure" id=".service_locator.4n4ylFv"/>
         <argument key="App\Controller\Order\OrdersController::items" type="service_closure" id=".service_locator.72v7qe6"/>
         <argument key="App\Controller\Order\OrdersController::orders" type="service_closure" id=".service_locator.Z74ZQan"/>
@@ -12488,7 +12502,7 @@
         <argument key="App\Kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.y4_Zrx."/>
         <argument key="kernel::loadRoutes" type="service_closure" id=".service_locator.y4_Zrx."/>
         <argument key="kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.y4_Zrx."/>
-        <argument key="App\Controller\FrontController:checkout" type="service_closure" id=".service_locator.CsMkqUa"/>
+        <argument key="App\Controller\FrontController:checkout" type="service_closure" id=".service_locator.NjUBG3v"/>
         <argument key="App\Controller\FrontController:index" type="service_closure" id=".service_locator.Va4nKd3"/>
         <argument key="App\Controller\FrontController:mechanics" type="service_closure" id=".service_locator.CsMkqUa"/>
         <argument key="App\Controller\FrontendController:mechanics" type="service_closure" id=".service_locator.CsMkqUa"/>
@@ -12504,6 +12518,7 @@
         <argument key="App\Controller\Order\OrdersController:deleteItem" type="service_closure" id=".service_locator.CsMkqUa"/>
         <argument key="App\Controller\Order\OrdersController:deleteOrder" type="service_closure" id=".service_locator.CsMkqUa"/>
         <argument key="App\Controller\Order\OrdersController:getOrderItems" type="service_closure" id=".service_locator.wCNelc_"/>
+        <argument key="App\Controller\Order\OrdersController:getOrdersByAdmin" type="service_closure" id=".service_locator.Da9mMN_"/>
         <argument key="App\Controller\Order\OrdersController:getOrdersByMonth" type="service_closure" id=".service_locator.4n4ylFv"/>
         <argument key="App\Controller\Order\OrdersController:items" type="service_closure" id=".service_locator.72v7qe6"/>
         <argument key="App\Controller\Order\OrdersController:orders" type="service_closure" id=".service_locator.Z74ZQan"/>
@@ -15767,7 +15782,7 @@
     <service id="messenger_mailer.attachment_handler" alias="Fusonic\MessengerMailerBundle\EmailAttachmentHandler\FilesystemAttachmentHandler"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.w7.f4fT" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.poVZJ0T"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.2Wmyg4o"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="Psr\Log\LoggerInterface $requestLogger" alias="monolog.logger.request"/>
@@ -15801,6 +15816,7 @@
     <service id=".service_locator.XDGmiR3" alias=".1_ServiceLocator~8sQZY9H"/>
     <service id=".service_locator.bJ.4HC5" alias=".service_locator.w7.f4fT"/>
     <service id=".service_locator.Kn3D4h3" alias=".service_locator.Va4nKd3"/>
+    <service id=".service_locator.8IbU9zc" alias=".service_locator.NjUBG3v"/>
     <service id=".service_locator.PpS7vjf" alias=".service_locator.WdW2zRH"/>
     <service id=".service_locator.OWaOgcU" alias=".service_locator.Z74ZQan"/>
     <service id=".service_locator.5mSKjHm" alias=".service_locator.3TE2pMc"/>
@@ -15826,7 +15842,7 @@
     <service id=".service_locator.9A_qgEI" alias=".service_locator.avLZmv1"/>
     <service id=".service_locator.RtCGHrO" alias=".service_locator.lDw5jgg"/>
     <service id=".service_locator.djBiB42" alias=".service_locator.XhaxMWK"/>
-    <service id=".service_locator.z1_kM3n" alias=".service_locator.poVZJ0T"/>
+    <service id=".service_locator.HAdWW32" alias=".service_locator.2Wmyg4o"/>
     <service id=".service_locator.BFrsqsn" alias=".service_locator.F9PKc.7"/>
     <service id=".service_locator.Ila_Jdv" alias=".service_locator.23Qb_tC"/>
     <service id=".service_locator.kUfWnkZ" alias=".service_locator..ZrOtsY"/>
@@ -15924,6 +15940,7 @@
     <service id=".service_locator.Xbsa8iG" alias="api_platform.filter_locator"/>
     <service id=".service_locator.gFlme_s" alias=".service_locator.y4_Zrx."/>
     <service id=".service_locator.sAQpMNl" alias=".service_locator.Va4nKd3"/>
+    <service id=".service_locator.SPFAmCQ" alias=".service_locator.NjUBG3v"/>
     <service id=".service_locator.9e2t_lq" alias=".service_locator.CsMkqUa"/>
     <service id=".service_locator.A3pAsoh" alias=".service_locator.sUk48Fj"/>
     <service id=".service_locator.cU_v595" alias=".service_locator.WdW2zRH"/>
@@ -15935,6 +15952,7 @@
     <service id=".service_locator.BmWozwE" alias=".service_locator.NufvMIJ"/>
     <service id=".service_locator.BvvBT9K" alias=".service_locator.4n4ylFv"/>
     <service id=".service_locator.gaTSUXr" alias=".service_locator.9kKwU2t"/>
+    <service id=".service_locator.GB.BMnk" alias=".service_locator.Da9mMN_"/>
     <service id=".service_locator.ostNlSn" alias=".service_locator.EE0.cm9"/>
     <service id=".service_locator.uPguXMt" alias=".service_locator.Z9ydiC1"/>
     <service id=".service_locator.nWDzidz" alias=".service_locator.3TE2pMc"/>

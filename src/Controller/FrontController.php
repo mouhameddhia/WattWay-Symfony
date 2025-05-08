@@ -304,7 +304,7 @@ class FrontController extends AbstractController
     }
 }
 #[Route('/checkout', name: 'checkout', methods: ['POST'])]
-    public function checkout(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function checkout(UserRepository $userRepository,Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
@@ -315,7 +315,7 @@ class FrontController extends AbstractController
         $order->setStatusOrder('Pending');
         $order->setAddressSupplierOrder('WattShop Address');
         $order->setTotalAmountOrder($data['totalAmount']);
-        $order->setIdAdmin(12); // Fixed admin ID as per requirements
+        $order->setIdAdmin($userRepository->getLoggedInUser($this->getUser()->getUserIdentifier())->getIdUser()); // Fixed admin ID as per requirements
 
         $entityManager->persist($order);
         $entityManager->flush();

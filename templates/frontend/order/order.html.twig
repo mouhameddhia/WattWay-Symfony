@@ -28,8 +28,16 @@
         <div class="search-container">
             <!-- Action Buttons -->
             <div class="action-buttons">
-                <button class="secondary-button" id="viewPreviousOrdersBtn">Order History</button>
+                <button class="secondary-button" id="viewPreviousOrdersBtn" value="{{ app.user.idUser ?? 'null' }}">Order History</button>
             </div>
+            <!-- Modal -->
+            <div id="orderHistoryModal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close-button" id="closeModalBtn">&times;</span>
+                    <h2>Client Order History</h2>
+                <div id="orderList"></div>
+            </div>
+        </div>
             
             <div class="search-wrapper" >
                 <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -306,6 +314,69 @@
 
     
 <script>
+    document.getElementById('viewPreviousOrdersBtn').addEventListener('click', function () {
+const idAdmin = document.getElementById('viewPreviousOrdersBtn').value;
+const ordersPerPage = 5; // Limit to 5 orders per page
+let currentPage = 1;
+// Show loading spinner
+const modal = document.getElementById('orderHistoryModal');
+const content = document.getElementById('orderList');
+const loadingSpinner = document.createElement('div');
+loadingSpinner.innerHTML = '<p>Loading...</p>';
+content.innerHTML = ''; // Clear existing content
+content.appendChild(loadingSpinner);
+modal.style.display = 'block'; // Show modal
+fetch(`/api/orders/by-admin/${idAdmin}`)
+.then(response => response.json())
+.then(data => {
+if (!Array.isArray(data) || data.length === 0) {
+content.innerHTML = '<p>No orders found.</p>';
+return;
+}
+// Paginate the data (show only first 5 orders)
+const ordersToDisplay = data.slice(0, ordersPerPage);
+displayOrders(ordersToDisplay);
+// Add "Load More" button if there are more orders
+if (data.length > ordersPerPage) {
+const loadMoreBtn = document.createElement('button');
+loadMoreBtn.innerText = 'Load More';
+loadMoreBtn.addEventListener('click', function () {
+currentPage++;
+const ordersToLoad = data.slice(currentPage * ordersPerPage - ordersPerPage, currentPage * ordersPerPage);
+displayOrders(ordersToLoad);
+if (currentPage * ordersPerPage >= data.length) {
+loadMoreBtn.style.display = 'none'; // Hide "Load More" when no more orders
+}
+});
+content.appendChild(loadMoreBtn);
+}
+})
+.catch(error => {
+console.error('Error loading orders:', error);
+content.innerHTML = '<p>Error loading order history.</p>';
+});
+});
+function displayOrders(orders) {
+const content = document.getElementById('orderList');
+orders.forEach(order => {
+const orderHTML = `
+<div style="margin-bottom: 15px;">
+<strong>Order #${order.idOrder}</strong><br>
+<strong>Status:</strong> ${order.statusOrder}<br>
+<strong>Date:</strong> ${new Date(order.dateOrder).toLocaleDateString()}<br>
+<strong>Amount:</strong> ${order.totalAmountOrder} DT<br>
+<strong>Supplier:</strong> ${order.supplierOrder}<br>
+<strong>Address:</strong> ${order.addressSupplierOrder}
+</div>
+<hr/>
+`;
+content.innerHTML += orderHTML;
+});
+}
+// Close button logic
+document.getElementById('closeModalBtn').addEventListener('click', function () {
+document.getElementById('orderHistoryModal').style.display = 'none';
+});
     document.addEventListener('DOMContentLoaded', () => {
         const quickViewButtons = document.querySelectorAll('.quick-view-button');
         const modal = document.getElementById('quickViewModal');
